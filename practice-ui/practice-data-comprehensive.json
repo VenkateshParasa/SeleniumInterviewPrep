@@ -1,0 +1,309 @@
+{
+  "fast": {
+    "name": "Fast Track (3 Months - 25-30 hrs/week)",
+    "description": "Intensive learning for dedicated learners",
+    "weeks": [
+      {
+        "title": "Week 1: Java Fundamentals",
+        "description": "Master core Java concepts",
+        "days": [
+          {
+            "id": 1,
+            "title": "Day 1: Java Setup & First Program",
+            "focus": "Environment setup, JDK vs JRE vs JVM, Hello World",
+            "timeCommitment": "4-5 hours",
+            "tasks": [
+              {
+                "title": "Install JDK 11 or higher",
+                "description": "Download from Oracle, set JAVA_HOME, verify installation"
+              },
+              {
+                "title": "Setup IDE (IntelliJ IDEA recommended)",
+                "description": "Install and configure IDE, create first project"
+              },
+              {
+                "title": "Understand JDK, JRE, JVM differences",
+                "description": "Learn architecture and how Java works"
+              },
+              {
+                "title": "Write and run Hello World",
+                "description": "Create main method, compile, and execute"
+              },
+              {
+                "title": "Learn Java compilation process",
+                "description": "Understand .java to .class to bytecode execution"
+              }
+            ],
+            "practice": [
+              {
+                "title": "Hello World Variations",
+                "description": "Create 5 different Hello World programs with different outputs",
+                "difficulty": "Easy",
+                "code": "public class HelloWorld {\n    public static void main(String[] args) {\n        System.out.println(\"Hello, World!\");\n        System.out.println(\"Welcome to Java\");\n    }\n}",
+                "hints": ["Use System.out.println()", "Try System.out.print() without newline", "Use escape sequences like \\n, \\t"]
+              },
+              {
+                "title": "Print Pattern",
+                "description": "Print your name in a box pattern using asterisks",
+                "difficulty": "Easy",
+                "hints": ["Use multiple println statements", "Plan the pattern on paper first"]
+              }
+            ],
+            "resources": [
+              {
+                "icon": "📖",
+                "title": "Oracle Java Documentation",
+                "url": "https://docs.oracle.com/en/java/"
+              },
+              {
+                "icon": "🎥",
+                "title": "Java Setup - Programming with Mosh",
+                "url": "https://www.youtube.com/watch?v=eIrMbAQSU34"
+              },
+              {
+                "icon": "📚",
+                "title": "JDK vs JRE vs JVM - GeeksforGeeks",
+                "url": "https://www.geeksforgeeks.org/differences-jdk-jre-jvm/"
+              },
+              {
+                "icon": "💻",
+                "title": "IntelliJ IDEA Download",
+                "url": "https://www.jetbrains.com/idea/download/"
+              },
+              {
+                "icon": "📖",
+                "title": "Java Compilation Process",
+                "url": "https://www.javatpoint.com/how-to-compile-and-run-java-program"
+              }
+            ],
+            "interviewQuestions": [
+              "What is the difference between JDK, JRE, and JVM?",
+              "Explain the Java compilation process",
+              "What is bytecode?",
+              "Why is Java platform independent?",
+              "What is the role of ClassLoader?"
+            ]
+          },
+          {
+            "id": 2,
+            "title": "Day 2: Variables & Data Types",
+            "focus": "Primitive types, type casting, variable scope, naming conventions",
+            "timeCommitment": "4-5 hours",
+            "tasks": [
+              {
+                "title": "Learn all 8 primitive data types",
+                "description": "byte, short, int, long, float, double, char, boolean - sizes and ranges"
+              },
+              {
+                "title": "Understand variable declaration and initialization",
+                "description": "Different ways to declare and initialize variables"
+              },
+              {
+                "title": "Master type casting",
+                "description": "Implicit (widening) and explicit (narrowing) casting"
+              },
+              {
+                "title": "Learn variable scope",
+                "description": "Local, instance, and static variables"
+              },
+              {
+                "title": "Follow naming conventions",
+                "description": "camelCase for variables, UPPER_CASE for constants"
+              }
+            ],
+            "practice": [
+              {
+                "title": "Data Type Explorer",
+                "description": "Create program showing size, min, max values of all primitive types",
+                "difficulty": "Easy",
+                "code": "public class DataTypes {\n    public static void main(String[] args) {\n        System.out.println(\"byte: \" + Byte.SIZE + \" bits\");\n        System.out.println(\"Min: \" + Byte.MIN_VALUE);\n        System.out.println(\"Max: \" + Byte.MAX_VALUE);\n        // Repeat for all types\n    }\n}",
+                "hints": ["Use wrapper classes like Byte, Integer", "Use SIZE, MIN_VALUE, MAX_VALUE constants"]
+              },
+              {
+                "title": "Type Casting Practice",
+                "description": "Demonstrate implicit and explicit casting with examples",
+                "difficulty": "Medium",
+                "hints": ["int to double is implicit", "double to int needs explicit cast", "Watch for data loss"]
+              },
+              {
+                "title": "Temperature Converter",
+                "description": "Convert Celsius to Fahrenheit and vice versa",
+                "difficulty": "Easy",
+                "hints": ["F = (C * 9/5) + 32", "C = (F - 32) * 5/9", "Use double for precision"]
+              }
+            ],
+            "resources": [
+              {
+                "icon": "📖",
+                "title": "Java Data Types - Oracle Tutorial",
+                "url": "https://docs.oracle.com/javase/tutorial/java/nutsandbolts/datatypes.html"
+              },
+              {
+                "icon": "🎥",
+                "title": "Variables & Data Types - Telusko",
+                "url": "https://www.youtube.com/watch?v=sPjHP1-TMJ8"
+              },
+              {
+                "icon": "📚",
+                "title": "Type Casting - JavaTpoint",
+                "url": "https://www.javatpoint.com/type-casting-in-java"
+              },
+              {
+                "icon": "💻",
+                "title": "Practice - HackerRank Java",
+                "url": "https://www.hackerrank.com/domains/java"
+              },
+              {
+                "icon": "📖",
+                "title": "Variable Scope - Baeldung",
+                "url": "https://www.baeldung.com/java-variable-scope"
+              }
+            ],
+            "interviewQuestions": [
+              "What are the 8 primitive data types in Java?",
+              "What is the difference between int and Integer?",
+              "Explain implicit and explicit type casting",
+              "What is the default value of each primitive type?",
+              "What is the difference between float and double?",
+              "Can we change the value of a final variable?"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "standard": {
+    "name": "Standard Track (4-5 Months - 15-20 hrs/week)",
+    "description": "Balanced learning pace for working professionals",
+    "weeks": [
+      {
+        "title": "Week 1-2: Java Basics & Setup",
+        "description": "Foundation building phase",
+        "days": [
+          {
+            "id": 1,
+            "title": "Day 1: Java Environment Setup",
+            "focus": "Installing JDK, IDE, understanding Java ecosystem",
+            "timeCommitment": "2-3 hours",
+            "tasks": [
+              {
+                "title": "Download and install JDK",
+                "description": "Get latest LTS version from Oracle or OpenJDK"
+              },
+              {
+                "title": "Set up environment variables",
+                "description": "Configure JAVA_HOME and PATH"
+              },
+              {
+                "title": "Install IDE",
+                "description": "IntelliJ IDEA Community or Eclipse"
+              },
+              {
+                "title": "Verify installation",
+                "description": "Run java -version and javac -version"
+              }
+            ],
+            "practice": [
+              {
+                "title": "First Java Program",
+                "description": "Create and run Hello World program",
+                "difficulty": "Easy",
+                "code": "public class HelloWorld {\n    public static void main(String[] args) {\n        System.out.println(\"Hello, World!\");\n    }\n}",
+                "hints": ["Save as HelloWorld.java", "Compile: javac HelloWorld.java", "Run: java HelloWorld"]
+              }
+            ],
+            "resources": [
+              {
+                "icon": "📖",
+                "title": "JDK Installation Guide",
+                "url": "https://www.oracle.com/java/technologies/downloads/"
+              },
+              {
+                "icon": "🎥",
+                "title": "Java Setup Tutorial - Mosh",
+                "url": "https://www.youtube.com/watch?v=eIrMbAQSU34"
+              },
+              {
+                "icon": "📚",
+                "title": "Environment Setup - Guru99",
+                "url": "https://www.guru99.com/install-java.html"
+              },
+              {
+                "icon": "💻",
+                "title": "IntelliJ IDEA",
+                "url": "https://www.jetbrains.com/idea/download/"
+              }
+            ],
+            "interviewQuestions": [
+              "What is JDK and what does it contain?",
+              "Difference between JDK, JRE, and JVM?",
+              "What is the purpose of JAVA_HOME?",
+              "Explain Java's 'Write Once, Run Anywhere' principle"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "comfortable": {
+    "name": "Comfortable Track (6 Months - 10-15 hrs/week)",
+    "description": "Relaxed pace for beginners and students",
+    "weeks": [
+      {
+        "title": "Week 1: Getting Started with Java",
+        "description": "Gentle introduction to programming",
+        "days": [
+          {
+            "id": 1,
+            "title": "Day 1: Introduction to Programming",
+            "focus": "What is programming, why Java, career opportunities",
+            "timeCommitment": "1.5-2 hours",
+            "tasks": [
+              {
+                "title": "Understand what programming is",
+                "description": "Learn basic concepts of programming"
+              },
+              {
+                "title": "Why choose Java",
+                "description": "Understand Java's popularity and use cases"
+              },
+              {
+                "title": "Career opportunities",
+                "description": "Explore job roles: Developer, SDET, QA Automation"
+              }
+            ],
+            "practice": [
+              {
+                "title": "Research Activity",
+                "description": "List 10 companies using Java in your city",
+                "difficulty": "Easy"
+              }
+            ],
+            "resources": [
+              {
+                "icon": "📖",
+                "title": "Introduction to Java",
+                "url": "https://www.w3schools.com/java/java_intro.asp"
+              },
+              {
+                "icon": "🎥",
+                "title": "What is Java - Telusko",
+                "url": "https://www.youtube.com/@Telusko"
+              },
+              {
+                "icon": "📚",
+                "title": "Java Career Path",
+                "url": "https://www.geeksforgeeks.org/java-developer-roadmap/"
+              }
+            ],
+            "interviewQuestions": [
+              "What is Java?",
+              "Where is Java used?",
+              "What are the features of Java?"
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Java + Selenium + API - Interview Prep Practice</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <h1>🎯 Interview Prep Practice Portal</h1>
+            <p class="subtitle">Java + Selenium + API Testing</p>
+
+            <!-- Experience Level Selector -->
+            <div class="experience-selector">
+                <label for="experienceLevel">Your Experience Level:</label>
+                <select id="experienceLevel">
+                    <option value="junior">Junior (0-3 Years) - ₹3-8 LPA</option>
+                    <option value="mid">Mid-Level (4-7 Years) - ₹8-15 LPA</option>
+                    <option value="senior" selected>Senior (8-12 Years) - ₹15-40 LPA</option>
+                </select>
+                <span class="experience-info" id="experienceInfo">Senior SDET, Test Architect, QA Lead</span>
+            </div>
+
+            <div class="progress-summary">
+                <div class="stat">
+                    <span class="stat-label">Days Completed:</span>
+                    <span class="stat-value" id="completedDays">0</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-label">Total Progress:</span>
+                    <span class="stat-value" id="totalProgress">0%</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Sidebar - Week/Day Navigation -->
+            <aside class="sidebar">
+                <!-- Navigation Tabs -->
+                <div class="sidebar-tabs">
+                    <button class="tab-btn active" data-tab="schedule">📅 Schedule</button>
+                    <button class="tab-btn" data-tab="questions">❓ Interview Questions</button>
+                </div>
+
+                <!-- Schedule Tab Content -->
+                <div class="tab-content active" id="scheduleTab">
+                    <div class="track-selector">
+                        <label for="trackSelect">Choose Your Track:</label>
+                        <select id="trackSelect">
+                            <option value="fast">Fast Track (2-3 Months)</option>
+                            <option value="standard" selected>Standard Track (3-4 Months)</option>
+                        </select>
+                    </div>
+
+                    <div class="navigation">
+                        <h3>📅 Study Schedule</h3>
+                        <div id="weekList" class="week-list">
+                            <!-- Weeks will be populated by JavaScript -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Interview Questions Tab Content -->
+                <div class="tab-content" id="questionsTab">
+                    <div class="questions-filter">
+                        <label for="categoryFilter">Category:</label>
+                        <select id="categoryFilter">
+                            <option value="all">All Categories</option>
+                            <option value="java">☕ Java</option>
+                            <option value="selenium">🌐 Selenium</option>
+                            <option value="api-testing">🔌 API Testing</option>
+                            <option value="testng">🧪 TestNG</option>
+                            <option value="framework">🏗️ Framework (Senior)</option>
+                            <option value="leadership">👔 Leadership (Senior)</option>
+                        </select>
+
+                        <label for="difficultyFilter">Difficulty:</label>
+                        <select id="difficultyFilter">
+                            <option value="all">All Levels</option>
+                            <option value="Basic">Basic</option>
+                            <option value="Medium">Medium</option>
+                            <option value="Hard">Hard</option>
+                        </select>
+                    </div>
+
+                    <div id="questionsList" class="questions-list">
+                        <!-- Questions will be populated by JavaScript -->
+                    </div>
+                </div>
+
+                <div class="quick-actions">
+                    <button id="resetProgress" class="btn-secondary">Reset Progress</button>
+                    <button id="exportProgress" class="btn-secondary">Export Progress</button>
+                </div>
+            </aside>
+
+            <!-- Content Area -->
+            <main class="content-area">
+                <div id="welcomeScreen" class="welcome-screen">
+                    <div class="welcome-card">
+                        <h2>👋 Welcome to Your Practice Portal!</h2>
+                        <p>This interactive platform will guide you through your interview preparation journey.</p>
+                        
+                        <div class="features">
+                            <div class="feature">
+                                <span class="icon">📚</span>
+                                <h3>Structured Learning</h3>
+                                <p>Follow a day-by-day schedule with clear objectives</p>
+                            </div>
+                            <div class="feature">
+                                <span class="icon">✅</span>
+                                <h3>Track Progress</h3>
+                                <p>Mark tasks as complete and monitor your advancement</p>
+                            </div>
+                            <div class="feature">
+                                <span class="icon">💻</span>
+                                <h3>Hands-on Practice</h3>
+                                <p>Code examples and exercises for each topic</p>
+                            </div>
+                            <div class="feature">
+                                <span class="icon">🎯</span>
+                                <h3>Interview Ready</h3>
+                                <p>Prepare systematically for automation testing roles</p>
+                            </div>
+                        </div>
+
+                        <div class="get-started">
+                            <h3>🚀 Get Started</h3>
+                            <p>Select a week from the sidebar to begin your practice journey!</p>
+                            <ul>
+                                <li>Choose your preferred track (Fast/Standard/Comfortable)</li>
+                                <li>Click on any week to see the daily breakdown</li>
+                                <li>Complete tasks and mark them as done</li>
+                                <li>Track your overall progress</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="dayContent" class="day-content" style="display: none;">
+                    <div class="content-header">
+                        <button id="backBtn" class="btn-back">← Back to Weeks</button>
+                        <h2 id="dayTitle">Day 1</h2>
+                        <div class="day-meta">
+                            <span id="dayWeek" class="badge">Week 1</span>
+                            <span id="dayTrack" class="badge">Standard Track</span>
+                        </div>
+                    </div>
+
+                    <div class="day-info">
+                        <div class="info-card">
+                            <h3>📋 Today's Focus</h3>
+                            <p id="dayFocus">Loading...</p>
+                        </div>
+                        <div class="info-card">
+                            <h3>⏱️ Time Commitment</h3>
+                            <p id="dayTime">Loading...</p>
+                        </div>
+                    </div>
+
+                    <div class="tasks-section">
+                        <h3>✅ Tasks & Objectives</h3>
+                        <div id="tasksList" class="tasks-list">
+                            <!-- Tasks will be populated by JavaScript -->
+                        </div>
+                    </div>
+
+                    <div class="practice-section">
+                        <h3>💻 Practice Exercises</h3>
+                        <div id="practiceList" class="practice-list">
+                            <!-- Practice exercises will be populated by JavaScript -->
+                        </div>
+                    </div>
+
+                    <div class="resources-section">
+                        <h3>📚 Resources</h3>
+                        <div id="resourcesList" class="resources-list">
+                            <!-- Resources will be populated by JavaScript -->
+                        </div>
+                    </div>
+
+                    <div class="completion-section">
+                        <button id="markCompleteBtn" class="btn-primary">Mark Day as Complete</button>
+                        <button id="nextDayBtn" class="btn-primary" style="display: none;">Next Day →</button>
+                    </div>
+                </div>
+
+                <!-- Interview Question Detail View -->
+                <div id="questionContent" class="question-content" style="display: none;">
+                    <div class="content-header">
+                        <button id="backToQuestionsBtn" class="btn-back">← Back to Questions</button>
+                        <h2 id="questionTitle">Question</h2>
+                        <div class="question-meta">
+                            <span id="questionDifficulty" class="badge">Medium</span>
+                            <span id="questionTopic" class="badge">Topic</span>
+                        </div>
+                    </div>
+
+                    <div class="question-details">
+                        <div class="question-section">
+                            <h3>❓ Question</h3>
+                            <p id="questionText" class="question-text"></p>
+                        </div>
+
+                        <div class="question-section">
+                            <h3>💡 Answer</h3>
+                            <div id="questionAnswer" class="question-answer"></div>
+                        </div>
+
+                        <div class="question-section" id="codeSection" style="display: none;">
+                            <h3>💻 Code Example</h3>
+                            <pre><code id="questionCode"></code></pre>
+                        </div>
+
+                        <div class="question-section" id="companiesSection">
+                            <h3>🏢 Asked By Companies</h3>
+                            <div id="companiesList" class="companies-list"></div>
+                        </div>
+
+                        <div class="question-section" id="followUpSection" style="display: none;">
+                            <h3>🔄 Follow-up Questions</h3>
+                            <ul id="followUpList"></ul>
+                        </div>
+
+                        <div class="question-section">
+                            <h3>📊 Applicable For</h3>
+                            <div id="experienceLevels" class="experience-badges"></div>
+                        </div>
+                    </div>
+
+                    <div class="question-actions">
+                        <button id="markQuestionStudied" class="btn-primary">Mark as Studied</button>
+                        <button id="nextQuestionBtn" class="btn-secondary">Next Question →</button>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Modal for Practice Details -->
+    <div id="practiceModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2 id="modalTitle">Practice Exercise</h2>
+            <div id="modalBody">
+                <!-- Practice details will be loaded here -->
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>

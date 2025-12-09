@@ -1,0 +1,1314 @@
+{
+  "experienceLevels": {
+    "junior": {
+      "name": "Junior (0-3 Years)",
+      "salary": "₹3-8 LPA",
+      "roles": ["QA Automation Engineer", "Junior SDET"],
+      "tracks": ["fast", "standard", "comfortable"]
+    },
+    "mid": {
+      "name": "Mid-Level (4-7 Years)",
+      "salary": "₹8-15 LPA",
+      "roles": ["Senior QA Automation Engineer", "SDET"],
+      "tracks": ["fast", "standard"]
+    },
+    "senior": {
+      "name": "Senior (8-12 Years)",
+      "salary": "₹15-40 LPA",
+      "roles": ["Senior SDET", "Test Architect", "QA Lead", "Automation Architect"],
+      "tracks": ["fast", "standard"]
+    }
+  },
+  "senior": {
+    "fast": {
+      "name": "Fast Track (2 Months) - Senior Level",
+      "description": "Intensive preparation for experienced professionals",
+      "timeCommitment": "15-20 hours/week",
+      "weeks": [
+        {
+          "title": "Week 1: Framework Architecture & Design Patterns",
+          "days": [
+            {
+              "id": 1,
+              "title": "Day 1: Advanced Design Patterns",
+              "focus": "Singleton, Factory, Builder, Strategy patterns in automation",
+              "timeCommitment": "3-4 hours",
+              "tasks": [
+                {
+                  "title": "Implement Singleton pattern for WebDriver",
+                  "description": "Create ThreadLocal-based WebDriver manager for parallel execution"
+                },
+                {
+                  "title": "Build Factory pattern for Page Objects",
+                  "description": "Design dynamic page object instantiation using reflection"
+                },
+                {
+                  "title": "Create Builder pattern for test data",
+                  "description": "Implement fluent API for complex test data objects"
+                },
+                {
+                  "title": "Review your current framework architecture",
+                  "description": "Document design patterns used and identify improvement areas"
+                }
+              ],
+              "practice": [
+                {
+                  "title": "Refactor Existing Framework",
+                  "description": "Apply design patterns to improve your current framework architecture",
+                  "difficulty": "Hard",
+                  "code": "public class DriverManager {\n    private static ThreadLocal<WebDriver> driver = new ThreadLocal<>();\n    \n    public static void initDriver(String browser) {\n        if (driver.get() == null) {\n            WebDriverManager.getInstance(browser).setup();\n            driver.set(BrowserFactory.getDriver(browser));\n        }\n    }\n    \n    public static WebDriver getDriver() {\n        return driver.get();\n    }\n    \n    public static void quitDriver() {\n        if (driver.get() != null) {\n            driver.get().quit();\n            driver.remove();\n        }\n    }\n}",
+                  "hints": [
+                    "Use ThreadLocal for thread-safety",
+                    "Implement lazy initialization",
+                    "Add proper cleanup in quitDriver"
+                  ]
+                },
+                {
+                  "title": "Custom Framework Component",
+                  "description": "Design a reusable component (e.g., custom wait manager, screenshot utility) using appropriate design patterns",
+                  "difficulty": "Hard"
+                }
+              ],
+              "resources": [
+                {
+                  "icon": "📖",
+                  "title": "Senior Advanced Topics Guide",
+                  "url": "../10-Senior-Advanced-Topics.md"
+                },
+                {
+                  "icon": "🎥",
+                  "title": "Design Patterns in Test Automation",
+                  "url": "https://www.youtube.com/results?search_query=design+patterns+selenium"
+                },
+                {
+                  "icon": "📚",
+                  "title": "Refactoring Guru - Design Patterns",
+                  "url": "https://refactoring.guru/design-patterns"
+                }
+              ]
+            },
+            {
+              "id": 2,
+              "title": "Day 2: Fluent Page Object Model",
+              "focus": "Advanced POM with Fluent API and inheritance",
+              "timeCommitment": "3-4 hours",
+              "tasks": [
+                {
+                  "title": "Design Fluent Page Objects",
+                  "description": "Create page objects with method chaining for better readability"
+                },
+                {
+                  "title": "Implement Base Page class",
+                  "description": "Create abstract base class with common methods for all pages"
+                },
+                {
+                  "title": "Add custom ExpectedConditions",
+                  "description": "Create reusable custom wait conditions for your application"
+                },
+                {
+                  "title": "Optimize locator strategies",
+                  "description": "Review and refactor locators using best practices"
+                }
+              ],
+              "practice": [
+                {
+                  "title": "Build Complete Page Object Hierarchy",
+                  "description": "Design a scalable page object structure with base classes and inheritance",
+                  "difficulty": "Hard",
+                  "code": "public class LoginPage extends BasePage {\n    @FindBy(id = \"username\")\n    private WebElement usernameField;\n    \n    @FindBy(id = \"password\")\n    private WebElement passwordField;\n    \n    @FindBy(id = \"loginBtn\")\n    private WebElement loginButton;\n    \n    public LoginPage(WebDriver driver) {\n        super(driver);\n    }\n    \n    public LoginPage enterUsername(String username) {\n        sendKeys(usernameField, username);\n        return this;\n    }\n    \n    public LoginPage enterPassword(String password) {\n        sendKeys(passwordField, password);\n        return this;\n    }\n    \n    public DashboardPage clickLogin() {\n        click(loginButton);\n        return new DashboardPage(driver);\n    }\n}"
+                },
+                {
+                  "title": "Custom Wait Utilities",
+                  "description": "Create custom ExpectedConditions for AJAX, jQuery, Angular applications",
+                  "difficulty": "Hard"
+                }
+              ],
+              "resources": [
+                {
+                  "icon": "📖",
+                  "title": "Advanced POM Patterns",
+                  "url": "https://www.selenium.dev/documentation/test_practices/encouraged/page_object_models/"
+                },
+                {
+                  "icon": "🎥",
+                  "title": "Fluent Page Objects - Test Automation University",
+                  "url": "https://testautomationu.applitools.com/"
+                }
+              ]
+            },
+            {
+              "id": 3,
+              "title": "Day 3: Parallel Execution & Thread Safety",
+              "focus": "Configure parallel execution with ThreadLocal and Selenium Grid",
+              "timeCommitment": "3-4 hours",
+              "tasks": [
+                {
+                  "title": "Implement ThreadLocal for WebDriver",
+                  "description": "Ensure thread safety for parallel test execution"
+                },
+                {
+                  "title": "Configure TestNG parallel execution",
+                  "description": "Set up parallel execution at method, class, and test level"
+                },
+                {
+                  "title": "Setup Selenium Grid with Docker",
+                  "description": "Create docker-compose configuration for Grid"
+                },
+                {
+                  "title": "Monitor and optimize parallel execution",
+                  "description": "Identify bottlenecks and optimize thread pool size"
+                }
+              ],
+              "practice": [
+                {
+                  "title": "Thread-Safe Framework",
+                  "description": "Refactor framework to support parallel execution across multiple browsers",
+                  "difficulty": "Hard",
+                  "code": "// testng.xml\n<suite name=\"Parallel Suite\" parallel=\"tests\" thread-count=\"3\">\n    <test name=\"Chrome Tests\">\n        <parameter name=\"browser\" value=\"chrome\"/>\n        <classes>\n            <class name=\"com.tests.LoginTest\"/>\n        </classes>\n    </test>\n    <test name=\"Firefox Tests\">\n        <parameter name=\"browser\" value=\"firefox\"/>\n        <classes>\n            <class name=\"com.tests.LoginTest\"/>\n        </classes>\n    </test>\n</suite>"
+                }
+              ],
+              "resources": [
+                {
+                  "icon": "📖",
+                  "title": "Selenium Grid Documentation",
+                  "url": "https://www.selenium.dev/documentation/grid/"
+                },
+                {
+                  "icon": "🐳",
+                  "title": "Docker Selenium Grid",
+                  "url": "https://github.com/SeleniumHQ/docker-selenium"
+                }
+              ]
+            },
+            {
+              "id": 4,
+              "title": "Day 4: Advanced JavaScript Execution",
+              "focus": "Complex JavaScript operations and DOM manipulation",
+              "timeCommitment": "3-4 hours",
+              "tasks": [
+                {
+                  "title": "Create JavaScript utility class",
+                  "description": "Build reusable JS execution methods"
+                },
+                {
+                  "title": "Handle shadow DOM elements",
+                  "description": "Write JS to access elements in shadow DOM"
+                },
+                {
+                  "title": "Implement scroll strategies",
+                  "description": "Different scrolling techniques using JavaScript"
+                },
+                {
+                  "title": "Debug JavaScript in browser",
+                  "description": "Use browser console to test JS before automation"
+                }
+              ],
+              "practice": [
+                {
+                  "title": "Build JS Utilities Library",
+                  "description": "Create comprehensive JavaScript utilities for common operations",
+                  "difficulty": "Medium",
+                  "code": "public class JSUtils {\n    private JavascriptExecutor js;\n    \n    public JSUtils(WebDriver driver) {\n        this.js = (JavascriptExecutor) driver;\n    }\n    \n    public void clickByJS(WebElement element) {\n        js.executeScript(\"arguments[0].click();\", element);\n    }\n    \n    public void scrollIntoView(WebElement element) {\n        js.executeScript(\"arguments[0].scrollIntoView(true);\", element);\n    }\n    \n    public void waitForPageLoad() {\n        js.executeScript(\"return document.readyState\").equals(\"complete\");\n    }\n}"
+                }
+              ],
+              "resources": [
+                {
+                  "icon": "📖",
+                  "title": "JavaScript in Selenium",
+                  "url": "https://www.browserstack.com/guide/javascript-executor-in-selenium"
+                }
+              ]
+            },
+            {
+              "id": 5,
+              "title": "Day 5: Framework Performance Optimization",
+              "focus": "Improve test execution speed and reliability",
+              "timeCommitment": "3-4 hours",
+              "tasks": [
+                {
+                  "title": "Analyze framework bottlenecks",
+                  "description": "Profile test execution to identify slow areas"
+                },
+                {
+                  "title": "Optimize waits and synchronization",
+                  "description": "Replace implicit waits with explicit waits"
+                },
+                {
+                  "title": "Implement efficient locator strategies",
+                  "description": "Use CSS selectors over XPath where possible"
+                },
+                {
+                  "title": "Add execution time metrics",
+                  "description": "Track and report test execution times"
+                }
+              ],
+              "practice": [
+                {
+                  "title": "Performance Audit",
+                  "description": "Conduct complete performance audit of existing framework",
+                  "difficulty": "Hard"
+                },
+                {
+                  "title": "Optimize Critical Path",
+                  "description": "Reduce execution time of slowest test suite by 30%",
+                  "difficulty": "Hard"
+                }
+              ],
+              "resources": [
+                {
+                  "icon": "📖",
+                  "title": "Test Automation Performance",
+                  "url": "https://www.selenium.dev/documentation/test_practices/"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Week 2: Advanced API Testing",
+          "days": [
+            {
+              "id": 6,
+              "title": "Day 6: REST Assured Advanced Features",
+              "focus": "Request/Response specifications, filters, and advanced validations",
+              "timeCommitment": "3-4 hours",
+              "tasks": [
+                {
+                  "title": "Create reusable RequestSpecification",
+                  "description": "Build base specifications for different endpoints"
+                },
+                {
+                  "title": "Implement response logging filters",
+                  "description": "Add custom filters for logging and monitoring"
+                },
+                {
+                  "title": "Schema validation",
+                  "description": "Validate API responses against JSON schemas"
+                },
+                {
+                  "title": "Advanced JSON path assertions",
+                  "description": "Use complex JSON path queries for validation"
+                }
+              ],
+              "practice": [
+                {
+                  "title": "Build API Test Framework",
+                  "description": "Create complete REST Assured framework with specifications and utilities",
+                  "difficulty": "Hard",
+                  "code": "public class APITestBase {\n    protected RequestSpecification requestSpec;\n    \n    @BeforeEach\n    public void setup() {\n        requestSpec = new RequestSpecBuilder()\n            .setBaseUri(\"https://api.example.com\")\n            .setBasePath(\"/v1\")\n            .setContentType(ContentType.JSON)\n            .addFilter(new RequestLoggingFilter())\n            .addFilter(new ResponseLoggingFilter())\n            .build();\n    }\n    \n    protected Response get(String endpoint) {\n        return given().spec(requestSpec)\n            .when().get(endpoint)\n            .then().extract().response();\n    }\n}"
+                }
+              ],
+              "resources": [
+                {
+                  "icon": "📖",
+                  "title": "REST Assured Documentation",
+                  "url": "https://rest-assured.io/"
+                },
+                {
+                  "icon": "📚",
+                  "title": "API Testing Best Practices",
+                  "url": "https://www.baeldung.com/rest-assured-tutorial"
+                }
+              ]
+            },
+            {
+              "id": 7,
+              "title": "Day 7: API Contract Testing with Pact",
+              "focus": "Consumer-driven contract testing for microservices",
+              "timeCommitment": "3-4 hours",
+              "tasks": [
+                {
+                  "title": "Understand contract testing concepts",
+                  "description": "Learn consumer vs provider contract testing"
+                },
+                {
+                  "title": "Setup Pact framework",
+                  "description": "Add Pact dependencies and configuration"
+                },
+                {
+                  "title": "Write consumer contract tests",
+                  "description": "Define expected API contracts from consumer perspective"
+                },
+                {
+                  "title": "Verify provider against contracts",
+                  "description": "Run provider verification tests"
+                }
+              ],
+              "practice": [
+                {
+                  "title": "Implement Pact Tests",
+                  "description": "Create contract tests for a microservice API",
+                  "difficulty": "Hard",
+                  "code": "@ExtendWith(PactConsumerTestExt.class)\n@PactTestFor(providerName = \"UserService\")\npublic class UserServiceContractTest {\n    \n    @Pact(consumer = \"TestConsumer\")\n    public RequestResponsePact createPact(PactDslWithProvider builder) {\n        return builder\n            .given(\"user exists\")\n            .uponReceiving(\"get user by id\")\n            .path(\"/api/users/1\")\n            .method(\"GET\")\n            .willRespondWith()\n            .status(200)\n            .body(new PactDslJsonBody()\n                .integerType(\"id\", 1)\n                .stringType(\"name\", \"John Doe\"))\n            .toPact();\n    }\n}"
+                }
+              ],
+              "resources": [
+                {
+                  "icon": "📖",
+                  "title": "Pact Documentation",
+                  "url": "https://docs.pact.io/"
+                },
+                {
+                  "icon": "🎥",
+                  "title": "Contract Testing Tutorial",
+                  "url": "https://www.youtube.com/results?search_query=pact+contract+testing"
+                }
+              ]
+            },
+            {
+              "id": 8,
+              "title": "Day 8: API Performance Testing",
+              "focus": "Load testing and performance benchmarking for APIs",
+              "timeCommitment": "3-4 hours",
+              "tasks": [
+                {
+                  "title": "Measure API response times",
+                  "description": "Add assertions for response time thresholds"
+                },
+                {
+                  "title": "Concurrent user simulation",
+                  "description": "Test API with multiple parallel requests"
+                },
+                {
+                  "title": "Setup JMeter for load testing",
+                  "description": "Create JMeter test plans for critical APIs"
+                },
+                {
+                  "title": "Analyze performance bottlenecks",
+                  "description": "Identify and report slow endpoints"
+                }
+              ],
+              "practice": [
+                {
+                  "title": "API Load Test Suite",
+                  "description": "Create comprehensive load tests for key API endpoints",
+                  "difficulty": "Hard"
+                }
+              ],
+              "resources": [
+                {
+                  "icon": "📖",
+                  "title": "JMeter Documentation",
+                  "url": "https://jmeter.apache.org/"
+                },
+                {
+                  "icon": "🎥",
+                  "title": "API Performance Testing",
+                  "url": "https://testautomationu.applitools.com/jmeter-tutorial/"
+                }
+              ]
+            },
+            {
+              "id": 9,
+              "title": "Day 9: Authentication & Security Testing",
+              "focus": "OAuth, JWT, API security best practices",
+              "timeCommitment": "3-4 hours",
+              "tasks": [
+                {
+                  "title": "Implement OAuth 2.0 flow",
+                  "description": "Handle token generation and refresh"
+                },
+                {
+                  "title": "Test JWT authentication",
+                  "description": "Validate token expiry and refresh mechanisms"
+                },
+                {
+                  "title": "Security testing basics",
+                  "description": "Test for common vulnerabilities (SQL injection, XSS)"
+                },
+                {
+                  "title": "API key management",
+                  "description": "Securely manage and rotate API keys"
+                }
+              ],
+              "practice": [
+                {
+                  "title": "Secure API Test Suite",
+                  "description": "Build tests covering authentication, authorization, and basic security",
+                  "difficulty": "Hard"
+                }
+              ],
+              "resources": [
+                {
+                  "icon": "📖",
+                  "title": "OWASP API Security",
+                  "url": "https://owasp.org/www-project-api-security/"
+                },
+                {
+                  "icon": "📚",
+                  "title": "OAuth 2.0 Guide",
+                  "url": "https://oauth.net/2/"
+                }
+              ]
+            },
+            {
+              "id": 10,
+              "title": "Day 10: API Test Data Management",
+              "focus": "Test data strategies and management for API testing",
+              "timeCommitment": "3-4 hours",
+              "tasks": [
+                {
+                  "title": "Design test data strategy",
+                  "description": "Plan data creation, cleanup, and isolation"
+                },
+                {
+                  "title": "Implement data builders",
+                  "description": "Use Builder pattern for API request payloads"
+                },
+                {
+                  "title": "Database integration",
+                  "description": "Direct DB queries for setup and validation"
+                },
+                {
+                  "title": "Test data versioning",
+                  "description": "Manage test data across environments"
+                }
+              ],
+              "practice": [
+                {
+                  "title": "Data Management Framework",
+                  "description": "Build comprehensive test data management solution",
+                  "difficulty": "Hard"
+                }
+              ],
+              "resources": [
+                {
+                  "icon": "📖",
+                  "title": "Test Data Management",
+                  "url": "https://www.ministryoftesting.com/articles/test-data-management"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Week 3: CI/CD & DevOps",
+          "days": [
+            {
+              "id": 11,
+              "title": "Day 11: Advanced Jenkins Pipeline",
+              "focus": "Declarative and Scripted pipelines for test automation",
+              "timeCommitment": "3-4 hours",
+              "tasks": [
+                {
+                  "title": "Create declarative pipeline",
+                  "description": "Build Jenkinsfile with stages for test execution"
+                },
+                {
+                  "title": "Implement parallel execution",
+                  "description": "Run UI and API tests in parallel"
+                },
+                {
+                  "title": "Add reporting stage",
+                  "description": "Publish Allure/Extent reports"
+                },
+                {
+                  "title": "Configure notifications",
+                  "description": "Email and Slack notifications for failures"
+                }
+              ],
+              "practice": [
+                {
+                  "title": "Complete CI/CD Pipeline",
+                  "description": "Build production-ready Jenkins pipeline for your framework",
+                  "difficulty": "Hard",
+                  "code": "pipeline {\n    agent any\n    \n    parameters {\n        choice(name: 'ENVIRONMENT', choices: ['qa', 'staging'],\n               description: 'Select environment')\n        choice(name: 'BROWSER', choices: ['chrome', 'firefox'],\n               description: 'Select browser')\n    }\n    \n    stages {\n        stage('Checkout') {\n            steps {\n                checkout scm\n            }\n        }\n        \n        stage('Build') {\n            steps {\n                sh 'mvn clean install -DskipTests'\n            }\n        }\n        \n        stage('Test') {\n            parallel {\n                stage('UI Tests') {\n                    steps {\n                        sh 'mvn test -Dbrowser=${BROWSER}'\n                    }\n                }\n                stage('API Tests') {\n                    steps {\n                        sh 'mvn test -Dtest=APITestSuite'\n                    }\n                }\n            }\n        }\n        \n        stage('Report') {\n            steps {\n                allure includeProperties: false,\n                       results: [[path: 'target/allure-results']]\n            }\n        }\n    }\n    \n    post {\n        failure {\n            emailext body: 'Test execution failed',\n                     subject: 'Build Failed',\n                     to: 'team@example.com'\n        }\n    }\n}"
+                }
+              ],
+              "resources": [
+                {
+                  "icon": "📖",
+                  "title": "Jenkins Pipeline Documentation",
+                  "url": "https://www.jenkins.io/doc/book/pipeline/"
+                },
+                {
+                  "icon": "🎥",
+                  "title": "Jenkins Tutorial",
+                  "url": "https://www.youtube.com/results?search_query=jenkins+pipeline+tutorial"
+                }
+              ]
+            },
+            {
+              "id": 12,
+              "title": "Day 12: Docker for Test Automation",
+              "focus": "Containerize test automation with Docker",
+              "timeCommitment": "3-4 hours",
+              "tasks": [
+                {
+                  "title": "Create Dockerfile for tests",
+                  "description": "Build Docker image with test dependencies"
+                },
+                {
+                  "title": "Setup docker-compose",
+                  "description": "Configure multi-container test environment"
+                },
+                {
+                  "title": "Integrate with Selenium Grid",
+                  "description": "Run tests on Grid in Docker containers"
+                },
+                {
+                  "title": "Optimize image size",
+                  "description": "Use multi-stage builds and minimize layers"
+                }
+              ],
+              "practice": [
+                {
+                  "title": "Dockerize Test Suite",
+                  "description": "Complete Docker setup for your automation framework",
+                  "difficulty": "Hard"
+                }
+              ],
+              "resources": [
+                {
+                  "icon": "🐳",
+                  "title": "Docker Documentation",
+                  "url": "https://docs.docker.com/"
+                },
+                {
+                  "icon": "📖",
+                  "title": "Docker Selenium",
+                  "url": "https://github.com/SeleniumHQ/docker-selenium"
+                }
+              ]
+            },
+            {
+              "id": 13,
+              "title": "Day 13: GitHub Actions Workflow",
+              "focus": "Implement CI/CD with GitHub Actions",
+              "timeCommitment": "3-4 hours",
+              "tasks": [
+                {
+                  "title": "Create workflow YAML",
+                  "description": "Setup GitHub Actions for automated testing"
+                },
+                {
+                  "title": "Matrix strategy for browsers",
+                  "description": "Run tests across multiple browsers/environments"
+                },
+                {
+                  "title": "Artifact management",
+                  "description": "Upload test reports and screenshots"
+                },
+                {
+                  "title": "Schedule automated runs",
+                  "description": "Configure cron jobs for nightly tests"
+                }
+              ],
+              "practice": [
+                {
+                  "title": "GitHub Actions Pipeline",
+                  "description": "Build complete CI/CD workflow with GitHub Actions",
+                  "difficulty": "Medium"
+                }
+              ],
+              "resources": [
+                {
+                  "icon": "📖",
+                  "title": "GitHub Actions Documentation",
+                  "url": "https://docs.github.com/en/actions"
+                }
+              ]
+            },
+            {
+              "id": 14,
+              "title": "Day 14: Cloud Testing Platforms",
+              "focus": "BrowserStack, Sauce Labs, AWS Device Farm",
+              "timeCommitment": "3-4 hours",
+              "tasks": [
+                {
+                  "title": "Setup BrowserStack integration",
+                  "description": "Configure tests to run on BrowserStack Grid"
+                },
+                {
+                  "title": "Explore AWS Device Farm",
+                  "description": "Understand cloud-based mobile testing"
+                },
+                {
+                  "title": "Compare cloud platforms",
+                  "description": "Evaluate features, pricing, and capabilities"
+                },
+                {
+                  "title": "Integrate with CI/CD",
+                  "description": "Run cloud tests from Jenkins/GitHub Actions"
+                }
+              ],
+              "practice": [
+                {
+                  "title": "Cloud Testing Setup",
+                  "description": "Migrate tests to cloud testing platform",
+                  "difficulty": "Medium"
+                }
+              ],
+              "resources": [
+                {
+                  "icon": "📖",
+                  "title": "BrowserStack Documentation",
+                  "url": "https://www.browserstack.com/docs/"
+                },
+                {
+                  "icon": "🎥",
+                  "title": "AWS Device Farm",
+                  "url": "https://aws.amazon.com/device-farm/"
+                }
+              ]
+            },
+            {
+              "id": 15,
+              "title": "Day 15: Monitoring & Metrics",
+              "focus": "Test execution metrics and monitoring dashboards",
+              "timeCommitment": "3-4 hours",
+              "tasks": [
+                {
+                  "title": "Define key metrics",
+                  "description": "Test coverage, execution time, pass rate, flaky tests"
+                },
+                {
+                  "title": "Setup monitoring dashboard",
+                  "description": "Use Grafana or similar tools for visualization"
+                },
+                {
+                  "title": "Track trends over time",
+                  "description": "Historical analysis of test results"
+                },
+                {
+                  "title": "Alert configuration",
+                  "description": "Setup alerts for critical failures"
+                }
+              ],
+              "practice": [
+                {
+                  "title": "Metrics Dashboard",
+                  "description": "Build comprehensive test metrics dashboard",
+                  "difficulty": "Hard"
+                }
+              ],
+              "resources": [
+                {
+                  "icon": "📊",
+                  "title": "Test Metrics Guide",
+                  "url": "https://www.ministryoftesting.com/articles/test-metrics-that-matter"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Week 4: Test Strategy & Leadership",
+          "days": [
+            {
+              "id": 16,
+              "title": "Day 16: Test Automation Strategy",
+              "focus": "Creating comprehensive automation strategy for projects",
+              "timeCommitment": "3-4 hours",
+              "tasks": [
+                {
+                  "title": "Analyze application for automation",
+                  "description": "Identify what to automate and what not to"
+                },
+                {
+                  "title": "Define automation scope",
+                  "description": "Coverage goals, test types, priorities"
+                },
+                {
+                  "title": "Tool selection criteria",
+                  "description": "Evaluate and justify tool choices"
+                },
+                {
+                  "title": "ROI calculation",
+                  "description": "Estimate costs and benefits of automation"
+                }
+              ],
+              "practice": [
+                {
+                  "title": "Strategy Document",
+                  "description": "Create test automation strategy document for a real/sample project",
+                  "difficulty": "Hard"
+                }
+              ],
+              "resources": [
+                {
+                  "icon": "📖",
+                  "title": "Test Strategy Guide",
+                  "url": "../10-Senior-Advanced-Topics.md#51-test-automation-strategy-document-template"
+                },
+                {
+                  "icon": "📚",
+                  "title": "Agile Testing Book",
+                  "url": "https://www.amazon.com/Agile-Testing-Practical-Guide-Testers/dp/0321534468"
+                }
+              ]
+            },
+            {
+              "id": 17,
+              "title": "Day 17: Framework Architecture Design",
+              "focus": "Design scalable and maintainable framework architecture",
+              "timeCommitment": "3-4 hours",
+              "tasks": [
+                {
+                  "title": "Define architecture principles",
+                  "description": "Modularity, reusability, maintainability"
+                },
+                {
+                  "title": "Create component diagram",
+                  "description": "Visual representation of framework layers"
+                },
+                {
+                  "title": "Plan for scalability",
+                  "description": "How framework will grow with project"
+                },
+                {
+                  "title": "Documentation standards",
+                  "description": "Define documentation requirements"
+                }
+              ],
+              "practice": [
+                {
+                  "title": "Architecture Design",
+                  "description": "Design complete framework architecture with diagrams and documentation",
+                  "difficulty": "Hard"
+                }
+              ],
+              "resources": [
+                {
+                  "icon": "📖",
+                  "title": "Software Architecture",
+                  "url": "https://www.oreilly.com/library/view/software-architecture-patterns/9781491971437/"
+                }
+              ]
+            },
+            {
+              "id": 18,
+              "title": "Day 18: Code Review & Quality",
+              "focus": "Best practices for code review and quality assurance",
+              "timeCommitment": "3-4 hours",
+              "tasks": [
+                {
+                  "title": "Create code review checklist",
+                  "description": "Define what to look for in code reviews"
+                },
+                {
+                  "title": "Setup static code analysis",
+                  "description": "Configure SonarQube or similar tools"
+                },
+                {
+                  "title": "Establish coding standards",
+                  "description": "Document naming conventions, patterns"
+                },
+                {
+                  "title": "Review sample code",
+                  "description": "Practice reviewing automation code"
+                }
+              ],
+              "practice": [
+                {
+                  "title": "Code Review Exercise",
+                  "description": "Review and refactor sample automation code",
+                  "difficulty": "Medium"
+                }
+              ],
+              "resources": [
+                {
+                  "icon": "📖",
+                  "title": "Clean Code Book",
+                  "url": "https://www.amazon.com/Clean-Code-Handbook-Software-Craftsmanship/dp/0132350882"
+                }
+              ]
+            },
+            {
+              "id": 19,
+              "title": "Day 19: Team Leadership & Mentoring",
+              "focus": "Leading automation teams and mentoring junior engineers",
+              "timeCommitment": "3-4 hours",
+              "tasks": [
+                {
+                  "title": "Create onboarding plan",
+                  "description": "Plan for bringing new members to team"
+                },
+                {
+                  "title": "Define mentoring approach",
+                  "description": "How to effectively mentor junior engineers"
+                },
+                {
+                  "title": "Skill assessment framework",
+                  "description": "Evaluate team member skills and gaps"
+                },
+                {
+                  "title": "Career development paths",
+                  "description": "Define growth paths for team members"
+                }
+              ],
+              "practice": [
+                {
+                  "title": "Leadership Scenarios",
+                  "description": "Prepare for common leadership challenges and scenarios",
+                  "difficulty": "Medium"
+                }
+              ],
+              "resources": [
+                {
+                  "icon": "📖",
+                  "title": "Senior Advanced Topics - Leadership",
+                  "url": "../10-Senior-Advanced-Topics.md#52-team-leadership--mentoring"
+                }
+              ]
+            },
+            {
+              "id": 20,
+              "title": "Day 20: Stakeholder Communication",
+              "focus": "Presenting to stakeholders and effective communication",
+              "timeCommitment": "3-4 hours",
+              "tasks": [
+                {
+                  "title": "Prepare test reports",
+                  "description": "Create executive-level test summary reports"
+                },
+                {
+                  "title": "Metrics presentation",
+                  "description": "Present automation ROI and metrics"
+                },
+                {
+                  "title": "Risk communication",
+                  "description": "How to communicate quality risks"
+                },
+                {
+                  "title": "Stakeholder demos",
+                  "description": "Practice demonstrating automation capabilities"
+                }
+              ],
+              "practice": [
+                {
+                  "title": "Executive Presentation",
+                  "description": "Create presentation for leadership on automation strategy and ROI",
+                  "difficulty": "Medium"
+                }
+              ],
+              "resources": [
+                {
+                  "icon": "📖",
+                  "title": "Effective Communication",
+                  "url": "https://www.ministryoftesting.com/articles/how-to-communicate-test-results"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Week 5: Advanced Specialized Topics",
+          "days": [
+            {
+              "id": 21,
+              "title": "Day 21: Microservices Testing",
+              "focus": "Testing strategies for microservices architecture",
+              "timeCommitment": "3-4 hours",
+              "tasks": [
+                {
+                  "title": "Understand microservices architecture",
+                  "description": "Learn key concepts and challenges"
+                },
+                {
+                  "title": "Service isolation testing",
+                  "description": "Test individual services in isolation"
+                },
+                {
+                  "title": "Integration testing approach",
+                  "description": "Test service-to-service interactions"
+                },
+                {
+                  "title": "Service virtualization",
+                  "description": "Mock dependent services for testing"
+                }
+              ],
+              "practice": [
+                {
+                  "title": "Microservices Test Suite",
+                  "description": "Design test strategy for microservices application",
+                  "difficulty": "Hard"
+                }
+              ],
+              "resources": [
+                {
+                  "icon": "📖",
+                  "title": "Testing Microservices",
+                  "url": "https://martinfowler.com/articles/microservice-testing/"
+                }
+              ]
+            },
+            {
+              "id": 22,
+              "title": "Day 22: Performance Testing Basics",
+              "focus": "Introduction to performance testing with JMeter",
+              "timeCommitment": "3-4 hours",
+              "tasks": [
+                {
+                  "title": "JMeter basics",
+                  "description": "Learn JMeter components and test plan creation"
+                },
+                {
+                  "title": "Load testing scenarios",
+                  "description": "Design and execute load tests"
+                },
+                {
+                  "title": "Performance metrics analysis",
+                  "description": "Understand response time, throughput, errors"
+                },
+                {
+                  "title": "Integration with automation",
+                  "description": "Run JMeter tests from CI/CD pipeline"
+                }
+              ],
+              "practice": [
+                {
+                  "title": "JMeter Test Plan",
+                  "description": "Create comprehensive load test plan for web application",
+                  "difficulty": "Medium"
+                }
+              ],
+              "resources": [
+                {
+                  "icon": "📖",
+                  "title": "JMeter Tutorial",
+                  "url": "https://jmeter.apache.org/usermanual/"
+                },
+                {
+                  "icon": "🎥",
+                  "title": "JMeter Course",
+                  "url": "https://testautomationu.applitools.com/jmeter-tutorial/"
+                }
+              ]
+            },
+            {
+              "id": 23,
+              "title": "Day 23: Security Testing Basics",
+              "focus": "OWASP Top 10 and security testing fundamentals",
+              "timeCommitment": "3-4 hours",
+              "tasks": [
+                {
+                  "title": "Learn OWASP Top 10",
+                  "description": "Understand common security vulnerabilities"
+                },
+                {
+                  "title": "SQL injection testing",
+                  "description": "Test for SQL injection vulnerabilities"
+                },
+                {
+                  "title": "XSS testing",
+                  "description": "Cross-site scripting vulnerability testing"
+                },
+                {
+                  "title": "Authentication/Authorization",
+                  "description": "Test access control mechanisms"
+                }
+              ],
+              "practice": [
+                {
+                  "title": "Security Test Cases",
+                  "description": "Create security test cases based on OWASP Top 10",
+                  "difficulty": "Hard"
+                }
+              ],
+              "resources": [
+                {
+                  "icon": "📖",
+                  "title": "OWASP Top 10",
+                  "url": "https://owasp.org/www-project-top-ten/"
+                },
+                {
+                  "icon": "🎥",
+                  "title": "Security Testing Tutorial",
+                  "url": "https://www.youtube.com/results?search_query=owasp+top+10+testing"
+                }
+              ]
+            },
+            {
+              "id": 24,
+              "title": "Day 24: Visual Testing",
+              "focus": "Visual regression testing with AI-powered tools",
+              "timeCommitment": "3-4 hours",
+              "tasks": [
+                {
+                  "title": "Understand visual testing",
+                  "description": "Learn concepts and use cases"
+                },
+                {
+                  "title": "Setup Applitools Eyes",
+                  "description": "Integrate visual testing in your framework"
+                },
+                {
+                  "title": "Baseline management",
+                  "description": "Create and maintain visual baselines"
+                },
+                {
+                  "title": "Handle dynamic content",
+                  "description": "Configure ignore regions and layouts"
+                }
+              ],
+              "practice": [
+                {
+                  "title": "Visual Test Suite",
+                  "description": "Add visual testing to existing test suite",
+                  "difficulty": "Medium"
+                }
+              ],
+              "resources": [
+                {
+                  "icon": "📖",
+                  "title": "Applitools Documentation",
+                  "url": "https://applitools.com/docs/"
+                },
+                {
+                  "icon": "🎥",
+                  "title": "Visual Testing Tutorial",
+                  "url": "https://testautomationu.applitools.com/modern-functional-testing/"
+                }
+              ]
+            },
+            {
+              "id": 25,
+              "title": "Day 25: AI/ML in Test Automation",
+              "focus": "Exploring AI-powered testing tools and techniques",
+              "timeCommitment": "3-4 hours",
+              "tasks": [
+                {
+                  "title": "Self-healing locators",
+                  "description": "Learn about AI-powered element identification"
+                },
+                {
+                  "title": "Test case generation",
+                  "description": "Explore AI tools for test case creation"
+                },
+                {
+                  "title": "Intelligent test selection",
+                  "description": "Understand ML-based test prioritization"
+                },
+                {
+                  "title": "Evaluate AI testing tools",
+                  "description": "Compare Testim, Mabl, Functionize, etc."
+                }
+              ],
+              "practice": [
+                {
+                  "title": "AI Tool Evaluation",
+                  "description": "Trial and evaluate an AI-powered testing tool",
+                  "difficulty": "Medium"
+                }
+              ],
+              "resources": [
+                {
+                  "icon": "📖",
+                  "title": "AI in Testing",
+                  "url": "https://www.ministryoftesting.com/articles/ai-in-testing"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Week 6: Interview Preparation - Senior Level",
+          "days": [
+            {
+              "id": 26,
+              "title": "Day 26: Technical Interview Prep - Part 1",
+              "focus": "Framework architecture and design pattern questions",
+              "timeCommitment": "3-4 hours",
+              "tasks": [
+                {
+                  "title": "Review framework questions",
+                  "description": "Prepare answers for 15 framework architecture questions"
+                },
+                {
+                  "title": "Practice whiteboard design",
+                  "description": "Draw framework architecture on whiteboard"
+                },
+                {
+                  "title": "Prepare code samples",
+                  "description": "Have ready-to-show code examples from your work"
+                },
+                {
+                  "title": "Mock interview",
+                  "description": "Practice with a colleague or friend"
+                }
+              ],
+              "practice": [
+                {
+                  "title": "Framework Deep Dive",
+                  "description": "Be ready to explain every component of your framework",
+                  "difficulty": "Hard"
+                }
+              ],
+              "resources": [
+                {
+                  "icon": "📖",
+                  "title": "Senior Interview Questions",
+                  "url": "../10-Senior-Advanced-Topics.md#6-senior-level-interview-questions"
+                }
+              ]
+            },
+            {
+              "id": 27,
+              "title": "Day 27: Technical Interview Prep - Part 2",
+              "focus": "CI/CD, DevOps, and tool-specific questions",
+              "timeCommitment": "3-4 hours",
+              "tasks": [
+                {
+                  "title": "CI/CD pipeline questions",
+                  "description": "Prepare for Jenkins, Docker, GitHub Actions questions"
+                },
+                {
+                  "title": "Tool comparison questions",
+                  "description": "Be ready to compare different tools and justify choices"
+                },
+                {
+                  "title": "Troubleshooting scenarios",
+                  "description": "Practice debugging and troubleshooting questions"
+                },
+                {
+                  "title": "Performance optimization",
+                  "description": "Prepare answers on framework optimization"
+                }
+              ],
+              "practice": [
+                {
+                  "title": "Scenario-Based Questions",
+                  "description": "Practice answering complex scenario-based questions",
+                  "difficulty": "Hard"
+                }
+              ],
+              "resources": [
+                {
+                  "icon": "📖",
+                  "title": "DevOps Questions",
+                  "url": "https://www.edureka.co/blog/interview-questions/top-devops-interview-questions-2016/"
+                }
+              ]
+            },
+            {
+              "id": 28,
+              "title": "Day 28: Leadership Interview Prep",
+              "focus": "Behavioral and leadership questions for senior roles",
+              "timeCommitment": "3-4 hours",
+              "tasks": [
+                {
+                  "title": "STAR method practice",
+                  "description": "Prepare stories using Situation-Task-Action-Result"
+                },
+                {
+                  "title": "Leadership scenarios",
+                  "description": "Team conflict, stakeholder management, priority decisions"
+                },
+                {
+                  "title": "Mentoring examples",
+                  "description": "Prepare examples of mentoring junior engineers"
+                },
+                {
+                  "title": "Strategy questions",
+                  "description": "How you would build automation from scratch"
+                }
+              ],
+              "practice": [
+                {
+                  "title": "Behavioral Questions",
+                  "description": "Prepare 10-15 stories for common behavioral questions",
+                  "difficulty": "Medium"
+                }
+              ],
+              "resources": [
+                {
+                  "icon": "📖",
+                  "title": "Leadership Questions",
+                  "url": "../10-Senior-Advanced-Topics.md#62-leadership--strategy-10-questions"
+                }
+              ]
+            },
+            {
+              "id": 29,
+              "title": "Day 29: System Design for Test Automation",
+              "focus": "High-level design questions for test automation systems",
+              "timeCommitment": "3-4 hours",
+              "tasks": [
+                {
+                  "title": "Practice system design",
+                  "description": "Design test automation for large-scale applications"
+                },
+                {
+                  "title": "Scalability considerations",
+                  "description": "How to scale automation for 1000+ tests"
+                },
+                {
+                  "title": "Trade-offs discussion",
+                  "description": "Understand and articulate design trade-offs"
+                },
+                {
+                  "title": "Technology stack selection",
+                  "description": "Justify tool and technology choices"
+                }
+              ],
+              "practice": [
+                {
+                  "title": "Design Exercise",
+                  "description": "Design complete test automation strategy for e-commerce platform",
+                  "difficulty": "Hard"
+                }
+              ],
+              "resources": [
+                {
+                  "icon": "📖",
+                  "title": "System Design Primer",
+                  "url": "https://github.com/donnemartin/system-design-primer"
+                }
+              ]
+            },
+            {
+              "id": 30,
+              "title": "Day 30: Final Mock Interview & Review",
+              "focus": "Comprehensive mock interview and final preparation",
+              "timeCommitment": "3-4 hours",
+              "tasks": [
+                {
+                  "title": "Full mock interview",
+                  "description": "Complete end-to-end interview simulation"
+                },
+                {
+                  "title": "Review weak areas",
+                  "description": "Focus on topics you're less confident about"
+                },
+                {
+                  "title": "Prepare questions to ask",
+                  "description": "Have 5-10 thoughtful questions for interviewer"
+                },
+                {
+                  "title": "Final confidence building",
+                  "description": "Review achievements and key accomplishments"
+                }
+              ],
+              "practice": [
+                {
+                  "title": "Mock Interview",
+                  "description": "Record yourself answering interview questions",
+                  "difficulty": "Medium"
+                }
+              ],
+              "resources": [
+                {
+                  "icon": "📖",
+                  "title": "Complete Senior Guide",
+                  "url": "../10-Senior-Advanced-Topics.md"
+                },
+                {
+                  "icon": "🎯",
+                  "title": "Interview Tips",
+                  "url": "https://www.ministryoftesting.com/articles/interviewing-for-test-automation-roles"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "standard": {
+      "name": "Standard Track (3 Months) - Senior Level",
+      "description": "Balanced preparation for experienced professionals",
+      "timeCommitment": "10-12 hours/week",
+      "weeks": []
+    }
+  }
+}

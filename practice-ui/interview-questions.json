@@ -1,0 +1,371 @@
+{
+  "categories": [
+    {
+      "id": "java",
+      "name": "Java Programming",
+      "icon": "☕",
+      "questions": [
+        {
+          "id": "java-001",
+          "question": "Explain the difference between == and .equals() in Java",
+          "difficulty": "Basic",
+          "experienceLevel": ["0-2", "3-5"],
+          "answer": "== compares object references (memory addresses), while .equals() compares object values/content. For primitive types, == compares values. For objects, == checks if both references point to the same object in memory, whereas .equals() (when properly overridden) checks if the objects have the same content.",
+          "code": "String s1 = new String(\"Hello\");\nString s2 = new String(\"Hello\");\nString s3 = s1;\n\nSystem.out.println(s1 == s2);       // false (different objects)\nSystem.out.println(s1.equals(s2));  // true (same content)\nSystem.out.println(s1 == s3);       // true (same reference)",
+          "companies": ["TCS", "Infosys", "Wipro", "Cognizant", "Accenture"],
+          "topic": "Core Java",
+          "followUp": ["What is the String pool in Java?", "How do you override equals() method correctly?"]
+        },
+        {
+          "id": "java-002",
+          "question": "What is the difference between String, StringBuilder, and StringBuffer?",
+          "difficulty": "Basic",
+          "experienceLevel": ["0-2", "3-5", "6-8"],
+          "answer": "String is immutable (cannot be changed once created). StringBuilder is mutable and not thread-safe (faster). StringBuffer is mutable and thread-safe (slower due to synchronization). Use String for simple operations, StringBuilder for single-threaded string manipulation, and StringBuffer for multi-threaded environments.",
+          "code": "// String - Immutable\nString str = \"Hello\";\nstr = str + \" World\";  // Creates new object\n\n// StringBuilder - Mutable, not thread-safe\nStringBuilder sb = new StringBuilder(\"Hello\");\nsb.append(\" World\");  // Modifies same object\n\n// StringBuffer - Mutable, thread-safe\nStringBuffer sbf = new StringBuffer(\"Hello\");\nsbf.append(\" World\");  // Synchronized",
+          "companies": ["Amazon", "Flipkart", "Paytm", "PhonePe", "Razorpay"],
+          "topic": "String Handling",
+          "followUp": ["Why is String immutable in Java?", "What is the performance difference between StringBuilder and StringBuffer?"]
+        },
+        {
+          "id": "java-003",
+          "question": "Explain the four pillars of Object-Oriented Programming",
+          "difficulty": "Basic",
+          "experienceLevel": ["0-2", "3-5"],
+          "answer": "1) Encapsulation: Bundling data and methods together, hiding internal details. 2) Inheritance: Creating new classes from existing ones, promoting code reuse. 3) Polymorphism: Objects taking multiple forms (method overloading and overriding). 4) Abstraction: Hiding complex implementation details, showing only essential features.",
+          "code": "// Encapsulation\nclass Account {\n    private double balance;\n    public void setBalance(double balance) { this.balance = balance; }\n    public double getBalance() { return balance; }\n}\n\n// Inheritance\nclass SavingsAccount extends Account {\n    private double interestRate;\n}\n\n// Polymorphism\nclass Parent {\n    void display() { System.out.println(\"Parent\"); }\n}\nclass Child extends Parent {\n    @Override\n    void display() { System.out.println(\"Child\"); }\n}\n\n// Abstraction\nabstract class Shape {\n    abstract void draw();\n}",
+          "companies": ["All companies"],
+          "topic": "OOP Concepts",
+          "followUp": ["Give real-world examples of each OOP principle", "How does Java achieve abstraction?"]
+        },
+        {
+          "id": "java-004",
+          "question": "What are Collections in Java? Explain ArrayList vs LinkedList",
+          "difficulty": "Medium",
+          "experienceLevel": ["3-5", "6-8"],
+          "answer": "Collections are framework providing architecture to store and manipulate groups of objects. ArrayList uses dynamic array (better for random access, search). LinkedList uses doubly-linked list (better for insertions/deletions). ArrayList: O(1) access, O(n) insertion. LinkedList: O(n) access, O(1) insertion at ends.",
+          "code": "// ArrayList - Fast access, slow insertion\nArrayList<String> list1 = new ArrayList<>();\nlist1.add(\"A\");  // O(1) amortized\nlist1.get(2);    // O(1) access\n\n// LinkedList - Slow access, fast insertion\nLinkedList<String> list2 = new LinkedList<>();\nlist2.addFirst(\"A\");  // O(1)\nlist2.get(2);         // O(n) access",
+          "companies": ["Google", "Microsoft", "Amazon", "Adobe", "Oracle"],
+          "topic": "Collections Framework",
+          "followUp": ["When would you use ArrayList vs LinkedList?", "Explain HashMap internal working"]
+        },
+        {
+          "id": "java-005",
+          "question": "Explain exception handling in Java with checked vs unchecked exceptions",
+          "difficulty": "Medium",
+          "experienceLevel": ["3-5", "6-8"],
+          "answer": "Exception handling uses try-catch-finally blocks to handle runtime errors. Checked exceptions (IOException, SQLException) must be caught or declared. Unchecked exceptions (RuntimeException subclasses like NullPointerException, ArrayIndexOutOfBoundsException) don't require explicit handling.",
+          "code": "// Checked Exception\ntry {\n    FileReader file = new FileReader(\"file.txt\");\n} catch (FileNotFoundException e) {\n    System.out.println(\"File not found\");\n} finally {\n    System.out.println(\"Always executes\");\n}\n\n// Custom Exception\nclass InvalidAgeException extends Exception {\n    public InvalidAgeException(String message) {\n        super(message);\n    }\n}\n\npublic void validateAge(int age) throws InvalidAgeException {\n    if (age < 18) {\n        throw new InvalidAgeException(\"Age must be 18+\");\n    }\n}",
+          "companies": ["Capgemini", "HCL", "Tech Mahindra", "LTI", "Mindtree"],
+          "topic": "Exception Handling",
+          "followUp": ["What is the difference between throw and throws?", "Can we have try without catch?"]
+        },
+        {
+          "id": "java-006",
+          "question": "What is multithreading? Explain thread lifecycle and synchronization",
+          "difficulty": "Hard",
+          "experienceLevel": ["6-8", "9-12"],
+          "answer": "Multithreading allows concurrent execution of multiple parts of a program. Thread lifecycle: New → Runnable → Running → Blocked/Waiting → Terminated. Synchronization prevents thread interference using synchronized keyword or locks. It ensures only one thread accesses critical section at a time.",
+          "code": "// Creating Thread\nclass MyThread extends Thread {\n    public void run() {\n        System.out.println(\"Thread running\");\n    }\n}\n\n// Synchronization\nclass Counter {\n    private int count = 0;\n    \n    public synchronized void increment() {\n        count++;\n    }\n    \n    public int getCount() {\n        return count;\n    }\n}\n\n// Using ExecutorService\nExecutorService executor = Executors.newFixedThreadPool(5);\nexecutor.submit(() -> {\n    System.out.println(\"Task executed\");\n});\nexecutor.shutdown();",
+          "companies": ["Google", "Amazon", "Microsoft", "Uber", "Walmart Labs"],
+          "topic": "Multithreading",
+          "followUp": ["Explain deadlock and how to prevent it", "What is ThreadLocal?"]
+        },
+        {
+          "id": "java-007",
+          "question": "Explain Java 8 features: Lambda expressions, Streams, and Functional interfaces",
+          "difficulty": "Hard",
+          "experienceLevel": ["6-8", "9-12"],
+          "answer": "Lambda expressions enable functional programming (parameter -> expression). Streams provide functional-style operations on collections. Functional interfaces have single abstract method (@FunctionalInterface). Features include method references, default methods, Optional class for null handling.",
+          "code": "// Lambda Expression\nList<Integer> numbers = Arrays.asList(1, 2, 3, 4, 5);\n\n// Stream operations\nList<Integer> evenNumbers = numbers.stream()\n    .filter(n -> n % 2 == 0)\n    .map(n -> n * 2)\n    .collect(Collectors.toList());\n\n// Functional Interface\n@FunctionalInterface\ninterface Calculator {\n    int calculate(int a, int b);\n}\n\nCalculator add = (a, b) -> a + b;\nSystem.out.println(add.calculate(5, 3));  // 8\n\n// Optional\nOptional<String> optional = Optional.ofNullable(null);\nString result = optional.orElse(\"default value\");",
+          "companies": ["Thoughtworks", "Intuit", "PayPal", "Adobe", "Oracle"],
+          "topic": "Java 8+ Features",
+          "followUp": ["What are method references?", "Explain Stream API advantages"]
+        }
+      ]
+    },
+    {
+      "id": "selenium",
+      "name": "Selenium WebDriver",
+      "icon": "🌐",
+      "questions": [
+        {
+          "id": "sel-001",
+          "question": "What is Selenium WebDriver and how is it different from Selenium RC?",
+          "difficulty": "Basic",
+          "experienceLevel": ["0-2", "3-5"],
+          "answer": "Selenium WebDriver is a web automation tool that directly communicates with browsers through browser-specific drivers. Unlike Selenium RC which used JavaScript injection and a server, WebDriver uses browser's native support, making it faster, more reliable, and doesn't require a separate server.",
+          "code": "// Selenium WebDriver\nWebDriverManager.chromedriver().setup();\nWebDriver driver = new ChromeDriver();\ndriver.get(\"https://example.com\");\ndriver.findElement(By.id(\"username\")).sendKeys(\"test\");\ndriver.quit();",
+          "companies": ["All companies hiring for automation roles"],
+          "topic": "Selenium Basics",
+          "followUp": ["What are the components of Selenium Suite?", "Advantages of Selenium over other tools?"]
+        },
+        {
+          "id": "sel-002",
+          "question": "Explain all 8 locator strategies in Selenium with examples",
+          "difficulty": "Basic",
+          "experienceLevel": ["0-2", "3-5", "6-8"],
+          "answer": "1) ID: Most preferred, unique identifier. 2) Name: Using name attribute. 3) Class Name: CSS class. 4) Tag Name: HTML tag. 5) Link Text: Exact link text. 6) Partial Link Text: Partial match. 7) CSS Selector: CSS pattern. 8) XPath: XML path expression. Priority: ID > Name > CSS > XPath",
+          "code": "// ID\ndriver.findElement(By.id(\"username\"));\n\n// Name\ndriver.findElement(By.name(\"email\"));\n\n// Class Name\ndriver.findElement(By.className(\"btn-primary\"));\n\n// CSS Selector\ndriver.findElement(By.cssSelector(\"input[type='password']\"));\ndriver.findElement(By.cssSelector(\"#loginBtn\"));\ndriver.findElement(By.cssSelector(\".error-message\"));\n\n// XPath\ndriver.findElement(By.xpath(\"//input[@id='username']\"));\ndriver.findElement(By.xpath(\"//button[text()='Login']\"));\ndriver.findElement(By.xpath(\"//label[contains(text(),'Email')]/following-sibling::input\"));",
+          "companies": ["All automation companies"],
+          "topic": "Locators",
+          "followUp": ["When to use CSS vs XPath?", "How to handle dynamic locators?"]
+        },
+        {
+          "id": "sel-003",
+          "question": "Explain different types of waits in Selenium and when to use each",
+          "difficulty": "Medium",
+          "experienceLevel": ["3-5", "6-8"],
+          "answer": "1) Implicit Wait: Global timeout for element finding (not recommended). 2) Explicit Wait: Wait for specific condition with WebDriverWait. 3) Fluent Wait: Explicit wait with polling interval and ignored exceptions. Best practice: Use Explicit/Fluent waits for better control and reliability.",
+          "code": "// Implicit Wait (NOT RECOMMENDED)\ndriver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));\n\n// Explicit Wait (RECOMMENDED)\nWebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));\nWebElement element = wait.until(\n    ExpectedConditions.visibilityOfElementLocated(By.id(\"result\"))\n);\n\n// Fluent Wait\nWait<WebDriver> fluentWait = new FluentWait<>(driver)\n    .withTimeout(Duration.ofSeconds(30))\n    .pollingEvery(Duration.ofSeconds(2))\n    .ignoring(NoSuchElementException.class);\n\nWebElement element = fluentWait.until(\n    driver -> driver.findElement(By.id(\"dynamic-element\"))\n);",
+          "companies": ["Deloitte", "EY", "KPMG", "PwC", "Accenture"],
+          "topic": "Synchronization",
+          "followUp": ["What are custom Expected Conditions?", "Why avoid Thread.sleep()?"]
+        },
+        {
+          "id": "sel-004",
+          "question": "How do you handle frames, alerts, and multiple windows in Selenium?",
+          "difficulty": "Medium",
+          "experienceLevel": ["3-5", "6-8"],
+          "answer": "Frames: Use switchTo().frame() by index, name, or WebElement. Alerts: Use switchTo().alert() then accept(), dismiss(), or getText(). Windows: Get window handles with getWindowHandles() and switch using switchTo().window(). Always switch back to default content after frame operations.",
+          "code": "// Handling Frames\ndriver.switchTo().frame(0);  // By index\ndriver.switchTo().frame(\"frameName\");  // By name\ndriver.switchTo().frame(driver.findElement(By.id(\"frameId\")));  // By element\ndriver.switchTo().defaultContent();  // Switch back\n\n// Handling Alerts\nAlert alert = driver.switchTo().alert();\nSystem.out.println(alert.getText());\nalert.accept();  // Click OK\n// alert.dismiss();  // Click Cancel\n// alert.sendKeys(\"text\");  // For prompt\n\n// Handling Multiple Windows\nString parentWindow = driver.getWindowHandle();\nSet<String> allWindows = driver.getWindowHandles();\nfor (String window : allWindows) {\n    if (!window.equals(parentWindow)) {\n        driver.switchTo().window(window);\n        // Perform actions\n        driver.close();\n    }\n}\ndriver.switchTo().window(parentWindow);",
+          "companies": ["Infosys", "TCS", "Cognizant", "Capgemini", "HCL"],
+          "topic": "Advanced Selenium",
+          "followUp": ["How to handle nested frames?", "What if alert doesn't appear immediately?"]
+        },
+        {
+          "id": "sel-005",
+          "question": "Explain Page Object Model (POM) and its advantages",
+          "difficulty": "Medium",
+          "experienceLevel": ["3-5", "6-8", "9-12"],
+          "answer": "POM is a design pattern where each web page is represented as a class. Page elements are defined as variables and actions as methods. Advantages: Code reusability, easy maintenance, separation of test logic from page logic, reduced code duplication, better readability. Use @FindBy annotations with PageFactory.",
+          "code": "// Page Object Class\npublic class LoginPage {\n    private WebDriver driver;\n    \n    @FindBy(id = \"username\")\n    private WebElement usernameField;\n    \n    @FindBy(id = \"password\")\n    private WebElement passwordField;\n    \n    @FindBy(id = \"loginBtn\")\n    private WebElement loginButton;\n    \n    public LoginPage(WebDriver driver) {\n        this.driver = driver;\n        PageFactory.initElements(driver, this);\n    }\n    \n    public void enterUsername(String username) {\n        usernameField.sendKeys(username);\n    }\n    \n    public void enterPassword(String password) {\n        passwordField.sendKeys(password);\n    }\n    \n    public DashboardPage clickLogin() {\n        loginButton.click();\n        return new DashboardPage(driver);\n    }\n}\n\n// Test Class\npublic class LoginTest {\n    @Test\n    public void testLogin() {\n        LoginPage loginPage = new LoginPage(driver);\n        loginPage.enterUsername(\"user\");\n        loginPage.enterPassword(\"pass\");\n        DashboardPage dashboard = loginPage.clickLogin();\n    }\n}",
+          "companies": ["Amazon", "Flipkart", "Google", "Microsoft", "Uber"],
+          "topic": "Framework Design",
+          "followUp": ["What is Page Factory?", "Explain Fluent Page Object Model"]
+        },
+        {
+          "id": "sel-006",
+          "question": "How do you achieve parallel execution in Selenium? Explain ThreadLocal",
+          "difficulty": "Hard",
+          "experienceLevel": ["6-8", "9-12"],
+          "answer": "Parallel execution is achieved using TestNG's parallel attribute and ThreadLocal for thread safety. ThreadLocal creates separate WebDriver instance for each thread, preventing interference. Configure in testng.xml with parallel=\"tests\" or \"methods\". Use Selenium Grid for distributed execution across multiple machines/browsers.",
+          "code": "// ThreadLocal WebDriver Manager\npublic class DriverManager {\n    private static ThreadLocal<WebDriver> driver = new ThreadLocal<>();\n    \n    public static void initDriver(String browser) {\n        if (driver.get() == null) {\n            if (browser.equals(\"chrome\")) {\n                WebDriverManager.chromedriver().setup();\n                driver.set(new ChromeDriver());\n            } else if (browser.equals(\"firefox\")) {\n                WebDriverManager.firefoxdriver().setup();\n                driver.set(new FirefoxDriver());\n            }\n        }\n    }\n    \n    public static WebDriver getDriver() {\n        return driver.get();\n    }\n    \n    public static void quitDriver() {\n        if (driver.get() != null) {\n            driver.get().quit();\n            driver.remove();\n        }\n    }\n}\n\n// testng.xml\n<suite name=\"Parallel Suite\" parallel=\"tests\" thread-count=\"3\">\n    <test name=\"Chrome Test\">\n        <parameter name=\"browser\" value=\"chrome\"/>\n        <classes>\n            <class name=\"tests.LoginTest\"/>\n        </classes>\n    </test>\n    <test name=\"Firefox Test\">\n        <parameter name=\"browser\" value=\"firefox\"/>\n        <classes>\n            <class name=\"tests.LoginTest\"/>\n        </classes>\n    </test>\n</suite>",
+          "companies": ["Google", "Amazon", "Microsoft", "Adobe", "Salesforce"],
+          "topic": "Advanced Framework",
+          "followUp": ["Explain Selenium Grid architecture", "How to handle race conditions?"]
+        },
+        {
+          "id": "sel-007",
+          "question": "How do you handle flaky tests in Selenium? What strategies do you use?",
+          "difficulty": "Hard",
+          "experienceLevel": ["6-8", "9-12"],
+          "answer": "Strategies: 1) Use proper explicit waits instead of implicit/Thread.sleep. 2) Implement custom ExpectedConditions for AJAX. 3) Use retry mechanism with IRetryAnalyzer. 4) Isolate tests (no dependencies). 5) Proper test data cleanup. 6) Stable locators. 7) Handle stale element exceptions. 8) Use headless browsers. 9) Implement proper synchronization for dynamic content.",
+          "code": "// Retry Analyzer\npublic class RetryAnalyzer implements IRetryAnalyzer {\n    private int retryCount = 0;\n    private static final int maxRetryCount = 2;\n    \n    @Override\n    public boolean retry(ITestResult result) {\n        if (retryCount < maxRetryCount) {\n            retryCount++;\n            return true;\n        }\n        return false;\n    }\n}\n\n// Use in Test\n@Test(retryAnalyzer = RetryAnalyzer.class)\npublic void testLogin() {\n    // Test code\n}\n\n// Custom Wait for AJAX\npublic static ExpectedCondition<Boolean> jQueryAjaxComplete() {\n    return new ExpectedCondition<Boolean>() {\n        @Override\n        public Boolean apply(WebDriver driver) {\n            JavascriptExecutor js = (JavascriptExecutor) driver;\n            return (Boolean) js.executeScript(\"return jQuery.active == 0\");\n        }\n    };\n}\n\n// Stale Element Handler\npublic void clickElement(WebElement element) {\n    int attempts = 0;\n    while (attempts < 3) {\n        try {\n            element.click();\n            break;\n        } catch (StaleElementReferenceException e) {\n            attempts++;\n            if (attempts == 3) throw e;\n        }\n    }\n}",
+          "companies": ["Thoughtworks", "Intuit", "PayPal", "Walmart Labs", "Target"],
+          "topic": "Test Reliability",
+          "followUp": ["What metrics do you track for test stability?", "How do you identify root cause of flakiness?"]
+        }
+      ]
+    },
+    {
+      "id": "api-testing",
+      "name": "API Testing & REST Assured",
+      "icon": "🔌",
+      "questions": [
+        {
+          "id": "api-001",
+          "question": "What is REST API? Explain HTTP methods and status codes",
+          "difficulty": "Basic",
+          "experienceLevel": ["0-2", "3-5"],
+          "answer": "REST (Representational State Transfer) is architectural style for web services. HTTP Methods: GET (retrieve), POST (create), PUT (update/replace), PATCH (partial update), DELETE (remove). Status Codes: 2xx (success), 3xx (redirection), 4xx (client error), 5xx (server error). Common: 200 OK, 201 Created, 400 Bad Request, 401 Unauthorized, 404 Not Found, 500 Internal Server Error.",
+          "code": "// REST Assured Examples\n// GET Request\nResponse response = given()\n    .when()\n    .get(\"https://api.example.com/users/1\")\n    .then()\n    .statusCode(200)\n    .extract().response();\n\n// POST Request\nString requestBody = \"{\\\"name\\\":\\\"John\\\",\\\"email\\\":\\\"john@example.com\\\"}\";\nResponse postResponse = given()\n    .contentType(ContentType.JSON)\n    .body(requestBody)\n    .when()\n    .post(\"https://api.example.com/users\")\n    .then()\n    .statusCode(201)\n    .extract().response();\n\n// PUT Request\ngiven()\n    .contentType(ContentType.JSON)\n    .body(updatedUser)\n    .when()\n    .put(\"https://api.example.com/users/1\")\n    .then()\n    .statusCode(200);\n\n// DELETE Request\ngiven()\n    .when()\n    .delete(\"https://api.example.com/users/1\")\n    .then()\n    .statusCode(204);",
+          "companies": ["All companies with API testing"],
+          "topic": "REST API Basics",
+          "followUp": ["What is the difference between PUT and PATCH?", "Explain idempotency in REST"]
+        },
+        {
+          "id": "api-002",
+          "question": "How do you perform JSON validation and extraction in REST Assured?",
+          "difficulty": "Medium",
+          "experienceLevel": ["3-5", "6-8"],
+          "answer": "REST Assured provides JsonPath for JSON validation and extraction. Use body() for assertions, jsonPath() for extraction, and hamcrest matchers for validation. Can validate response structure, specific fields, arrays, nested objects. Schema validation ensures response matches JSON schema.",
+          "code": "// JSON Response Validation\ngiven()\n    .when()\n    .get(\"https://api.example.com/users/1\")\n    .then()\n    .statusCode(200)\n    .body(\"id\", equalTo(1))\n    .body(\"name\", equalTo(\"John Doe\"))\n    .body(\"email\", containsString(\"@example.com\"))\n    .body(\"address.city\", equalTo(\"New York\"));\n\n// Extract values\nResponse response = given().get(\"https://api.example.com/users/1\");\nint userId = response.jsonPath().getInt(\"id\");\nString userName = response.jsonPath().getString(\"name\");\nList<String> hobbies = response.jsonPath().getList(\"hobbies\");\n\n// Complex JSON Path\ngiven()\n    .when()\n    .get(\"/api/users\")\n    .then()\n    .body(\"users.findAll { it.age > 25 }.name\", hasItems(\"John\", \"Jane\"))\n    .body(\"users.collect { it.age }.sum()\", greaterThan(100))\n    .body(\"users.size()\", equalTo(10));\n\n// Schema Validation\ngiven()\n    .when()\n    .get(\"/api/users/1\")\n    .then()\n    .assertThat()\n    .body(matchesJsonSchemaInClasspath(\"schemas/user-schema.json\"));",
+          "companies": ["Amazon", "Flipkart", "Swiggy", "Zomato", "Ola"],
+          "topic": "JSON Validation",
+          "followUp": ["How do you handle dynamic JSON values?", "Explain JSON Schema validation"]
+        },
+        {
+          "id": "api-003",
+          "question": "How do you handle authentication in API testing (Basic Auth, Bearer Token, OAuth)?",
+          "difficulty": "Medium",
+          "experienceLevel": ["3-5", "6-8", "9-12"],
+          "answer": "REST Assured supports multiple authentication methods: Basic Auth (username:password Base64 encoded), Bearer Token (JWT in Authorization header), API Key (in headers or query params), OAuth 2.0 (token-based). Use .auth() method or manually add headers. For OAuth, implement token generation flow.",
+          "code": "// Basic Authentication\ngiven()\n    .auth().basic(\"username\", \"password\")\n    .when()\n    .get(\"/api/users\");\n\n// Preemptive Basic Auth (sends without challenge)\ngiven()\n    .auth().preemptive().basic(\"username\", \"password\")\n    .when()\n    .get(\"/api/users\");\n\n// Bearer Token (JWT)\nString token = \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...\";\ngiven()\n    .header(\"Authorization\", \"Bearer \" + token)\n    .when()\n    .get(\"/api/users\");\n\n// Or using auth()\ngiven()\n    .auth().oauth2(token)\n    .when()\n    .get(\"/api/users\");\n\n// API Key\ngiven()\n    .header(\"X-API-Key\", \"your-api-key\")\n    .when()\n    .get(\"/api/users\");\n\n// OAuth 2.0 Token Generation\npublic String getOAuthToken() {\n    Response response = given()\n        .formParam(\"grant_type\", \"client_credentials\")\n        .formParam(\"client_id\", \"your_client_id\")\n        .formParam(\"client_secret\", \"your_client_secret\")\n        .when()\n        .post(\"https://auth.example.com/oauth/token\");\n    \n    return response.jsonPath().getString(\"access_token\");\n}",
+          "companies": ["Google", "Microsoft", "PayPal", "Stripe", "Razorpay"],
+          "topic": "API Authentication",
+          "followUp": ["How do you handle token refresh?", "Explain OAuth 2.0 flow"]
+        },
+        {
+          "id": "api-004",
+          "question": "Explain RequestSpecification and ResponseSpecification in REST Assured",
+          "difficulty": "Hard",
+          "experienceLevel": ["6-8", "9-12"],
+          "answer": "RequestSpecification defines reusable request configuration (base URI, headers, authentication, content type). ResponseSpecification defines expected response validations (status code, content type, response time). Both promote DRY principle and reduce code duplication. Use RequestSpecBuilder and ResponseSpecBuilder for creation.",
+          "code": "// Request Specification\npublic class APITestBase {\n    protected RequestSpecification requestSpec;\n    protected ResponseSpecification responseSpec;\n    \n    @BeforeClass\n    public void setup() {\n        // Request Spec\n        requestSpec = new RequestSpecBuilder()\n            .setBaseUri(\"https://api.example.com\")\n            .setBasePath(\"/v1\")\n            .setContentType(ContentType.JSON)\n            .addHeader(\"Authorization\", \"Bearer \" + getToken())\n            .addFilter(new RequestLoggingFilter())\n            .addFilter(new ResponseLoggingFilter())\n            .build();\n        \n        // Response Spec\n        responseSpec = new ResponseSpecBuilder()\n            .expectStatusCode(200)\n            .expectContentType(ContentType.JSON)\n            .expectResponseTime(lessThan(3000L))\n            .build();\n    }\n    \n    @Test\n    public void testGetUser() {\n        given()\n            .spec(requestSpec)\n        .when()\n            .get(\"/users/1\")\n        .then()\n            .spec(responseSpec)\n            .body(\"name\", notNullValue());\n    }\n    \n    @Test\n    public void testCreateUser() {\n        String user = \"{\\\"name\\\":\\\"John\\\",\\\"email\\\":\\\"john@test.com\\\"}\";\n        \n        given()\n            .spec(requestSpec)\n            .body(user)\n        .when()\n            .post(\"/users\")\n        .then()\n            .statusCode(201)  // Override response spec\n            .body(\"id\", notNullValue());\n    }\n}",
+          "companies": ["Thoughtworks", "Adobe", "Salesforce", "Oracle", "SAP"],
+          "topic": "Advanced REST Assured",
+          "followUp": ["How do you implement API test framework architecture?", "Explain filters in REST Assured"]
+        },
+        {
+          "id": "api-005",
+          "question": "What is API Contract Testing? How is it different from functional testing?",
+          "difficulty": "Hard",
+          "experienceLevel": ["6-8", "9-12"],
+          "answer": "Contract testing ensures API consumer and provider agree on API contract (request/response format). Uses consumer-driven contracts (CDC) where consumer defines expectations. Pact framework is popular. Different from functional testing which validates business logic. Contract testing validates interface compatibility, especially important in microservices.",
+          "code": "// Pact Consumer Test\n@ExtendWith(PactConsumerTestExt.class)\n@PactTestFor(providerName = \"UserService\", port = \"8080\")\npublic class UserServiceContractTest {\n    \n    @Pact(consumer = \"UserConsumer\")\n    public RequestResponsePact createPact(PactDslWithProvider builder) {\n        return builder\n            .given(\"user with ID 1 exists\")\n            .uponReceiving(\"a request to get user by ID\")\n            .path(\"/api/users/1\")\n            .method(\"GET\")\n            .willRespondWith()\n            .status(200)\n            .headers(Map.of(\"Content-Type\", \"application/json\"))\n            .body(new PactDslJsonBody()\n                .integerType(\"id\", 1)\n                .stringType(\"name\", \"John Doe\")\n                .stringType(\"email\", \"john@example.com\"))\n            .toPact();\n    }\n    \n    @Test\n    @PactTestFor(pactMethod = \"createPact\")\n    void testGetUser() {\n        Response response = given()\n            .when()\n            .get(\"http://localhost:8080/api/users/1\");\n        \n        assertEquals(200, response.getStatusCode());\n        assertEquals(\"John Doe\", response.jsonPath().getString(\"name\"));\n    }\n}\n\n// Provider Verification\n@Provider(\"UserService\")\n@PactBroker(host = \"pact-broker\", port = \"9292\")\npublic class UserServiceProviderTest {\n    @TestTemplate\n    @ExtendWith(PactVerificationInvocationContextProvider.class)\n    void pactVerificationTestTemplate(PactVerificationContext context) {\n        context.verifyInteraction();\n    }\n}",
+          "companies": ["Netflix", "Amazon", "Uber", "Airbnb", "LinkedIn"],
+          "topic": "Contract Testing",
+          "followUp": ["When should you use contract testing?", "Explain Pact Broker role"]
+        }
+      ]
+    },
+    {
+      "id": "testng",
+      "name": "TestNG Framework",
+      "icon": "🧪",
+      "questions": [
+        {
+          "id": "testng-001",
+          "question": "Explain TestNG annotations and their execution order",
+          "difficulty": "Basic",
+          "experienceLevel": ["0-2", "3-5"],
+          "answer": "TestNG annotations configure test execution. Order: @BeforeSuite → @BeforeTest → @BeforeClass → @BeforeMethod → @Test → @AfterMethod → @AfterClass → @AfterTest → @AfterSuite. Suite-level runs once per suite, Test-level per <test> tag, Class-level per class, Method-level per test method.",
+          "code": "public class TestNGAnnotations {\n    \n    @BeforeSuite\n    public void beforeSuite() {\n        System.out.println(\"Runs once before all tests in suite\");\n    }\n    \n    @BeforeTest\n    public void beforeTest() {\n        System.out.println(\"Runs before each <test> tag in testng.xml\");\n    }\n    \n    @BeforeClass\n    public void beforeClass() {\n        System.out.println(\"Runs once before first test method in class\");\n    }\n    \n    @BeforeMethod\n    public void beforeMethod() {\n        System.out.println(\"Runs before each @Test method\");\n    }\n    \n    @Test\n    public void test1() {\n        System.out.println(\"Test 1 executed\");\n    }\n    \n    @Test\n    public void test2() {\n        System.out.println(\"Test 2 executed\");\n    }\n    \n    @AfterMethod\n    public void afterMethod() {\n        System.out.println(\"Runs after each @Test method\");\n    }\n    \n    @AfterClass\n    public void afterClass() {\n        System.out.println(\"Runs after all test methods in class\");\n    }\n    \n    @AfterTest\n    public void afterTest() {\n        System.out.println(\"Runs after each <test> tag\");\n    }\n    \n    @AfterSuite\n    public void afterSuite() {\n        System.out.println(\"Runs once after all tests in suite\");\n    }\n}",
+          "companies": ["All automation companies"],
+          "topic": "TestNG Basics",
+          "followUp": ["What is the difference between @BeforeClass and @BeforeMethod?", "Can we skip @BeforeMethod for specific test?"]
+        },
+        {
+          "id": "testng-002",
+          "question": "How do you implement data-driven testing using TestNG DataProvider?",
+          "difficulty": "Medium",
+          "experienceLevel": ["3-5", "6-8"],
+          "answer": "DataProvider annotation supplies test data to test methods. Returns Object[][] array where each row is a test data set. Supports Excel, CSV, JSON, database as data sources. Can be in same class or external class. Use dataProvider attribute in @Test to link.",
+          "code": "// DataProvider\npublic class DataProviderExample {\n    \n    @DataProvider(name = \"loginData\")\n    public Object[][] getLoginData() {\n        return new Object[][] {\n            {\"user1@test.com\", \"password1\"},\n            {\"user2@test.com\", \"password2\"},\n            {\"user3@test.com\", \"password3\"}\n        };\n    }\n    \n    @Test(dataProvider = \"loginData\")\n    public void testLogin(String email, String password) {\n        System.out.println(\"Testing with: \" + email);\n        // Test code\n    }\n    \n    // DataProvider from Excel\n    @DataProvider(name = \"excelData\")\n    public Object[][] getExcelData() throws IOException {\n        String excelPath = \"testdata/users.xlsx\";\n        ExcelReader reader = new ExcelReader(excelPath);\n        return reader.getTestData(\"LoginSheet\");\n    }\n    \n    // External DataProvider\n    @Test(dataProvider = \"testData\", dataProviderClass = ExternalDataProvider.class)\n    public void testWithExternalProvider(String data) {\n        System.out.println(\"Data: \" + data);\n    }\n}\n\n// External DataProvider Class\npublic class ExternalDataProvider {\n    @DataProvider(name = \"testData\")\n    public static Object[][] getData() {\n        return new Object[][] {{\"data1\"}, {\"data2\"}, {\"data3\"}};\n    }\n}",
+          "companies": ["Infosys", "TCS", "Cognizant", "Wipro", "HCL"],
+          "topic": "Data-Driven Testing",
+          "followUp": ["How to read data from Excel using Apache POI?", "Can DataProvider be used with parallel execution?"]
+        },
+        {
+          "id": "testng-003",
+          "question": "Explain TestNG XML configuration and parallel execution",
+          "difficulty": "Medium",
+          "experienceLevel": ["3-5", "6-8", "9-12"],
+          "answer": "TestNG XML file (testng.xml) configures test suites, test groups, parallel execution, parameters. Parallel execution: tests (different <test> tags), classes, methods, instances. Thread-count specifies concurrent threads. Parallel execution improves performance but requires thread-safe code.",
+          "code": "<!-- testng.xml -->\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE suite SYSTEM \"https://testng.org/testng-1.0.dtd\">\n<suite name=\"Test Suite\" parallel=\"tests\" thread-count=\"3\">\n    \n    <!-- Parameters -->\n    <parameter name=\"browser\" value=\"chrome\" />\n    <parameter name=\"environment\" value=\"qa\" />\n    \n    <!-- Test 1 -->\n    <test name=\"Smoke Test\">\n        <groups>\n            <run>\n                <include name=\"smoke\" />\n            </run>\n        </groups>\n        <classes>\n            <class name=\"tests.LoginTest\" />\n            <class name=\"tests.HomeTest\" />\n        </classes>\n    </test>\n    \n    <!-- Test 2 -->\n    <test name=\"Regression Test\">\n        <parameter name=\"browser\" value=\"firefox\" />\n        <groups>\n            <run>\n                <include name=\"regression\" />\n            </run>\n        </groups>\n        <packages>\n            <package name=\"tests.*\" />\n        </packages>\n    </test>\n    \n</suite>\n\n<!-- Parallel Execution Examples -->\n<!-- Parallel Tests -->\n<suite name=\"Suite\" parallel=\"tests\" thread-count=\"2\">\n\n<!-- Parallel Classes -->\n<suite name=\"Suite\" parallel=\"classes\" thread-count=\"3\">\n\n<!-- Parallel Methods -->\n<suite name=\"Suite\" parallel=\"methods\" thread-count=\"5\">",
+          "companies": ["Amazon", "Google", "Microsoft", "Adobe", "Salesforce"],
+          "topic": "TestNG Configuration",
+          "followUp": ["How do you pass parameters from TestNG XML to test methods?", "What is the difference between parallel=\"tests\" and parallel=\"methods\"?"]
+        }
+      ]
+    },
+    {
+      "id": "framework",
+      "name": "Framework Architecture (Senior)",
+      "icon": "🏗️",
+      "questions": [
+        {
+          "id": "frame-001",
+          "question": "Explain your test automation framework architecture in detail",
+          "difficulty": "Hard",
+          "experienceLevel": ["6-8", "9-12"],
+          "answer": "Hybrid framework combining POM, data-driven, and keyword-driven approaches. Layers: Page Objects (UI elements & actions), Test Layer (TestNG tests), Utils (WebDriver manager, waits, screenshots), Config (properties for environments), Test Data (Excel/JSON), Reporting (Allure/Extent), CI/CD integration (Jenkins/GitHub Actions). Uses design patterns: Singleton, Factory, Builder. ThreadLocal for parallel execution.",
+          "code": "// Framework Structure\ntest-automation-framework/\n├── src/\n│   ├── main/java/\n│   │   ├── pages/              // Page Objects\n│   │   │   ├── BasePage.java\n│   │   │   ├── LoginPage.java\n│   │   │   └── DashboardPage.java\n│   │   ├── utils/              // Utilities\n│   │   │   ├── DriverManager.java\n│   │   │   ├── WaitUtils.java\n│   │   │   ├── ScreenshotUtils.java\n│   │   │   └── ExcelReader.java\n│   │   ├── config/             // Configuration\n│   │   │   ├── ConfigReader.java\n│   │   │   └── Environment.java\n│   │   ├── api/                // API Endpoints\n│   │   │   ├── APIClient.java\n│   │   │   └── UserAPI.java\n│   │   └── listeners/          // TestNG Listeners\n│   │       ├── TestListener.java\n│   │       └── RetryAnalyzer.java\n│   └── test/java/\n│       ├── tests/              // Test Classes\n│       │   ├── BaseTest.java\n│       │   ├── LoginTests.java\n│       │   └── APITests.java\n│       └── dataproviders/      // Data Providers\n│           └── TestDataProvider.java\n├── test-data/                  // Test Data\n│   ├── testdata.xlsx\n│   ├── users.json\n│   └── config.properties\n├── test-output/                // Reports\n│   ├── allure-results/\n│   └── extent-reports/\n├── Jenkinsfile                 // CI/CD\n├── Dockerfile\n├── docker-compose.yml\n├── testng.xml\n└── pom.xml\n\n// Base Page\npublic abstract class BasePage {\n    protected WebDriver driver;\n    protected WaitUtils waitUtils;\n    \n    public BasePage(WebDriver driver) {\n        this.driver = driver;\n        this.waitUtils = new WaitUtils(driver);\n        PageFactory.initElements(driver, this);\n    }\n    \n    protected void click(WebElement element) {\n        waitUtils.waitForElementClickable(element);\n        element.click();\n    }\n}\n\n// Driver Manager with ThreadLocal\npublic class DriverManager {\n    private static ThreadLocal<WebDriver> driver = new ThreadLocal<>();\n    \n    public static void initDriver(String browser) {\n        driver.set(BrowserFactory.createDriver(browser));\n    }\n    \n    public static WebDriver getDriver() {\n        return driver.get();\n    }\n    \n    public static void quitDriver() {\n        if (driver.get() != null) {\n            driver.get().quit();\n            driver.remove();\n        }\n    }\n}",
+          "companies": ["Google", "Amazon", "Microsoft", "Uber", "Netflix"],
+          "topic": "Framework Architecture",
+          "followUp": ["How do you handle framework scalability?", "Explain design patterns used in your framework"]
+        },
+        {
+          "id": "frame-002",
+          "question": "How do you implement parallel execution with ThreadLocal in your framework?",
+          "difficulty": "Hard",
+          "experienceLevel": ["6-8", "9-12"],
+          "answer": "ThreadLocal creates separate WebDriver instance for each thread, ensuring thread safety. Each thread has its own driver copy, preventing interference. Implement in DriverManager singleton. Configure TestNG XML with parallel=\"tests\" or \"methods\". Use Selenium Grid for cross-browser parallel execution. Ensure all shared resources are thread-safe.",
+          "code": "// ThreadLocal Driver Manager\npublic class DriverManager {\n    private static ThreadLocal<WebDriver> driver = new ThreadLocal<>();\n    \n    public static void initDriver(String browser) {\n        if (driver.get() == null) {\n            switch (browser.toLowerCase()) {\n                case \"chrome\":\n                    WebDriverManager.chromedriver().setup();\n                    ChromeOptions chromeOptions = new ChromeOptions();\n                    chromeOptions.addArguments(\"--start-maximized\");\n                    driver.set(new ChromeDriver(chromeOptions));\n                    break;\n                    \n                case \"firefox\":\n                    WebDriverManager.firefoxdriver().setup();\n                    driver.set(new FirefoxDriver());\n                    break;\n                    \n                case \"grid\":\n                    DesiredCapabilities cap = new DesiredCapabilities();\n                    cap.setBrowserName(\"chrome\");\n                    driver.set(new RemoteWebDriver(\n                        new URL(\"http://localhost:4444/wd/hub\"), cap));\n                    break;\n            }\n        }\n    }\n    \n    public static WebDriver getDriver() {\n        return driver.get();\n    }\n    \n    public static void quitDriver() {\n        if (driver.get() != null) {\n            driver.get().quit();\n            driver.remove();\n        }\n    }\n}\n\n// Base Test\npublic class BaseTest {\n    \n    @Parameters({\"browser\"})\n    @BeforeMethod\n    public void setup(String browser) {\n        DriverManager.initDriver(browser);\n    }\n    \n    @AfterMethod\n    public void tearDown() {\n        DriverManager.quitDriver();\n    }\n}\n\n// testng.xml for Parallel Execution\n<suite name=\"Parallel Suite\" parallel=\"tests\" thread-count=\"3\">\n    <test name=\"Chrome Test\" preserve-order=\"true\">\n        <parameter name=\"browser\" value=\"chrome\"/>\n        <classes>\n            <class name=\"tests.LoginTest\"/>\n            <class name=\"tests.DashboardTest\"/>\n        </classes>\n    </test>\n    \n    <test name=\"Firefox Test\" preserve-order=\"true\">\n        <parameter name=\"browser\" value=\"firefox\"/>\n        <classes>\n            <class name=\"tests.LoginTest\"/>\n            <class name=\"tests.DashboardTest\"/>\n        </classes>\n    </test>\n    \n    <test name=\"Edge Test\" preserve-order=\"true\">\n        <parameter name=\"browser\" value=\"edge\"/>\n        <classes>\n            <class name=\"tests.LoginTest\"/>\n        </classes>\n    </test>\n</suite>",
+          "companies": ["Microsoft", "Adobe", "Salesforce", "Oracle", "SAP"],
+          "topic": "Parallel Execution",
+          "followUp": ["How do you handle shared resources in parallel execution?", "What challenges have you faced with parallel execution?"]
+        },
+        {
+          "id": "frame-003",
+          "question": "How do you integrate your automation framework with CI/CD pipeline?",
+          "difficulty": "Hard",
+          "experienceLevel": ["6-8", "9-12"],
+          "answer": "Integration involves: 1) Jenkins/GitHub Actions pipeline configuration. 2) Parameterized builds (environment, browser, suite). 3) Scheduled/triggered executions. 4) Docker containers for isolation. 5) Parallel execution across nodes. 6) Report generation and publishing. 7) Email/Slack notifications. 8) Integration with test management tools. 9) Quality gates based on pass percentage.",
+          "code": "// Jenkinsfile\npipeline {\n    agent any\n    \n    parameters {\n        choice(name: 'ENVIRONMENT', \n               choices: ['dev', 'qa', 'staging', 'prod'],\n               description: 'Select environment')\n        choice(name: 'BROWSER', \n               choices: ['chrome', 'firefox', 'edge'],\n               description: 'Select browser')\n        choice(name: 'SUITE', \n               choices: ['smoke', 'regression', 'api'],\n               description: 'Test suite to run')\n    }\n    \n    tools {\n        maven 'Maven 3.8.6'\n        jdk 'JDK 11'\n    }\n    \n    stages {\n        stage('Checkout') {\n            steps {\n                checkout scm\n            }\n        }\n        \n        stage('Build') {\n            steps {\n                sh 'mvn clean compile'\n            }\n        }\n        \n        stage('Test') {\n            parallel {\n                stage('UI Tests') {\n                    steps {\n                        script {\n                            sh \"\"\"mvn test \\\n                                -Dsuite=${params.SUITE} \\\n                                -Dbrowser=${params.BROWSER} \\\n                                -Denvironment=${params.ENVIRONMENT} \\\n                                -DsuiteXmlFile=testng-ui.xml\"\"\"\n                        }\n                    }\n                }\n                stage('API Tests') {\n                    steps {\n                        script {\n                            sh \"\"\"mvn test \\\n                                -Denvironment=${params.ENVIRONMENT} \\\n                                -DsuiteXmlFile=testng-api.xml\"\"\"\n                        }\n                    }\n                }\n            }\n        }\n        \n        stage('Generate Reports') {\n            steps {\n                script {\n                    allure includeProperties: false,\n                           jdk: '',\n                           results: [[path: 'target/allure-results']]\n                }\n            }\n        }\n    }\n    \n    post {\n        always {\n            publishHTML target: [\n                allowMissing: false,\n                alwaysLinkToLastBuild: true,\n                keepAll: true,\n                reportDir: 'target/extent-reports',\n                reportFiles: 'index.html',\n                reportName: 'Extent Report'\n            ]\n        }\n        \n        success {\n            emailext (\n                subject: \"✅ Build Success: ${env.JOB_NAME} - ${env.BUILD_NUMBER}\",\n                body: \"\"\"Build completed successfully!\n                         Environment: ${params.ENVIRONMENT}\n                         Browser: ${params.BROWSER}\n                         View results: ${env.BUILD_URL}\"\"\",\n                to: 'team@example.com'\n            )\n        }\n        \n        failure {\n            slackSend (\n                channel: '#qa-alerts',\n                color: 'danger',\n                message: \"\"\"❌ Build Failed: ${env.JOB_NAME} - ${env.BUILD_NUMBER}\n                            Check: ${env.BUILD_URL}\"\"\"\n            )\n        }\n    }\n}\n\n// GitHub Actions Workflow\nname: Test Automation CI\n\non:\n  push:\n    branches: [ main, develop ]\n  pull_request:\n    branches: [ main ]\n  schedule:\n    - cron: '0 2 * * *'  # Daily at 2 AM\n  workflow_dispatch:\n    inputs:\n      environment:\n        description: 'Environment'\n        required: true\n        default: 'qa'\n        type: choice\n        options:\n          - dev\n          - qa\n          - staging\n\njobs:\n  test:\n    runs-on: ubuntu-latest\n    strategy:\n      matrix:\n        browser: [chrome, firefox]\n        environment: [qa, staging]\n    \n    steps:\n    - uses: actions/checkout@v3\n    \n    - name: Set up JDK 11\n      uses: actions/setup-java@v3\n      with:\n        java-version: '11'\n        distribution: 'adopt'\n    \n    - name: Run Tests\n      run: |\n        mvn clean test \\\n          -Dbrowser=${{ matrix.browser }} \\\n          -Denvironment=${{ matrix.environment }}\n    \n    - name: Upload Results\n      if: always()\n      uses: actions/upload-artifact@v3\n      with:\n        name: test-results-${{ matrix.browser }}-${{ matrix.environment }}\n        path: target/surefire-reports/",
+          "companies": ["Netflix", "Airbnb", "LinkedIn", "Twitter", "Stripe"],
+          "topic": "CI/CD Integration",
+          "followUp": ["How do you handle test failures in CI/CD?", "Explain Docker integration in your pipeline"]
+        }
+      ]
+    },
+    {
+      "id": "leadership",
+      "name": "Leadership & Strategy (Senior)",
+      "icon": "👔",
+      "questions": [
+        {
+          "id": "lead-001",
+          "question": "How do you create a test automation strategy for a new project?",
+          "difficulty": "Hard",
+          "experienceLevel": ["6-8", "9-12"],
+          "answer": "Strategy includes: 1) Application analysis (tech stack, complexity). 2) Define automation scope and goals. 3) Tool selection with justification. 4) Framework architecture design. 5) Effort estimation and timeline. 6) Success metrics (ROI, coverage, execution time). 7) Team skill assessment and training plan. 8) Incremental implementation approach. 9) Risk mitigation. 10) Continuous improvement plan.",
+          "companies": ["All companies for senior roles"],
+          "topic": "Test Strategy",
+          "followUp": ["How do you calculate ROI of automation?", "What criteria do you use for tool selection?"]
+        },
+        {
+          "id": "lead-002",
+          "question": "How do you mentor junior automation engineers? Describe your approach",
+          "difficulty": "Hard",
+          "experienceLevel": ["6-8", "9-12"],
+          "answer": "Mentoring approach: 1) Assess current skills and gaps. 2) Create personalized learning plan. 3) Pair programming sessions. 4) Code reviews with constructive feedback. 5) Gradual task complexity increase. 6) Encourage questions and experimentation. 7) Regular 1-on-1 meetings. 8) Set clear goals and expectations. 9) Provide learning resources. 10) Celebrate wins and learn from failures. Focus on building confidence and independence.",
+          "companies": ["All companies for lead/senior roles"],
+          "topic": "Mentoring",
+          "followUp": ["How do you handle underperforming team members?", "How do you measure mentoring success?"]
+        },
+        {
+          "id": "lead-003",
+          "question": "Describe a challenging automation problem you solved and your approach",
+          "difficulty": "Hard",
+          "experienceLevel": ["6-8", "9-12"],
+          "answer": "Use STAR method: Situation (complex dynamic application with flaky tests), Task (stabilize and improve framework), Action (implemented custom waits, refactored locators, added retry mechanism, improved synchronization, parallel execution), Result (reduced flakiness from 20% to 2%, execution time reduced by 60%, team productivity increased). Emphasize problem-solving, technical skills, and impact.",
+          "companies": ["All companies for senior roles"],
+          "topic": "Problem Solving",
+          "followUp": ["What was the biggest technical challenge?", "How did you get buy-in from stakeholders?"]
+        },
+        {
+          "id": "lead-004",
+          "question": "How do you prioritize automation backlog? What factors do you consider?",
+          "difficulty": "Hard",
+          "experienceLevel": ["6-8", "9-12"],
+          "answer": "Prioritization matrix based on: 1) Business criticality (High/Medium/Low). 2) Frequency of execution. 3) Manual effort required. 4) Feature stability. 5) ROI potential. 6) Technical complexity. 7) Dependencies. 8) Risk of manual testing errors. Focus on: High criticality + High frequency + High manual effort = High priority. Use tools like JIRA for backlog management.",
+          "companies": ["Product companies, Agile teams"],
+          "topic": "Prioritization",
+          "followUp": ["How do you handle changing priorities?", "How do you say no to stakeholders?"]
+        },
+        {
+          "id": "lead-005",
+          "question": "What metrics do you track for test automation? How do you present them to stakeholders?",
+          "difficulty": "Hard",
+          "experienceLevel": ["6-8", "9-12"],
+          "answer": "Key metrics: 1) Test coverage % (requirements covered). 2) Execution time (trend over time). 3) Pass/Fail rate. 4) Flaky test percentage. 5) Defect detection effectiveness. 6) Automation ROI. 7) Code coverage from tests. 8) Build stability. 9) Mean time to detect defects. Present using dashboards (Grafana), trend charts, executive summaries. Focus on business impact, not just technical metrics.",
+          "companies": ["All companies for senior/lead roles"],
+          "topic": "Metrics & Reporting",
+          "followUp": ["How do you improve low pass rates?", "What's acceptable flaky test percentage?"]
+        }
+      ]
+    }
+  ]
+}

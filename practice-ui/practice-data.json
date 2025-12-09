@@ -1,0 +1,737 @@
+{
+  "fast": {
+    "name": "Fast Track (3 Months)",
+    "weeks": [
+      {
+        "title": "Week 1: Java Fundamentals",
+        "days": [
+          {
+            "id": 1,
+            "title": "Day 1: Variables & Data Types",
+            "focus": "Understanding Java basics, variables, and primitive data types",
+            "timeCommitment": "4-5 hours",
+            "tasks": [
+              {
+                "title": "Learn primitive data types",
+                "description": "Study int, double, boolean, char, byte, short, long, float"
+              },
+              {
+                "title": "Practice variable declarations",
+                "description": "Write 10 programs using different data types"
+              },
+              {
+                "title": "Understand type casting",
+                "description": "Learn implicit and explicit type casting"
+              }
+            ],
+            "practice": [
+              {
+                "title": "Simple Calculator",
+                "description": "Create a calculator that performs basic arithmetic operations",
+                "difficulty": "Easy",
+                "code": "public class Calculator {\n    public static void main(String[] args) {\n        int a = 10, b = 5;\n        System.out.println(\"Sum: \" + (a + b));\n        System.out.println(\"Difference: \" + (a - b));\n    }\n}",
+                "hints": ["Use Scanner for user input", "Handle division by zero"]
+              },
+              {
+                "title": "Temperature Converter",
+                "description": "Convert between Celsius and Fahrenheit",
+                "difficulty": "Easy"
+              }
+            ],
+            "resources": [
+              {
+                "icon": "📖",
+                "title": "Java Documentation - Primitive Data Types",
+                "url": "https://docs.oracle.com/javase/tutorial/java/nutsandbolts/datatypes.html"
+              },
+              {
+                "icon": "🎥",
+                "title": "Programming with Mosh - Java Variables",
+                "url": "https://www.youtube.com/@programmingwithmosh"
+              },
+              {
+                "icon": "💻",
+                "title": "HackerRank - Java Practice",
+                "url": "https://www.hackerrank.com/domains/java"
+              },
+              {
+                "icon": "📚",
+                "title": "GeeksforGeeks - Java Basics",
+                "url": "https://www.geeksforgeeks.org/java/"
+              }
+            ]
+          },
+          {
+            "id": 2,
+            "title": "Day 2: Operators & Control Flow",
+            "focus": "Master operators and control structures (if-else, switch)",
+            "timeCommitment": "4-5 hours",
+            "tasks": [
+              {
+                "title": "Learn all operators",
+                "description": "Arithmetic, relational, logical, bitwise, assignment operators"
+              },
+              {
+                "title": "Practice if-else statements",
+                "description": "Write 10 programs using conditional statements"
+              },
+              {
+                "title": "Master switch-case",
+                "description": "Create programs using switch statements"
+              }
+            ],
+            "practice": [
+              {
+                "title": "Grade Calculator",
+                "description": "Calculate grades based on marks using if-else",
+                "difficulty": "Easy"
+              },
+              {
+                "title": "Day of Week Finder",
+                "description": "Use switch-case to find day name from number",
+                "difficulty": "Easy"
+              },
+              {
+                "title": "Leap Year Checker",
+                "description": "Check if a year is leap year using logical operators",
+                "difficulty": "Medium"
+              }
+            ],
+            "resources": [
+              {
+                "icon": "📖",
+                "title": "Java Operators - Official Docs",
+                "url": "https://docs.oracle.com/javase/tutorial/java/nutsandbolts/operators.html"
+              },
+              {
+                "icon": "🎥",
+                "title": "Telusko - Java Operators",
+                "url": "https://www.youtube.com/@Telusko"
+              },
+              {
+                "icon": "💻",
+                "title": "W3Schools - Java Operators",
+                "url": "https://www.w3schools.com/java/java_operators.asp"
+              },
+              {
+                "icon": "📝",
+                "title": "Practice Problems - LeetCode",
+                "url": "https://leetcode.com/"
+              }
+            ]
+          },
+          {
+            "id": 3,
+            "title": "Day 3: Loops",
+            "focus": "Master for, while, and do-while loops",
+            "timeCommitment": "4-5 hours",
+            "tasks": [
+              {
+                "title": "Learn for loop",
+                "description": "Practice different variations of for loops"
+              },
+              {
+                "title": "Master while and do-while",
+                "description": "Understand when to use each loop type"
+              },
+              {
+                "title": "Practice nested loops",
+                "description": "Create pattern programs using nested loops"
+              }
+            ],
+            "practice": [
+              {
+                "title": "Pattern Programs",
+                "description": "Print star patterns, number patterns, pyramid patterns",
+                "difficulty": "Medium",
+                "hints": ["Start with simple patterns", "Use nested loops", "Focus on logic"]
+              },
+              {
+                "title": "Fibonacci Series",
+                "description": "Generate Fibonacci series up to n terms",
+                "difficulty": "Easy"
+              },
+              {
+                "title": "Prime Number Checker",
+                "description": "Check if a number is prime",
+                "difficulty": "Medium"
+              }
+            ],
+            "resources": [
+              {
+                "icon": "📖",
+                "title": "Java Loops - GeeksforGeeks",
+                "url": "https://www.geeksforgeeks.org/loops-in-java/"
+              },
+              {
+                "icon": "🎯",
+                "title": "Pattern Programs Practice",
+                "url": "https://www.geeksforgeeks.org/pattern-programs-in-java/"
+              },
+              {
+                "icon": "🎥",
+                "title": "Java Brains - Loops Tutorial",
+                "url": "https://www.youtube.com/@Java.Brains"
+              },
+              {
+                "icon": "💻",
+                "title": "Exercism - Java Track",
+                "url": "https://exercism.org/tracks/java"
+              }
+            ]
+          },
+          {
+            "id": 4,
+            "title": "Day 4: Arrays",
+            "focus": "Understanding arrays and array operations",
+            "timeCommitment": "4-5 hours",
+            "tasks": [
+              {
+                "title": "Learn array declaration",
+                "description": "Single and multi-dimensional arrays"
+              },
+              {
+                "title": "Practice array operations",
+                "description": "Insertion, deletion, searching, sorting"
+              },
+              {
+                "title": "Solve array problems",
+                "description": "Complete 15+ array problems"
+              }
+            ],
+            "practice": [
+              {
+                "title": "Array Sum & Average",
+                "description": "Calculate sum and average of array elements",
+                "difficulty": "Easy"
+              },
+              {
+                "title": "Find Largest Element",
+                "description": "Find largest and smallest element in array",
+                "difficulty": "Easy"
+              },
+              {
+                "title": "Array Rotation",
+                "description": "Rotate array by k positions",
+                "difficulty": "Medium"
+              }
+            ],
+            "resources": [
+              {
+                "icon": "📖",
+                "title": "Java Arrays - Official Tutorial",
+                "url": "https://docs.oracle.com/javase/tutorial/java/nutsandbolts/arrays.html"
+              },
+              {
+                "icon": "💻",
+                "title": "Array Data Structure - GFG",
+                "url": "https://www.geeksforgeeks.org/array-data-structure/"
+              },
+              {
+                "icon": "🎥",
+                "title": "Naveen AutomationLabs - Java Arrays",
+                "url": "https://www.youtube.com/@naveenautomationlabs"
+              },
+              {
+                "icon": "📝",
+                "title": "HackerRank - Array Challenges",
+                "url": "https://www.hackerrank.com/domains/data-structures"
+              }
+            ]
+          },
+          {
+            "id": 5,
+            "title": "Day 5: Strings",
+            "focus": "String manipulation and String methods",
+            "timeCommitment": "4-5 hours",
+            "tasks": [
+              {
+                "title": "Learn String class",
+                "description": "String creation, immutability, String pool"
+              },
+              {
+                "title": "Master String methods",
+                "description": "length(), charAt(), substring(), indexOf(), etc."
+              },
+              {
+                "title": "Practice string problems",
+                "description": "Solve 15+ string manipulation problems"
+              }
+            ],
+            "practice": [
+              {
+                "title": "Palindrome Checker",
+                "description": "Check if a string is palindrome",
+                "difficulty": "Easy"
+              },
+              {
+                "title": "Reverse String",
+                "description": "Reverse a string without using built-in methods",
+                "difficulty": "Easy"
+              },
+              {
+                "title": "Anagram Checker",
+                "description": "Check if two strings are anagrams",
+                "difficulty": "Medium"
+              }
+            ],
+            "resources": [
+              {
+                "icon": "📖",
+                "title": "Java String Class - API Docs",
+                "url": "https://docs.oracle.com/javase/8/docs/api/java/lang/String.html"
+              },
+              {
+                "icon": "🎯",
+                "title": "String Problems - GeeksforGeeks",
+                "url": "https://www.geeksforgeeks.org/string-data-structure/"
+              },
+              {
+                "icon": "📚",
+                "title": "Baeldung - Java Strings",
+                "url": "https://www.baeldung.com/"
+              },
+              {
+                "icon": "💻",
+                "title": "String Manipulation Practice",
+                "url": "https://www.codechef.com/"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "title": "Week 2: OOP Concepts",
+        "days": [
+          {
+            "id": 6,
+            "title": "Day 6: Classes & Objects",
+            "focus": "Understanding OOP fundamentals, classes, and objects",
+            "timeCommitment": "4-5 hours",
+            "tasks": [
+              {
+                "title": "Learn class structure",
+                "description": "Class declaration, instance variables, methods"
+              },
+              {
+                "title": "Create objects",
+                "description": "Object instantiation and usage"
+              },
+              {
+                "title": "Practice OOP basics",
+                "description": "Create 5+ classes with objects"
+              }
+            ],
+            "practice": [
+              {
+                "title": "Student Management",
+                "description": "Create Student class with properties and methods",
+                "difficulty": "Easy"
+              },
+              {
+                "title": "Bank Account",
+                "description": "Implement BankAccount class with deposit/withdraw",
+                "difficulty": "Medium"
+              }
+            ],
+            "resources": [
+              {
+                "icon": "📖",
+                "title": "Java OOP Concepts - Oracle",
+                "url": "https://docs.oracle.com/javase/tutorial/java/concepts/"
+              },
+              {
+                "icon": "🎥",
+                "title": "Programming with Mosh - OOP",
+                "url": "https://www.youtube.com/@programmingwithmosh"
+              },
+              {
+                "icon": "📚",
+                "title": "JavaTpoint - OOP Tutorial",
+                "url": "https://www.javatpoint.com/java-oops-concepts"
+              },
+              {
+                "icon": "📖",
+                "title": "Head First Java (Book)",
+                "url": "https://www.oreilly.com/library/view/head-first-java/0596009208/"
+              }
+            ]
+          },
+          {
+            "id": 7,
+            "title": "Day 7: Constructors & Methods",
+            "focus": "Master constructors, method overloading, and this keyword",
+            "timeCommitment": "4-5 hours",
+            "tasks": [
+              {
+                "title": "Learn constructors",
+                "description": "Default, parameterized, and copy constructors"
+              },
+              {
+                "title": "Method overloading",
+                "description": "Create overloaded methods"
+              },
+              {
+                "title": "Use this keyword",
+                "description": "Understand this keyword usage"
+              }
+            ],
+            "practice": [
+              {
+                "title": "Rectangle Class",
+                "description": "Create Rectangle with multiple constructors",
+                "difficulty": "Easy"
+              },
+              {
+                "title": "Calculator with Overloading",
+                "description": "Implement calculator using method overloading",
+                "difficulty": "Medium"
+              }
+            ],
+            "resources": [
+              {
+                "icon": "📖",
+                "title": "Java Constructors - GeeksforGeeks",
+                "url": "https://www.geeksforgeeks.org/constructors-in-java/"
+              },
+              {
+                "icon": "🎥",
+                "title": "Telusko - Constructors Explained",
+                "url": "https://www.youtube.com/@Telusko"
+              },
+              {
+                "icon": "📚",
+                "title": "TutorialsPoint - Java Constructors",
+                "url": "https://www.tutorialspoint.com/java/java_constructors.htm"
+              },
+              {
+                "icon": "💻",
+                "title": "Practice OOP - Exercism",
+                "url": "https://exercism.org/tracks/java"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "standard": {
+    "name": "Standard Track (4-5 Months)",
+    "weeks": [
+      {
+        "title": "Week 1: Java Basics",
+        "days": [
+          {
+            "id": 1,
+            "title": "Day 1: Introduction to Java",
+            "focus": "Setting up Java environment and writing first program",
+            "timeCommitment": "2-3 hours",
+            "tasks": [
+              {
+                "title": "Install JDK",
+                "description": "Download and install Java Development Kit"
+              },
+              {
+                "title": "Setup IDE",
+                "description": "Install Eclipse or IntelliJ IDEA"
+              },
+              {
+                "title": "Write Hello World",
+                "description": "Create and run your first Java program"
+              }
+            ],
+            "practice": [
+              {
+                "title": "Hello World Program",
+                "description": "Write a simple Hello World program",
+                "difficulty": "Easy",
+                "code": "public class HelloWorld {\n    public static void main(String[] args) {\n        System.out.println(\"Hello, World!\");\n    }\n}"
+              },
+              {
+                "title": "Print Your Name",
+                "description": "Create a program that prints your name and age",
+                "difficulty": "Easy"
+              }
+            ],
+            "resources": [
+              {
+                "icon": "📖",
+                "title": "Java Installation Guide",
+                "url": "https://www.oracle.com/java/technologies/downloads/"
+              },
+              {
+                "icon": "🎥",
+                "title": "Java Setup Tutorial",
+                "url": "https://www.youtube.com/results?search_query=java+setup+tutorial"
+              }
+            ]
+          },
+          {
+            "id": 2,
+            "title": "Day 2: Variables & Data Types",
+            "focus": "Understanding variables and primitive data types",
+            "timeCommitment": "2-3 hours",
+            "tasks": [
+              {
+                "title": "Learn data types",
+                "description": "Study int, double, boolean, char"
+              },
+              {
+                "title": "Variable declaration",
+                "description": "Practice declaring and initializing variables"
+              },
+              {
+                "title": "Type conversion",
+                "description": "Learn implicit and explicit casting"
+              }
+            ],
+            "practice": [
+              {
+                "title": "Variable Practice",
+                "description": "Create programs using different data types",
+                "difficulty": "Easy"
+              },
+              {
+                "title": "Simple Calculator",
+                "description": "Build a basic calculator using variables",
+                "difficulty": "Easy"
+              }
+            ],
+            "resources": [
+              {
+                "icon": "📖",
+                "title": "Java Data Types",
+                "url": "https://www.w3schools.com/java/java_data_types.asp"
+              }
+            ]
+          },
+          {
+            "id": 3,
+            "title": "Day 3: Operators",
+            "focus": "Master arithmetic, relational, and logical operators",
+            "timeCommitment": "2-3 hours",
+            "tasks": [
+              {
+                "title": "Arithmetic operators",
+                "description": "Practice +, -, *, /, % operators"
+              },
+              {
+                "title": "Comparison operators",
+                "description": "Learn ==, !=, >, <, >=, <="
+              },
+              {
+                "title": "Logical operators",
+                "description": "Master &&, ||, ! operators"
+              }
+            ],
+            "practice": [
+              {
+                "title": "BMI Calculator",
+                "description": "Calculate Body Mass Index using operators",
+                "difficulty": "Easy"
+              },
+              {
+                "title": "Even/Odd Checker",
+                "description": "Check if number is even or odd",
+                "difficulty": "Easy"
+              }
+            ],
+            "resources": [
+              {
+                "icon": "📖",
+                "title": "Java Operators",
+                "url": "https://www.w3schools.com/java/java_operators.asp"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "title": "Week 2: Control Flow",
+        "days": [
+          {
+            "id": 4,
+            "title": "Day 4: If-Else Statements",
+            "focus": "Decision making with conditional statements",
+            "timeCommitment": "2-3 hours",
+            "tasks": [
+              {
+                "title": "Learn if-else",
+                "description": "Understand conditional execution"
+              },
+              {
+                "title": "Nested if-else",
+                "description": "Practice nested conditions"
+              },
+              {
+                "title": "Ternary operator",
+                "description": "Learn shorthand conditional"
+              }
+            ],
+            "practice": [
+              {
+                "title": "Grade Calculator",
+                "description": "Assign grades based on marks",
+                "difficulty": "Easy"
+              },
+              {
+                "title": "Largest of Three",
+                "description": "Find largest among three numbers",
+                "difficulty": "Easy"
+              },
+              {
+                "title": "Voting Eligibility",
+                "description": "Check if person can vote based on age",
+                "difficulty": "Easy"
+              }
+            ],
+            "resources": [
+              {
+                "icon": "📖",
+                "title": "Java If-Else",
+                "url": "https://www.w3schools.com/java/java_conditions.asp"
+              }
+            ]
+          },
+          {
+            "id": 5,
+            "title": "Day 5: Loops - For & While",
+            "focus": "Iteration using loops",
+            "timeCommitment": "2-3 hours",
+            "tasks": [
+              {
+                "title": "For loop basics",
+                "description": "Learn for loop syntax and usage"
+              },
+              {
+                "title": "While loop",
+                "description": "Understand while loop execution"
+              },
+              {
+                "title": "Loop control",
+                "description": "Learn break and continue"
+              }
+            ],
+            "practice": [
+              {
+                "title": "Print Numbers",
+                "description": "Print numbers 1 to 100 using loops",
+                "difficulty": "Easy"
+              },
+              {
+                "title": "Multiplication Table",
+                "description": "Generate multiplication table",
+                "difficulty": "Easy"
+              },
+              {
+                "title": "Sum of N Numbers",
+                "description": "Calculate sum of first n natural numbers",
+                "difficulty": "Easy"
+              }
+            ],
+            "resources": [
+              {
+                "icon": "📖",
+                "title": "Java Loops - W3Schools",
+                "url": "https://www.w3schools.com/java/java_while_loop.asp"
+              },
+              {
+                "icon": "🎥",
+                "title": "Programming with Mosh - Loops",
+                "url": "https://www.youtube.com/@programmingwithmosh"
+              },
+              {
+                "icon": "📚",
+                "title": "Loop Tutorial - GeeksforGeeks",
+                "url": "https://www.geeksforgeeks.org/loops-in-java/"
+              },
+              {
+                "icon": "💻",
+                "title": "Loop Practice - HackerRank",
+                "url": "https://www.hackerrank.com/domains/java"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "comfortable": {
+    "name": "Comfortable Track (6 Months)",
+    "weeks": [
+      {
+        "title": "Week 1: Getting Started",
+        "days": [
+          {
+            "id": 1,
+            "title": "Day 1: Java Setup",
+            "focus": "Installing Java and IDE",
+            "timeCommitment": "1.5-2 hours",
+            "tasks": [
+              {
+                "title": "Download JDK",
+                "description": "Get Java Development Kit from Oracle"
+              },
+              {
+                "title": "Install IDE",
+                "description": "Setup Eclipse or IntelliJ"
+              },
+              {
+                "title": "Verify installation",
+                "description": "Check Java version in terminal"
+              }
+            ],
+            "practice": [
+              {
+                "title": "First Program",
+                "description": "Write and run Hello World",
+                "difficulty": "Easy"
+              }
+            ],
+            "resources": [
+              {
+                "icon": "📖",
+                "title": "Java Installation",
+                "url": "https://www.oracle.com/java/technologies/downloads/"
+              }
+            ]
+          },
+          {
+            "id": 2,
+            "title": "Day 2: Basic Syntax",
+            "focus": "Understanding Java program structure",
+            "timeCommitment": "1.5-2 hours",
+            "tasks": [
+              {
+                "title": "Learn syntax",
+                "description": "Understand class, main method, statements"
+              },
+              {
+                "title": "Comments",
+                "description": "Practice single-line and multi-line comments"
+              },
+              {
+                "title": "Print statements",
+                "description": "Use System.out.println()"
+              }
+            ],
+            "practice": [
+              {
+                "title": "Print Patterns",
+                "description": "Print your name in different formats",
+                "difficulty": "Easy"
+              }
+            ],
+            "resources": [
+              {
+                "icon": "📖",
+                "title": "Java Syntax",
+                "url": "https://www.w3schools.com/java/java_syntax.asp"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}
