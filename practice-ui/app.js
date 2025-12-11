@@ -92,23 +92,45 @@ class PracticePortal {
                 }
 
                 try {
+                    console.log('🔐 [DEBUG] Login attempt started');
+                    console.log('🔐 [DEBUG] Username:', username);
+                    
                     const submitBtn = loginForm.querySelector('button[type="submit"]');
                     submitBtn.disabled = true;
                     submitBtn.textContent = 'Logging in...';
 
+                    console.log('🔐 [DEBUG] Calling API login...');
                     const userData = await window.apiClient.login(username, password);
+                    console.log('🔐 [DEBUG] Login API response:', userData);
+                    
                     this.currentUser = userData.user;
                     this.isAuthenticated = true;
+                    console.log('🔐 [DEBUG] User authenticated:', this.currentUser);
 
                     // Show success message
                     this.showErrorMessage(`Welcome back, ${userData.user.name}!`, 'success');
 
                     // Remove modal and resolve
-                    document.getElementById('loginModal').remove();
+                    console.log('🔐 [DEBUG] Removing login modal...');
+                    const modalElement = document.getElementById('loginModal');
+                    if (modalElement) {
+                        modalElement.remove();
+                        console.log('🔐 [DEBUG] Modal removed successfully');
+                    } else {
+                        console.error('🔐 [DEBUG] Modal element not found!');
+                    }
+                    
+                    console.log('🔐 [DEBUG] Resolving promise with userData');
                     resolve(userData);
 
                 } catch (error) {
-                    console.error('Login failed:', error);
+                    console.error('🔐 [DEBUG] Login failed with error:', error);
+                    console.error('🔐 [DEBUG] Error details:', {
+                        message: error.message,
+                        stack: error.stack,
+                        name: error.name
+                    });
+                    
                     this.showErrorMessage(error.message || 'Login failed. Please try again.', 'error');
 
                     const submitBtn = loginForm.querySelector('button[type="submit"]');

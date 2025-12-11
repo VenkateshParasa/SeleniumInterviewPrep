@@ -20,6 +20,8 @@ class APIClient {
      */
     async request(endpoint, options = {}) {
         const url = `${this.baseURL}${endpoint}`;
+        console.log('🌐 [DEBUG] API Request:', url);
+        
         const config = {
             headers: {
                 'Content-Type': 'application/json',
@@ -34,10 +36,13 @@ class APIClient {
         }
 
         try {
+            console.log('🌐 [DEBUG] Fetching:', url, 'with config:', config);
             const response = await fetch(url, config);
+            console.log('🌐 [DEBUG] Response status:', response.status, response.statusText);
 
             // Handle 401 (Unauthorized) - token might be expired
             if (response.status === 401 && this.token) {
+                console.error('🌐 [DEBUG] 401 Unauthorized - clearing auth');
                 this.handleAuthError();
                 throw new Error('Authentication expired. Please log in again.');
             }
@@ -45,12 +50,22 @@ class APIClient {
             // Handle other HTTP errors
             if (!response.ok) {
                 const errorData = await response.json().catch(() => ({}));
+                console.error('🌐 [DEBUG] HTTP Error:', response.status, errorData);
                 throw new Error(errorData.error || `HTTP ${response.status}: ${response.statusText}`);
             }
 
-            return await response.json();
+            const jsonResponse = await response.json();
+            console.log('🌐 [DEBUG] Response data:', jsonResponse);
+            return jsonResponse;
         } catch (error) {
-            console.error(`API request failed: ${endpoint}`, error);
+            console.error(`🌐 [DEBUG] API request failed: ${endpoint}`, error);
+            
+            // Check if it's a network error
+            if (error.message.includes('Failed to fetch') || error.name === 'TypeError') {
+                console.error('🌐 [DEBUG] Network error detected - server may not be running');
+                throw new Error('Cannot connect to server. Please ensure the backend server is running at http://localhost:3001');
+            }
+            
             throw error;
         }
     }
@@ -294,18 +309,31 @@ class APIClient {
      * Login user
      */
     async login(username, password) {
-        const response = await this.request('/auth/login', {
-            method: 'POST',
-            body: JSON.stringify({ username, password })
-        });
+        console.log('🌐 [DEBUG] API Client: Login request starting');
+        console.log('🌐 [DEBUG] API URL:', `${this.baseURL}/auth/login`);
+        
+        try {
+            const response = await this.request('/auth/login', {
+                method: 'POST',
+                body: JSON.stringify({ username, password })
+            });
+            
+            console.log('🌐 [DEBUG] API Client: Login response received:', response);
 
-        if (response.success && response.data.token) {
-            this.setAuthToken(response.data.token);
-            localStorage.setItem('currentUser', JSON.stringify(response.data.user));
-            return response.data;
+            if (response.success && response.data.token) {
+                console.log('🌐 [DEBUG] API Client: Login successful, setting token');
+                this.setAuthToken(response.data.token);
+                localStorage.setItem('currentUser', JSON.stringify(response.data.user));
+                console.log('🌐 [DEBUG] API Client: Token and user saved to localStorage');
+                return response.data;
+            }
+
+            console.error('🌐 [DEBUG] API Client: Login failed - invalid response structure');
+            throw new Error(response.error || 'Login failed');
+        } catch (error) {
+            console.error('🌐 [DEBUG] API Client: Login request failed:', error);
+            throw error;
         }
-
-        throw new Error(response.error || 'Login failed');
     }
 
     /**
