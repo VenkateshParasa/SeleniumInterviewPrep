@@ -5,13 +5,53 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Java + Selenium + API - Interview Prep Practice</title>
     <link rel="stylesheet" href="styles.css">
+
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="manifest.json">
+
+    <!-- PWA Meta Tags -->
+    <meta name="theme-color" content="#2563eb">
+    <meta name="background-color" content="#2563eb">
+    <meta name="display" content="standalone">
+    <meta name="start_url" content="/">
+
+    <!-- Apple Touch Icons -->
+    <link rel="apple-touch-icon" href="assets/icons/icon-192x192.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="assets/icons/icon-152x152.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="assets/icons/icon-180x180.png">
+
+    <!-- Apple PWA Status Bar -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="Interview Prep">
+
+    <!-- Microsoft Tiles -->
+    <meta name="msapplication-TileImage" content="assets/icons/icon-144x144.png">
+    <meta name="msapplication-TileColor" content="#2563eb">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" sizes="32x32" href="assets/icons/icon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="assets/icons/icon-16x16.png">
+    <link rel="shortcut icon" href="favicon.ico">
 </head>
 <body>
     <div class="container">
         <!-- Header -->
         <header class="header">
-            <h1>🎯 Interview Prep Practice Portal</h1>
-            <p class="subtitle">Java + Selenium + API Testing</p>
+            <div class="header-top">
+                <div class="header-title">
+                    <h1>🎯 Interview Prep Practice Portal</h1>
+                    <p class="subtitle">Java + Selenium + API Testing</p>
+                </div>
+                <div class="header-controls">
+                    <button id="settingsBtn" class="header-btn" title="Settings">
+                        <span class="header-btn-icon">⚙️</span>
+                    </button>
+                    <button id="darkModeToggle" class="header-btn" title="Toggle Dark Mode">
+                        <span class="header-btn-icon dark-mode-icon">🌙</span>
+                    </button>
+                </div>
+            </div>
 
             <!-- Experience Level Selector -->
             <div class="experience-selector">
@@ -42,8 +82,163 @@
             <aside class="sidebar">
                 <!-- Navigation Tabs -->
                 <div class="sidebar-tabs">
+                    <button class="tab-btn" data-tab="dashboard">📊 Dashboard</button>
                     <button class="tab-btn active" data-tab="schedule">📅 Schedule</button>
                     <button class="tab-btn" data-tab="questions">❓ Interview Questions</button>
+                </div>
+
+                <!-- Dashboard Tab Content -->
+                <div class="tab-content" id="dashboardTab">
+                    <div class="dashboard-content">
+                        <h3>📊 Your Progress Dashboard</h3>
+
+                        <!-- Overall Progress Summary -->
+                        <div class="dashboard-section">
+                            <h4>📈 Overall Progress</h4>
+                            <div class="progress-cards">
+                                <div class="progress-card">
+                                    <div class="progress-number" id="dashboardDaysCompleted">0</div>
+                                    <div class="progress-label">Days Completed</div>
+                                </div>
+                                <div class="progress-card">
+                                    <div class="progress-number" id="dashboardTotalDays">30</div>
+                                    <div class="progress-label">Total Days</div>
+                                </div>
+                                <div class="progress-card">
+                                    <div class="progress-number" id="dashboardCompletionRate">0%</div>
+                                    <div class="progress-label">Completion Rate</div>
+                                </div>
+                            </div>
+
+                            <!-- Progress Bar -->
+                            <div class="overall-progress-bar">
+                                <div class="progress-bar-container">
+                                    <div class="progress-bar" id="dashboardProgressBar" style="width: 0%"></div>
+                                </div>
+                                <div class="progress-text">
+                                    <span id="dashboardProgressText">0% Complete</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Learning Streak -->
+                        <div class="dashboard-section">
+                            <h4>🔥 Learning Streak</h4>
+                            <div class="streak-container">
+                                <div class="streak-card">
+                                    <div class="streak-number" id="currentStreak">0</div>
+                                    <div class="streak-label">Current Streak</div>
+                                    <div class="streak-unit">days</div>
+                                </div>
+                                <div class="streak-card">
+                                    <div class="streak-number" id="longestStreak">0</div>
+                                    <div class="streak-label">Longest Streak</div>
+                                    <div class="streak-unit">days</div>
+                                </div>
+                            </div>
+                            <div class="streak-calendar" id="streakCalendar">
+                                <!-- Calendar will be populated by JavaScript -->
+                            </div>
+                        </div>
+
+                        <!-- Weekly Breakdown -->
+                        <div class="dashboard-section">
+                            <h4>📅 Weekly Breakdown</h4>
+                            <div class="weekly-progress" id="weeklyBreakdown">
+                                <!-- Weekly progress will be populated by JavaScript -->
+                            </div>
+                        </div>
+
+                        <!-- Questions Statistics -->
+                        <div class="dashboard-section">
+                            <h4>❓ Questions Progress</h4>
+                            <div class="questions-stats">
+                                <div class="stat-card">
+                                    <div class="stat-number" id="questionsStudied">0</div>
+                                    <div class="stat-label">Questions Studied</div>
+                                </div>
+                                <div class="stat-card">
+                                    <div class="stat-number" id="totalQuestions">250+</div>
+                                    <div class="stat-label">Total Questions</div>
+                                </div>
+                                <div class="stat-card">
+                                    <div class="stat-number" id="averageTime">0</div>
+                                    <div class="stat-label">Avg. Time/Question</div>
+                                    <div class="stat-unit">min</div>
+                                </div>
+                            </div>
+
+                            <!-- Category Progress -->
+                            <div class="category-progress" id="categoryProgress">
+                                <!-- Category progress bars will be populated by JavaScript -->
+                            </div>
+                        </div>
+
+                        <!-- Achievements -->
+                        <div class="dashboard-section">
+                            <h4>🏆 Achievements</h4>
+                            <div class="achievements-grid" id="achievementsGrid">
+                                <!-- Achievements will be populated by JavaScript -->
+                            </div>
+                        </div>
+
+                        <!-- Study Goals -->
+                        <div class="dashboard-section">
+                            <h4>🎯 Study Goals</h4>
+                            <div class="goals-container">
+                                <div class="goal-card">
+                                    <div class="goal-title">Daily Goal</div>
+                                    <div class="goal-progress">
+                                        <div class="goal-bar">
+                                            <div class="goal-fill" id="dailyGoalProgress" style="width: 0%"></div>
+                                        </div>
+                                        <span id="dailyGoalText">0 / 1 day studied</span>
+                                    </div>
+                                </div>
+                                <div class="goal-card">
+                                    <div class="goal-title">Weekly Goal</div>
+                                    <div class="goal-progress">
+                                        <div class="goal-bar">
+                                            <div class="goal-fill" id="weeklyGoalProgress" style="width: 0%"></div>
+                                        </div>
+                                        <span id="weeklyGoalText">0 / 5 days this week</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Study Time Analytics -->
+                        <div class="dashboard-section">
+                            <h4>⏰ Study Time Analytics</h4>
+                            <div class="time-stats">
+                                <div class="time-card">
+                                    <div class="time-number" id="totalStudyTime">0h 0m</div>
+                                    <div class="time-label">Total Study Time</div>
+                                </div>
+                                <div class="time-card">
+                                    <div class="time-number" id="averageSessionTime">0m</div>
+                                    <div class="time-label">Average Session</div>
+                                </div>
+                                <div class="time-card">
+                                    <div class="time-number" id="studySessionsCount">0</div>
+                                    <div class="time-label">Study Sessions</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Motivational Messages -->
+                        <div class="dashboard-section">
+                            <h4>💪 Motivation</h4>
+                            <div class="motivation-card" id="motivationCard">
+                                <div class="motivation-text" id="motivationText">
+                                    Keep up the great work! Every step brings you closer to your dream job! 🌟
+                                </div>
+                                <div class="motivation-action">
+                                    <button class="btn-motivation" id="getNewMotivation">Get New Motivation</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
                 <!-- Schedule Tab Content -->
@@ -66,6 +261,16 @@
 
                 <!-- Interview Questions Tab Content -->
                 <div class="tab-content" id="questionsTab">
+                    <div class="questions-search">
+                        <div class="search-container">
+                            <input type="text" id="questionSearch" placeholder="🔍 Search questions..." class="search-input">
+                            <button id="clearSearch" class="clear-search" style="display: none;">×</button>
+                        </div>
+                        <div class="search-stats" id="searchStats" style="display: none;">
+                            <span id="searchResultCount">0</span> questions found
+                        </div>
+                    </div>
+
                     <div class="questions-filter">
                         <label for="categoryFilter">Category:</label>
                         <select id="categoryFilter">
@@ -252,6 +457,473 @@
         </div>
     </div>
 
+    <!-- Settings Modal -->
+    <div id="settingsModal" class="settings-modal">
+        <div class="settings-modal-content">
+            <div class="settings-header">
+                <h2>⚙️ Settings</h2>
+                <button class="settings-close-btn" id="closeSettingsBtn" aria-label="Close Settings">
+                    <span>&times;</span>
+                </button>
+            </div>
+
+            <div class="settings-body">
+                <div class="settings-tabs">
+                    <button class="settings-tab active" data-tab="general">General</button>
+                    <button class="settings-tab" data-tab="display">Display</button>
+                    <button class="settings-tab" data-tab="study">Study</button>
+                    <button class="settings-tab" data-tab="keyboard">Keyboard</button>
+                    <button class="settings-tab" data-tab="data">Data</button>
+                </div>
+
+                <!-- General Settings Tab -->
+                <div class="settings-tab-content active" id="generalTab">
+                    <div class="settings-section">
+                        <h3>🎨 Theme</h3>
+                        <p>Choose your preferred color theme</p>
+                        <div class="form-group">
+                            <label for="themeSelect">Theme</label>
+                            <select id="themeSelect">
+                                <option value="light">☀️ Light Mode</option>
+                                <option value="dark">🌙 Dark Mode</option>
+                                <option value="auto">🌓 Auto (System)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="settings-section">
+                        <h3>🔔 Notifications</h3>
+                        <p>Control how you receive feedback and updates</p>
+                        <div class="checkbox-group">
+                            <input type="checkbox" id="notificationsEnabled" checked>
+                            <label for="notificationsEnabled">Enable notifications</label>
+                        </div>
+                        <div class="checkbox-group">
+                            <input type="checkbox" id="notificationSound">
+                            <label for="notificationSound">Play notification sounds</label>
+                        </div>
+                        <div class="checkbox-group">
+                            <input type="checkbox" id="achievementNotifications" checked>
+                            <label for="achievementNotifications">Show achievement notifications</label>
+                        </div>
+                        <div class="checkbox-group">
+                            <input type="checkbox" id="streakReminders" checked>
+                            <label for="streakReminders">Show streak reminders</label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Display Settings Tab -->
+                <div class="settings-tab-content" id="displayTab">
+                    <div class="settings-section">
+                        <h3>🖥️ Layout</h3>
+                        <p>Customize the appearance and layout</p>
+                        <div class="checkbox-group">
+                            <input type="checkbox" id="compactMode">
+                            <label for="compactMode">Compact mode (reduce spacing)</label>
+                        </div>
+                        <div class="checkbox-group">
+                            <input type="checkbox" id="showProgress" checked>
+                            <label for="showProgress">Show progress indicators</label>
+                        </div>
+                        <div class="checkbox-group">
+                            <input type="checkbox" id="animationsEnabled" checked>
+                            <label for="animationsEnabled">Enable animations</label>
+                        </div>
+                    </div>
+
+                    <div class="settings-section">
+                        <h3>📝 Text</h3>
+                        <p>Adjust text size and readability</p>
+                        <div class="form-group">
+                            <label for="fontSize">Font size</label>
+                            <select id="fontSize">
+                                <option value="small">Small</option>
+                                <option value="medium" selected>Medium</option>
+                                <option value="large">Large</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Study Settings Tab -->
+                <div class="settings-tab-content" id="studyTab">
+                    <div class="settings-section">
+                        <h3>🎯 Goals</h3>
+                        <p>Set your learning targets and preferences</p>
+                        <div class="form-group">
+                            <label for="dailyGoal">Daily goal (days per week)</label>
+                            <input type="number" id="dailyGoal" min="1" max="7" value="1">
+                        </div>
+                        <div class="form-group">
+                            <label for="weeklyGoal">Weekly goal (days per week)</label>
+                            <input type="number" id="weeklyGoal" min="1" max="7" value="5">
+                        </div>
+                        <div class="checkbox-group">
+                            <input type="checkbox" id="autoMarkComplete">
+                            <label for="autoMarkComplete">Auto-mark tasks as complete</label>
+                        </div>
+                        <div class="checkbox-group">
+                            <input type="checkbox" id="showDifficulty" checked>
+                            <label for="showDifficulty">Show question difficulty</label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Keyboard Settings Tab -->
+                <div class="settings-tab-content" id="keyboardTab">
+                    <div class="settings-section">
+                        <h3>⌨️ Shortcuts</h3>
+                        <p>Enable keyboard shortcuts for faster navigation</p>
+                        <div class="checkbox-group">
+                            <input type="checkbox" id="keyboardEnabled" checked>
+                            <label for="keyboardEnabled">Enable keyboard shortcuts</label>
+                        </div>
+
+                        <div class="keyboard-shortcuts-grid">
+                            <div class="keyboard-shortcut">
+                                <span class="shortcut-action">Dashboard</span>
+                                <div class="shortcut-keys">
+                                    <span class="shortcut-key">Ctrl</span>
+                                    <span class="shortcut-key">D</span>
+                                </div>
+                            </div>
+                            <div class="keyboard-shortcut">
+                                <span class="shortcut-action">Schedule</span>
+                                <div class="shortcut-keys">
+                                    <span class="shortcut-key">Ctrl</span>
+                                    <span class="shortcut-key">S</span>
+                                </div>
+                            </div>
+                            <div class="keyboard-shortcut">
+                                <span class="shortcut-action">Questions</span>
+                                <div class="shortcut-keys">
+                                    <span class="shortcut-key">Ctrl</span>
+                                    <span class="shortcut-key">Q</span>
+                                </div>
+                            </div>
+                            <div class="keyboard-shortcut">
+                                <span class="shortcut-action">Search</span>
+                                <div class="shortcut-keys">
+                                    <span class="shortcut-key">/</span>
+                                </div>
+                            </div>
+                            <div class="keyboard-shortcut">
+                                <span class="shortcut-action">Toggle Theme</span>
+                                <div class="shortcut-keys">
+                                    <span class="shortcut-key">Ctrl</span>
+                                    <span class="shortcut-key">T</span>
+                                </div>
+                            </div>
+                            <div class="keyboard-shortcut">
+                                <span class="shortcut-action">Close Modal</span>
+                                <div class="shortcut-keys">
+                                    <span class="shortcut-key">Esc</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Data Settings Tab -->
+                <div class="settings-tab-content" id="dataTab">
+                    <div class="settings-section">
+                        <h3>💾 Export & Import</h3>
+                        <p>Backup and restore your progress and settings</p>
+                        <div class="form-group">
+                            <button id="exportDataBtn" class="btn-settings btn-settings-secondary">📤 Export Data</button>
+                        </div>
+                        <div class="form-group">
+                            <button id="importDataBtn" class="btn-settings btn-settings-secondary">📥 Import Data</button>
+                        </div>
+                    </div>
+
+                    <div class="settings-section">
+                        <h3>🔄 Reset</h3>
+                        <p>Clear all data and start fresh</p>
+                        <div class="form-group">
+                            <button id="resetSettingsBtn" class="btn-settings btn-settings-danger">🔄 Reset Settings</button>
+                        </div>
+                    </div>
+
+                    <div class="settings-section">
+                        <h3>🔒 Privacy</h3>
+                        <p>Control data collection and usage</p>
+                        <div class="checkbox-group">
+                            <input type="checkbox" id="analytics" checked>
+                            <label for="analytics">Allow usage analytics</label>
+                        </div>
+                        <div class="checkbox-group">
+                            <input type="checkbox" id="crashReporting" checked>
+                            <label for="crashReporting">Enable crash reporting</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="settings-footer">
+                <div class="settings-footer-left">
+                    <span class="settings-version">v2.0.0</span>
+                </div>
+                <div class="settings-footer-right">
+                    <button id="saveSettingsBtn" class="btn-settings btn-settings-primary">💾 Save Changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- PWA Installation Banner -->
+    <div id="pwaInstallBanner" class="pwa-install-banner" style="display: none;">
+        <div class="pwa-banner-content">
+            <div class="pwa-banner-info">
+                <span class="pwa-banner-icon">📱</span>
+                <div class="pwa-banner-text">
+                    <strong>Install Interview Prep App</strong>
+                    <small>Get offline access and app-like experience</small>
+                </div>
+            </div>
+            <div class="pwa-banner-actions">
+                <button id="pwaInstallBtn" class="btn-pwa-install">Install</button>
+                <button id="pwaDismissBtn" class="btn-pwa-dismiss">×</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.socket.io/4.7.4/socket.io.min.js"></script>
+    <script src="js/api-client.js"></script>
     <script src="app.js"></script>
+
+    <!-- PWA Service Worker Registration -->
+    <script>
+        // ===================================
+        // PWA SERVICE WORKER REGISTRATION
+        // ===================================
+
+        let deferredPrompt;
+        let pwaInstallBanner;
+        let installButton;
+        let dismissButton;
+
+        // Register service worker
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', async () => {
+                try {
+                    const registration = await navigator.serviceWorker.register('/sw.js');
+                    console.log('✅ Service Worker registered:', registration);
+
+                    // Check for updates
+                    registration.addEventListener('updatefound', () => {
+                        const newWorker = registration.installing;
+                        console.log('🔄 New Service Worker installing...');
+
+                        newWorker.addEventListener('statechange', () => {
+                            if (newWorker.state === 'installed') {
+                                if (navigator.serviceWorker.controller) {
+                                    // Show update available notification
+                                    showUpdateAvailable();
+                                } else {
+                                    console.log('✅ Service Worker installed for first time');
+                                }
+                            }
+                        });
+                    });
+
+                } catch (error) {
+                    console.error('❌ Service Worker registration failed:', error);
+                }
+            });
+
+            // Listen for controlling service worker change
+            navigator.serviceWorker.addEventListener('controllerchange', () => {
+                console.log('🔄 New Service Worker controlling the page');
+                window.location.reload();
+            });
+        }
+
+        // ===================================
+        // PWA INSTALLATION PROMPT
+        // ===================================
+
+        window.addEventListener('DOMContentLoaded', () => {
+            pwaInstallBanner = document.getElementById('pwaInstallBanner');
+            installButton = document.getElementById('pwaInstallBtn');
+            dismissButton = document.getElementById('pwaDismissBtn');
+
+            // Setup event listeners
+            if (installButton) {
+                installButton.addEventListener('click', installPWA);
+            }
+            if (dismissButton) {
+                dismissButton.addEventListener('click', dismissInstallBanner);
+            }
+        });
+
+        // Capture the beforeinstallprompt event
+        window.addEventListener('beforeinstallprompt', (e) => {
+            console.log('📱 PWA install prompt available');
+
+            // Prevent Chrome 67 and earlier from automatically showing the prompt
+            e.preventDefault();
+
+            // Stash the event so it can be triggered later
+            deferredPrompt = e;
+
+            // Show our custom install banner
+            showInstallBanner();
+        });
+
+        // Handle app installed event
+        window.addEventListener('appinstalled', (e) => {
+            console.log('✅ PWA was installed successfully');
+            hideInstallBanner();
+
+            // Show success notification
+            if (typeof portal !== 'undefined' && portal.showErrorMessage) {
+                portal.showErrorMessage('🎉 App installed successfully! You can now use it offline.', 'success');
+            }
+
+            // Clear the deferredPrompt
+            deferredPrompt = null;
+        });
+
+        // Show install banner
+        function showInstallBanner() {
+            // Check if user has already dismissed the banner recently
+            const dismissed = localStorage.getItem('pwa-banner-dismissed');
+            const dismissTime = dismissed ? parseInt(dismissed) : 0;
+            const daysSinceDismiss = (Date.now() - dismissTime) / (1000 * 60 * 60 * 24);
+
+            // Show banner if not dismissed in the last 7 days
+            if (daysSinceDismiss > 7 && pwaInstallBanner) {
+                pwaInstallBanner.style.display = 'block';
+                pwaInstallBanner.classList.add('show');
+
+                // Auto-hide after 10 seconds
+                setTimeout(() => {
+                    if (pwaInstallBanner.style.display !== 'none') {
+                        hideInstallBanner();
+                    }
+                }, 10000);
+            }
+        }
+
+        // Hide install banner
+        function hideInstallBanner() {
+            if (pwaInstallBanner) {
+                pwaInstallBanner.style.display = 'none';
+                pwaInstallBanner.classList.remove('show');
+            }
+        }
+
+        // Install PWA
+        async function installPWA() {
+            if (!deferredPrompt) {
+                console.log('❌ No deferred prompt available');
+                return;
+            }
+
+            try {
+                // Show the prompt
+                deferredPrompt.prompt();
+
+                // Wait for the user to respond to the prompt
+                const { outcome } = await deferredPrompt.userChoice;
+
+                console.log(`👤 User response to install prompt: ${outcome}`);
+
+                if (outcome === 'accepted') {
+                    console.log('✅ User accepted the install prompt');
+                } else {
+                    console.log('❌ User dismissed the install prompt');
+                }
+
+                // Clear the deferred prompt
+                deferredPrompt = null;
+                hideInstallBanner();
+
+            } catch (error) {
+                console.error('❌ Error showing install prompt:', error);
+            }
+        }
+
+        // Dismiss install banner
+        function dismissInstallBanner() {
+            hideInstallBanner();
+            // Remember that user dismissed the banner
+            localStorage.setItem('pwa-banner-dismissed', Date.now().toString());
+            console.log('👤 User dismissed PWA install banner');
+        }
+
+        // Show update available notification
+        function showUpdateAvailable() {
+            if (typeof portal !== 'undefined' && portal.showErrorMessage) {
+                portal.showErrorMessage('🔄 App update available! Refresh to get the latest version.', 'info');
+            }
+
+            // Show refresh button in corner
+            const updateBanner = document.createElement('div');
+            updateBanner.className = 'update-banner';
+            updateBanner.innerHTML = `
+                <div class="update-content">
+                    <span>🔄 Update available!</span>
+                    <button onclick="window.location.reload()" class="btn-update">Refresh</button>
+                    <button onclick="this.parentElement.parentElement.remove()" class="btn-update-close">×</button>
+                </div>
+            `;
+            document.body.appendChild(updateBanner);
+        }
+
+        // ===================================
+        // PWA UTILITY FUNCTIONS
+        // ===================================
+
+        // Check if running as PWA
+        function isPWA() {
+            return window.matchMedia('(display-mode: standalone)').matches ||
+                   window.navigator.standalone === true ||
+                   document.referrer.includes('android-app://');
+        }
+
+        // Get installation status
+        function getInstallationStatus() {
+            return {
+                isPWA: isPWA(),
+                canInstall: !!deferredPrompt,
+                serviceWorkerSupported: 'serviceWorker' in navigator,
+                serviceWorkerRegistered: navigator.serviceWorker.controller !== null
+            };
+        }
+
+        // Add PWA status to global scope
+        window.pwaStatus = {
+            isPWA,
+            getInstallationStatus,
+            installPWA,
+            showInstallBanner,
+            hideInstallBanner
+        };
+
+        // Log PWA status
+        window.addEventListener('load', () => {
+            const status = getInstallationStatus();
+            console.log('📱 PWA Status:', status);
+
+            if (status.isPWA) {
+                console.log('✅ Running as installed PWA');
+                // Hide install banner if running as PWA
+                hideInstallBanner();
+            }
+        });
+
+        // Handle PWA lifecycle
+        document.addEventListener('visibilitychange', () => {
+            if (document.visibilityState === 'visible' && isPWA()) {
+                console.log('👁️ PWA became visible');
+                // Could trigger background sync or updates here
+            }
+        });
+
+        console.log('🚀 PWA initialization complete');
+    </script>
 </body>
 </html>

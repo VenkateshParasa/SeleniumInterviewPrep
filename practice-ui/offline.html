@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Offline - Interview Prep Platform</title>
+    <style>
+        :root {
+            --primary-color: #2563eb;
+            --primary-dark: #1e40af;
+            --secondary-color: #10b981;
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+            --text-primary: #1e293b;
+            --text-secondary: #64748b;
+            --border-color: #e2e8f0;
+            --shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+            color: white;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+
+        .offline-container {
+            text-align: center;
+            max-width: 500px;
+        }
+
+        .offline-icon {
+            font-size: 4rem;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            font-weight: 700;
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+            line-height: 1.6;
+        }
+
+        .offline-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .btn {
+            padding: 0.75rem 2rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .btn-primary:hover {
+            background: rgba(255, 255, 255, 0.3);
+            border-color: rgba(255, 255, 255, 0.5);
+            transform: translateY(-1px);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: white;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.5);
+        }
+
+        .offline-tips {
+            margin-top: 3rem;
+            padding: 2rem;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            text-align: left;
+        }
+
+        .offline-tips h3 {
+            margin-bottom: 1rem;
+            font-size: 1.2rem;
+        }
+
+        .offline-tips ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .offline-tips li {
+            margin: 0.75rem 0;
+            padding-left: 1.5rem;
+            position: relative;
+        }
+
+        .offline-tips li::before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: var(--secondary-color);
+            font-weight: bold;
+        }
+
+        .network-status {
+            margin-top: 2rem;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        .status-online {
+            color: var(--secondary-color);
+        }
+
+        .status-offline {
+            color: #fbbf24;
+        }
+
+        @media (max-width: 600px) {
+            body {
+                padding: 1rem;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+
+            .subtitle {
+                font-size: 1rem;
+            }
+
+            .offline-tips {
+                padding: 1.5rem;
+            }
+
+            .offline-actions {
+                flex-direction: column;
+            }
+        }
+
+        /* Animation */
+        .offline-container {
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.7;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="offline-container">
+        <div class="offline-icon pulse">📡</div>
+
+        <h1>You're Offline</h1>
+        <p class="subtitle">
+            Don't worry! Your Interview Prep Platform works offline.
+            You can continue studying with cached content while we wait for your connection to return.
+        </p>
+
+        <div class="offline-actions">
+            <button class="btn btn-primary" onclick="tryReload()">
+                🔄 Try Again
+            </button>
+            <a href="/" class="btn btn-secondary">
+                🏠 Go to Homepage
+            </a>
+        </div>
+
+        <div class="offline-tips">
+            <h3>📚 What you can do offline:</h3>
+            <ul>
+                <li>Access previously viewed questions and content</li>
+                <li>Continue tracking your study progress</li>
+                <li>Use the dashboard and analytics features</li>
+                <li>Modify settings and preferences</li>
+                <li>Export your progress data</li>
+            </ul>
+        </div>
+
+        <div class="network-status">
+            <div id="connectionStatus">
+                <span class="status-offline">🔴 Offline</span> -
+                Waiting for network connection...
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Check network status
+        function updateConnectionStatus() {
+            const statusElement = document.getElementById('connectionStatus');
+
+            if (navigator.onLine) {
+                statusElement.innerHTML = '<span class="status-online">🟢 Online</span> - Connected to the internet';
+                // Show reload button more prominently when back online
+                setTimeout(() => {
+                    if (confirm('🌐 You\'re back online! Would you like to reload the app?')) {
+                        window.location.href = '/';
+                    }
+                }, 1000);
+            } else {
+                statusElement.innerHTML = '<span class="status-offline">🔴 Offline</span> - Waiting for network connection...';
+            }
+        }
+
+        // Try to reload the page
+        function tryReload() {
+            if (navigator.onLine) {
+                window.location.reload();
+            } else {
+                // Try to navigate to main app anyway (might work with cached content)
+                window.location.href = '/';
+            }
+        }
+
+        // Listen for network status changes
+        window.addEventListener('online', updateConnectionStatus);
+        window.addEventListener('offline', updateConnectionStatus);
+
+        // Initial status check
+        updateConnectionStatus();
+
+        // Periodically check connection (every 10 seconds)
+        setInterval(() => {
+            updateConnectionStatus();
+        }, 10000);
+
+        // Try to register service worker if not already registered
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.ready.then(registration => {
+                console.log('Service Worker is ready');
+            }).catch(error => {
+                console.log('Service Worker registration failed:', error);
+            });
+        }
+
+        // Add keyboard shortcuts
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'r' && (e.ctrlKey || e.metaKey)) {
+                e.preventDefault();
+                tryReload();
+            } else if (e.key === 'h' && (e.ctrlKey || e.metaKey)) {
+                e.preventDefault();
+                window.location.href = '/';
+            }
+        });
+
+        console.log('📡 Offline page loaded - Interview Prep Platform');
+    </script>
+</body>
+</html>
