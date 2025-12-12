@@ -55,10 +55,39 @@ app.use(helmet({
 }));
 
 // CORS configuration
+const allowedOrigins = process.env.NODE_ENV === 'production'
+  ? [
+      'https://your-domain.com',
+      'https://interview-prep.netlify.app',
+      process.env.FRONTEND_URL // Allow custom frontend URL from env
+    ].filter(Boolean)
+  : [
+      'http://localhost:3000',
+      'http://127.0.0.1:3000',
+      'http://localhost:8080',
+      'http://localhost:5500',
+      'http://127.0.0.1:5500',
+      'http://localhost:5501',
+      'http://127.0.0.1:5501',
+      'null' // Allow file:// protocol for local development
+    ];
+
 app.use(cors({
-  origin: process.env.NODE_ENV === 'production'
-    ? ['https://your-domain.com', 'https://interview-prep.netlify.app']
-    : ['http://localhost:3000', 'http://127.0.0.1:3000', 'http://localhost:8080'],
+  origin: function (origin, callback) {
+    // Allow requests with no origin (like mobile apps, curl, Postman)
+    if (!origin) return callback(null, true);
+    
+    // Log the origin for debugging
+    console.log(`🌐 CORS Request from origin: ${origin}`);
+    
+    if (allowedOrigins.indexOf(origin) !== -1 || allowedOrigins.includes('null')) {
+      console.log(`✅ CORS: Origin ${origin} allowed`);
+      callback(null, true);
+    } else {
+      console.log(`❌ CORS: Origin ${origin} BLOCKED`);
+      callback(new Error(`CORS policy: Origin ${origin} not allowed`));
+    }
+  },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']

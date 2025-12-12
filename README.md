@@ -30,30 +30,51 @@ This comprehensive guide helps you ace automation testing interviews from **entr
 - **Salary Range**: ₹15-40 LPA
 - **Focus**: Framework architecture, Design patterns, Team leadership, Test strategy, Microservices testing
 - **Time**: 1-3 months preparation
-- **New Content**: [10-Senior-Advanced-Topics.md](10-Senior-Advanced-Topics.md)
+- **New Content**: [docs/learning-resources/10-Senior-Advanced-Topics.md](docs/learning-resources/10-Senior-Advanced-Topics.md)
 
 ## 🗂️ Project Structure
+
+> **📢 NEW**: Project has been reorganized for better maintainability! See [PROJECT-STRUCTURE-ANALYSIS.md](PROJECT-STRUCTURE-ANALYSIS.md) for details.
+
 ```
 Interview-Prep-Java-Selenium-API/
 ├── README.md (This file)
-├── 01-Learning-Roadmap.md
-├── 02-Java-Resources.md
-├── 03-Selenium-Resources.md
-├── 04-API-Testing-Resources.md
-├── 05-Additional-Skills.md
-├── 06-Study-Schedule.md
-├── 07-Interview-Preparation.md
-├── 08-Hands-On-Projects.md
-├── 09-Resources-Links.md
-├── 10-Senior-Advanced-Topics.md (NEW - For 8+ Years Experience)
-└── practice-ui/ (Interactive Practice Portal)
-    ├── index.html
-    ├── app.js
-    ├── styles.css
-    ├── practice-data.json (Junior/Mid-level)
-    ├── practice-data-senior.json (Senior-level)
-    ├── interview-questions.json (NEW - 100+ Questions)
-    └── README.md
+├── PROJECT-STRUCTURE-ANALYSIS.md (Structure recommendations)
+├── RESTRUCTURING-COMPLETE-PHASE-1-4.md (Reorganization status)
+│
+├── docs/ (📚 All Learning Documentation)
+│   ├── README.md (Documentation index)
+│   ├── learning-resources/ (Java, Selenium, API guides)
+│   ├── study-plans/ (Study schedules & progress tracking)
+│   ├── interview-prep/ (Interview questions & strategies)
+│   └── project-guides/ (Implementation guides)
+│
+└── practice-ui/ (💻 Interactive Practice Portal)
+    ├── README.md
+    ├── package.json
+    ├── netlify.toml
+    │
+    ├── public/ (Static assets & app files)
+    │   ├── index.html
+    │   ├── app.js
+    │   ├── styles.css
+    │   └── assets/
+    │
+    ├── data/ (JSON data files)
+    │   ├── practice/ (Practice schedules)
+    │   ├── questions/ (Interview questions)
+    │   └── analytics/ (Metrics)
+    │
+    ├── docs/ (App documentation)
+    │   ├── deployment/
+    │   ├── setup/
+    │   ├── features/
+    │   └── guides/
+    │
+    └── server/ (Backend code)
+        ├── server.js
+        ├── config/
+        └── functions/
 ```
 
 ## ✨ New Features
@@ -74,7 +95,7 @@ Interview-Prep-Java-Selenium-API/
 - **Follow-up questions** to help you prepare deeper
 
 ### 🏗️ Senior-Level Advanced Content
-New guide [10-Senior-Advanced-Topics.md](10-Senior-Advanced-Topics.md) covers:
+New guide [docs/learning-resources/10-Senior-Advanced-Topics.md](docs/learning-resources/10-Senior-Advanced-Topics.md) covers:
 - Advanced Design Patterns (Singleton, Factory, Builder, Strategy)
 - Fluent Page Object Model
 - ThreadLocal and Parallel Execution
@@ -102,21 +123,21 @@ New guide [10-Senior-Advanced-Topics.md](10-Senior-Advanced-Topics.md) covers:
 ## 🚀 Quick Start
 
 ### For Junior Level (0-3 Years)
-1. Start with [`02-Java-Resources.md`](02-Java-Resources.md) for Java fundamentals
-2. Move to [`03-Selenium-Resources.md`](03-Selenium-Resources.md) for Selenium basics
+1. Start with [`docs/learning-resources/02-Java-Resources.md`](docs/learning-resources/02-Java-Resources.md) for Java fundamentals
+2. Move to [`docs/learning-resources/03-Selenium-Resources.md`](docs/learning-resources/03-Selenium-Resources.md) for Selenium basics
 3. Practice with the **Practice Portal** (Junior track)
-4. Review [`07-Interview-Preparation.md`](07-Interview-Preparation.md) for basic questions
+4. Review [`docs/interview-prep/07-Interview-Preparation.md`](docs/interview-prep/07-Interview-Preparation.md) for basic questions
 
 ### For Mid-Level (4-7 Years)
-1. Review [`05-Additional-Skills.md`](05-Additional-Skills.md) for TestNG, Maven, Git
-2. Study [`03-Selenium-Resources.md`](03-Selenium-Resources.md) advanced sections
-3. Master [`04-API-Testing-Resources.md`](04-API-Testing-Resources.md)
+1. Review [`docs/learning-resources/05-Additional-Skills.md`](docs/learning-resources/05-Additional-Skills.md) for TestNG, Maven, Git
+2. Study [`docs/learning-resources/03-Selenium-Resources.md`](docs/learning-resources/03-Selenium-Resources.md) advanced sections
+3. Master [`docs/learning-resources/04-API-Testing-Resources.md`](docs/learning-resources/04-API-Testing-Resources.md)
 4. Use the **Interview Questions feature** filtered for Medium difficulty
-5. Build projects from [`08-Hands-On-Projects.md`](08-Hands-On-Projects.md)
+5. Build projects from [`docs/project-guides/08-Hands-On-Projects.md`](docs/project-guides/08-Hands-On-Projects.md)
 
 ### For Senior Level (8-12 Years) - **Your Level**
-1. **Start here**: [`10-Senior-Advanced-Topics.md`](10-Senior-Advanced-Topics.md)
-2. Open the **Practice Portal** (`practice-ui/index.html`)
+1. **Start here**: [`docs/learning-resources/10-Senior-Advanced-Topics.md`](docs/learning-resources/10-Senior-Advanced-Topics.md)
+2. Open the **Practice Portal** (`practice-ui/public/index.html`)
 3. Select **"Senior (8-12 Years)"** experience level
 4. Follow the **Fast Track (2 Months)** or **Standard Track (3 Months)**
 5. Practice with **Hard difficulty** interview questions
@@ -241,9 +262,9 @@ Unique content for experienced professionals:
 
 1. **Open the Portal**:
    ```bash
-   cd practice-ui
+   cd practice-ui/public
    open index.html  # Mac
-   # or just double-click index.html
+   # or just double-click public/index.html
    ```
 
 2. **Select Your Experience**:

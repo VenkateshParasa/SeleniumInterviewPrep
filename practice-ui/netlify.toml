@@ -1,0 +1,63 @@
+# Netlify Configuration for Interview Prep Platform
+# This configures the deployment and serverless functions
+
+[build]
+  # Publish directory (where your static files are)
+  publish = "public"
+  
+  # Functions directory (where serverless functions are located)
+  functions = "server/functions/netlify"
+  
+  # Command to run before deployment (optional)
+  # command = "npm run build"
+
+[build.environment]
+  # Node.js version to use
+  NODE_VERSION = "18"
+
+[functions]
+  # Use esbuild for faster function bundling
+  node_bundler = "esbuild"
+  
+  # Function timeout (max 10 seconds on free tier)
+  # included_files = ["practice-ui/**"]
+
+# Redirect API calls to Netlify Functions
+[[redirects]]
+  from = "/api/*"
+  to = "/.netlify/functions/:splat"
+  status = 200
+  force = true
+
+# Enable CORS for all routes
+[[headers]]
+  for = "/*"
+  [headers.values]
+    Access-Control-Allow-Origin = "*"
+    Access-Control-Allow-Methods = "GET, POST, PUT, DELETE, OPTIONS"
+    Access-Control-Allow-Headers = "Content-Type, Authorization"
+    X-Frame-Options = "DENY"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+
+# Cache static assets
+[[headers]]
+  for = "/js/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/assets/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+# Don't cache HTML files
+[[headers]]
+  for = "/*.html"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"
+
+# Enable Netlify Blobs (required for data storage)
+[blobs]
+  # Blobs are automatically enabled, no configuration needed
+  # Free tier: 1GB storage, 1GB bandwidth per month

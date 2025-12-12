@@ -14,317 +14,16 @@ class PracticePortal {
         this.motivationalMessages = this.getMotivationalMessages();
         this.settings = this.loadSettings();
         this.keyboardListener = null;
-        this.isAuthenticated = false;
-        this.currentUser = null;
 
-        // Expose instance globally for WebSocket callbacks
+        // Expose instance globally
         window.practicePortal = this;
 
-        this.init();
-    }
-
-    // ===================================
-    // AUTHENTICATION METHODS
-    // ===================================
-
-    async checkAuthentication() {
-        try {
-            if (!window.apiClient.token) {
-                return false;
-            }
-
-            const user = await window.apiClient.getCurrentUser();
-            this.currentUser = user;
-            this.isAuthenticated = true;
-            return true;
-        } catch (error) {
-            console.log('Authentication check failed:', error);
-            return false;
-        }
-    }
-
-    async showLoginModal() {
-        return new Promise((resolve, reject) => {
-            // Create login modal HTML
-            const modalHTML = `
-                <div id="loginModal" class="modal" style="display: block;">
-                    <div class="modal-content" style="max-width: 400px;">
-                        <span class="close" onclick="document.getElementById('loginModal').remove(); location.reload();">&times;</span>
-                        <h2 id="modalTitle" style="margin-bottom: 1.5rem; color: var(--primary-color);">Login to Continue</h2>
-                        <div id="modalBody">
-                            <form id="loginForm">
-                                <div class="form-group" style="margin-bottom: 1rem;">
-                                    <label for="loginUsername" style="display: block; margin-bottom: 0.5rem; font-weight: 500;">Username or Email:</label>
-                                    <input type="text" id="loginUsername" required
-                                           style="width: 100%; padding: 0.75rem; border: 2px solid var(--border-color); border-radius: 8px;">
-                                </div>
-                                <div class="form-group" style="margin-bottom: 1.5rem;">
-                                    <label for="loginPassword" style="display: block; margin-bottom: 0.5rem; font-weight: 500;">Password:</label>
-                                    <input type="password" id="loginPassword" required
-                                           style="width: 100%; padding: 0.75rem; border: 2px solid var(--border-color); border-radius: 8px;">
-                                </div>
-                                <button type="submit" class="btn-primary" style="width: 100%; margin-bottom: 1rem;">
-                                    Login
-                                </button>
-                                <div style="text-align: center; font-size: 0.9rem; color: var(--text-secondary);">
-                                    <p><strong>Demo Accounts:</strong></p>
-                                    <p>Username: <code>demo_user</code> Password: <code>demo123</code></p>
-                                    <p>Username: <code>john_doe</code> Password: <code>password123</code></p>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            `;
-
-            document.body.insertAdjacentHTML('beforeend', modalHTML);
-
-            const loginForm = document.getElementById('loginForm');
-            loginForm.addEventListener('submit', async (e) => {
-                e.preventDefault();
-
-                const username = document.getElementById('loginUsername').value.trim();
-                const password = document.getElementById('loginPassword').value;
-
-                if (!username || !password) {
-                    this.showErrorMessage('Please enter both username and password', 'warning');
-                    return;
-                }
-
-                try {
-                    console.log('🔐 [DEBUG] Login attempt started');
-                    console.log('🔐 [DEBUG] Username:', username);
-                    
-                    const submitBtn = loginForm.querySelector('button[type="submit"]');
-                    submitBtn.disabled = true;
-                    submitBtn.textContent = 'Logging in...';
-
-                    console.log('🔐 [DEBUG] Calling API login...');
-                    const userData = await window.apiClient.login(username, password);
-                    console.log('🔐 [DEBUG] Login API response:', userData);
-                    
-                    this.currentUser = userData.user;
-                    this.isAuthenticated = true;
-                    console.log('🔐 [DEBUG] User authenticated:', this.currentUser);
-
-                    // Show success message
-                    this.showErrorMessage(`Welcome back, ${userData.user.name}!`, 'success');
-
-                    // Remove modal and resolve
-                    console.log('🔐 [DEBUG] Removing login modal...');
-                    const modalElement = document.getElementById('loginModal');
-                    if (modalElement) {
-                        modalElement.remove();
-                        console.log('🔐 [DEBUG] Modal removed successfully');
-                    } else {
-                        console.error('🔐 [DEBUG] Modal element not found!');
-                    }
-                    
-                    console.log('🔐 [DEBUG] Resolving promise with userData');
-                    resolve(userData);
-
-                } catch (error) {
-                    console.error('🔐 [DEBUG] Login failed with error:', error);
-                    console.error('🔐 [DEBUG] Error details:', {
-                        message: error.message,
-                        stack: error.stack,
-                        name: error.name
-                    });
-                    
-                    this.showErrorMessage(error.message || 'Login failed. Please try again.', 'error');
-
-                    const submitBtn = loginForm.querySelector('button[type="submit"]');
-                    submitBtn.disabled = false;
-                    submitBtn.textContent = 'Login';
-                }
-            });
-        });
-    }
-
-    async logout() {
-        try {
-            await window.apiClient.logout();
-            this.isAuthenticated = false;
-            this.currentUser = null;
-
-            this.showErrorMessage('Logged out successfully', 'success');
-
-            // Clear local data and reload
-            setTimeout(() => {
-                location.reload();
-            }, 1000);
-
-        } catch (error) {
-            console.error('Logout error:', error);
-            this.showErrorMessage('Logout failed, but local session cleared', 'warning');
-            location.reload();
-        }
-    }
-
-    updateHeaderForAuthentication() {
-        const headerControls = document.querySelector('.header-controls');
-
-        if (this.isAuthenticated && this.currentUser) {
-            // Add user info and logout button
-            const userInfo = document.createElement('div');
-            userInfo.className = 'user-info';
-            userInfo.style.cssText = `
-                display: flex;
-                align-items: center;
-                gap: 0.5rem;
-                background: rgba(255, 255, 255, 0.1);
-                padding: 0.5rem 1rem;
-                border-radius: 8px;
-                color: white;
-                font-size: 0.9rem;
-            `;
-            userInfo.innerHTML = `
-                <span>👤 ${this.currentUser.name}</span>
-                <button id="logoutBtn" class="header-btn" title="Logout"
-                        style="background: rgba(255, 255, 255, 0.1); margin-left: 0.5rem;">
-                    <span class="header-btn-icon">🚪</span>
-                </button>
-            `;
-
-            headerControls.insertBefore(userInfo, headerControls.firstChild);
-
-            document.getElementById('logoutBtn').addEventListener('click', () => this.logout());
-        }
-    }
-
-    // ===================================
-    // DATA SYNCHRONIZATION METHODS
-    // ===================================
-
-    async syncDataWithServer() {
-        try {
-            if (!this.isAuthenticated) return;
-
-            console.log('🔄 Syncing data with server...');
-
-            // Check if we're online
-            const isOnline = await window.apiClient.isOnline();
-            if (!isOnline) {
-                console.log('📱 Offline mode - using local data');
-                this.showErrorMessage('Working offline - data will sync when connection is restored', 'info');
-                return;
-            }
-
-            // Sync data
-            const syncedData = await window.apiClient.syncData();
-
-            // Update local properties with synced data
-            this.progress = syncedData.progress || {};
-            this.dashboardData = syncedData.dashboardData || this.initializeDashboardData();
-            this.settings = syncedData.settings || this.loadSettings();
-
-            console.log('✅ Data synced successfully');
-
-        } catch (error) {
-            console.warn('⚠️ Data sync failed, using local data:', error);
-
-            // Fall back to local data if sync fails
-            this.progress = this.loadProgress();
-            this.dashboardData = this.initializeDashboardData();
+        // Ensure settings are properly initialized before init
+        if (!this.settings || !this.settings.keyboard) {
             this.settings = this.loadSettings();
         }
-    }
 
-    async saveProgressToServer() {
-        if (!this.isAuthenticated) return;
-
-        try {
-            const isOnline = await window.apiClient.isOnline();
-            if (!isOnline) {
-                // Queue for sync when online
-                window.apiClient.queueForSync('progress', {
-                    progress: this.progress,
-                    dashboardData: this.dashboardData
-                });
-                return;
-            }
-
-            await window.apiClient.updateProgress(this.progress, this.dashboardData);
-
-            // Send real-time update via WebSocket
-            window.apiClient.sendProgressUpdate(this.progress, this.dashboardData);
-
-            console.log('✅ Progress saved to server');
-
-        } catch (error) {
-            console.error('❌ Failed to save progress to server:', error);
-            // Queue for retry
-            window.apiClient.queueForSync('progress', {
-                progress: this.progress,
-                dashboardData: this.dashboardData
-            });
-        }
-    }
-
-    async saveSettingsToServer() {
-        if (!this.isAuthenticated) return;
-
-        try {
-            const isOnline = await window.apiClient.isOnline();
-            if (!isOnline) {
-                window.apiClient.queueForSync('settings', this.settings);
-                return;
-            }
-
-            await window.apiClient.updateSettings(this.settings);
-
-            // Send real-time update via WebSocket
-            window.apiClient.sendSettingsUpdate(this.settings);
-
-            console.log('✅ Settings saved to server');
-
-        } catch (error) {
-            console.error('❌ Failed to save settings to server:', error);
-            window.apiClient.queueForSync('settings', this.settings);
-        }
-    }
-
-    // ===================================
-    // WEBSOCKET EVENT HANDLERS
-    // ===================================
-
-    /**
-     * Handle progress update from WebSocket
-     */
-    onProgressUpdate(data) {
-        try {
-            // Update local data
-            this.progress = data.progress;
-            this.dashboardData = data.dashboardData;
-
-            // Refresh UI components
-            this.updateProgressSummary();
-            this.renderWeeks();
-            this.updateDashboard();
-
-            console.log('🔄 UI updated from real-time progress sync');
-
-        } catch (error) {
-            console.error('❌ Error handling WebSocket progress update:', error);
-        }
-    }
-
-    /**
-     * Handle settings update from WebSocket
-     */
-    onSettingsUpdate(data) {
-        try {
-            // Update local settings
-            this.settings = data.settings;
-
-            // Apply new settings to UI
-            this.applySettings();
-
-            console.log('⚙️ UI updated from real-time settings sync');
-
-        } catch (error) {
-            console.error('❌ Error handling WebSocket settings update:', error);
-        }
+        this.init();
     }
 
     showErrorMessage(message, type = 'error') {
@@ -355,20 +54,8 @@ class PracticePortal {
             // Show loading state
             this.showLoadingState(true);
 
-            // Check authentication first
-            const isAuthenticated = await this.checkAuthentication();
-
-            if (!isAuthenticated) {
-                this.showLoadingState(false);
-                await this.showLoginModal();
-                this.showLoadingState(true);
-            }
-
-            // Update header with user info
-            this.updateHeaderForAuthentication();
-
-            // Sync data with server
-            await this.syncDataWithServer();
+            // Try to load from cloud first
+            await this.loadFromCloudIfAvailable();
 
             await this.loadPracticeData();
             await this.loadInterviewQuestions();
@@ -383,13 +70,52 @@ class PracticePortal {
             // Hide loading state
             this.showLoadingState(false);
 
-            // Show success message
-            this.showErrorMessage('✅ Application loaded successfully!', 'success');
+            // Show success message with sync status
+            const deviceInfo = window.apiClient.getDeviceInfo();
+            this.showErrorMessage(`✅ Application loaded successfully! Device: ${deviceInfo.deviceId.substring(0, 20)}...`, 'success');
 
         } catch (error) {
             console.error('❌ Critical error during initialization:', error);
             this.showErrorMessage('Failed to initialize the application. Please refresh the page.', 'error');
             this.showLoadingState(false);
+        }
+    }
+
+    /**
+     * Load data from cloud if available
+     */
+    async loadFromCloudIfAvailable() {
+        try {
+            const cloudData = await window.apiClient.loadFromCloud();
+            
+            if (cloudData) {
+                console.log('📥 Restoring data from cloud...');
+                
+                // Restore progress
+                if (cloudData.progress) {
+                    this.progress = cloudData.progress;
+                    localStorage.setItem('practicePortalProgress', JSON.stringify(cloudData.progress));
+                }
+                
+                // Restore dashboard data
+                if (cloudData.dashboardData) {
+                    this.dashboardData = cloudData.dashboardData;
+                    localStorage.setItem('dashboardData', JSON.stringify(cloudData.dashboardData));
+                }
+                
+                // Restore settings
+                if (cloudData.settings) {
+                    this.settings = cloudData.settings;
+                    localStorage.setItem('userSettings', JSON.stringify(cloudData.settings));
+                }
+                
+                console.log('✅ Data restored from cloud');
+                this.showErrorMessage('📥 Data synced from cloud', 'info');
+            } else {
+                console.log('💾 Using local data (no cloud backup found)');
+            }
+        } catch (error) {
+            console.warn('⚠️ Could not load from cloud, using local data:', error);
         }
     }
 
@@ -420,27 +146,15 @@ class PracticePortal {
 
     async loadPracticeData() {
         try {
-            // Try API first if authenticated
-            if (this.isAuthenticated) {
-                try {
-                    const apiData = await window.apiClient.getPracticeData(this.currentExperienceLevel);
-                    this.practiceData = apiData;
-                    console.log('✅ Practice data loaded from API');
-                    return;
-                } catch (error) {
-                    console.warn('⚠️ API failed, falling back to local files:', error);
-                }
-            }
-
-            // Fallback to local files
+            // Load from local files
             let response;
             let dataFile;
 
             if (this.currentExperienceLevel === 'senior') {
-                dataFile = 'practice-data-senior.json';
+                dataFile = '../data/practice/practice-data-senior.json';
                 response = await fetch(dataFile);
             } else {
-                dataFile = 'practice-data.json';
+                dataFile = '../data/practice/practice-data.json';
                 response = await fetch(dataFile);
             }
 
@@ -470,21 +184,8 @@ class PracticePortal {
 
     async loadInterviewQuestions() {
         try {
-            // Try API first if authenticated
-            if (this.isAuthenticated) {
-                try {
-                    const apiData = await window.apiClient.getInterviewQuestions();
-                    this.interviewQuestions = apiData;
-                    this.filteredQuestions = this.getAllQuestions();
-                    console.log('✅ Interview questions loaded from API');
-                    return;
-                } catch (error) {
-                    console.warn('⚠️ API failed for questions, falling back to local file:', error);
-                }
-            }
-
-            // Fallback to local file
-            const response = await fetch('interview-questions.json');
+            // Load from local file
+            const response = await fetch('../data/questions/interview-questions.json');
 
             // Check if response is ok
             if (!response.ok) {
@@ -775,6 +476,13 @@ class PracticePortal {
         const weekList = document.getElementById('weekList');
         weekList.innerHTML = '';
 
+        // Check if practice data is loaded
+        if (!this.practiceData || !this.practiceData[this.currentTrack]) {
+            console.warn('⚠️ Practice data not loaded yet');
+            weekList.innerHTML = '<p style="padding: 1rem; text-align: center;">Loading practice data...</p>';
+            return;
+        }
+
         const trackData = this.practiceData[this.currentTrack];
         
         trackData.weeks.forEach((week, weekIndex) => {
@@ -1045,6 +753,14 @@ class PracticePortal {
 
     updateProgressSummary() {
         const completedDaysCount = Object.keys(this.progress.completedDays).length;
+        
+        // Check if practice data is loaded
+        if (!this.practiceData || !this.practiceData[this.currentTrack]) {
+            document.getElementById('completedDays').textContent = completedDaysCount;
+            document.getElementById('totalProgress').textContent = '0%';
+            return;
+        }
+        
         const trackData = this.practiceData[this.currentTrack];
         const totalDays = trackData.weeks.reduce((sum, week) => sum + week.days.length, 0);
         const progressPercent = Math.round((completedDaysCount / totalDays) * 100);
@@ -1107,9 +823,6 @@ class PracticePortal {
 
             localStorage.setItem('practicePortalProgress', dataString);
             console.log('✅ Progress saved successfully');
-
-            // Sync with server if authenticated
-            this.saveProgressToServer();
 
             return true;
 
@@ -2220,11 +1933,12 @@ class PracticePortal {
                 return false;
             }
 
+            // Save to localStorage first
             localStorage.setItem('userSettings', JSON.stringify(this.settings));
-            console.log('✅ Settings saved successfully');
+            console.log('✅ Settings saved to localStorage');
 
-            // Sync with server if authenticated
-            this.saveSettingsToServer();
+            // Sync to cloud in background
+            this.syncToCloudBackground();
 
             return true;
         } catch (error) {
@@ -2355,6 +2069,11 @@ class PracticePortal {
      */
     applySettings() {
         try {
+            // Ensure settings exist
+            if (!this.settings) {
+                this.settings = this.loadSettings();
+            }
+
             // Apply theme
             if (this.settings.theme === 'auto') {
                 const systemDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches;
@@ -2364,24 +2083,26 @@ class PracticePortal {
             }
 
             // Apply display settings
-            if (this.settings.display.compactMode) {
+            if (this.settings.display && this.settings.display.compactMode) {
                 document.body.classList.add('compact-mode');
             } else {
                 document.body.classList.remove('compact-mode');
             }
 
             // Apply animations setting
-            if (!this.settings.display.animationsEnabled) {
+            if (this.settings.display && !this.settings.display.animationsEnabled) {
                 document.body.classList.add('no-animations');
             } else {
                 document.body.classList.remove('no-animations');
             }
 
             // Apply font size
-            document.documentElement.setAttribute('data-font-size', this.settings.display.fontSize);
+            if (this.settings.display && this.settings.display.fontSize) {
+                document.documentElement.setAttribute('data-font-size', this.settings.display.fontSize);
+            }
 
             // Initialize keyboard shortcuts if enabled
-            if (this.settings.keyboard.enabled) {
+            if (this.settings.keyboard && this.settings.keyboard.enabled) {
                 this.initializeKeyboardShortcuts();
             } else {
                 this.removeKeyboardShortcuts();

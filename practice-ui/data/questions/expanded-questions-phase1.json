@@ -1,0 +1,121 @@
+{
+  "categories": [
+    {
+      "id": "java",
+      "name": "Java Programming",
+      "icon": "☕",
+      "questions": [
+        {
+          "id": "java-001",
+          "question": "Explain the difference between == and .equals() in Java",
+          "difficulty": "Basic",
+          "experienceLevel": ["0-2", "3-5"],
+          "answer": "== compares object references (memory addresses), while .equals() compares object values/content. For primitive types, == compares values. For objects, == checks if both references point to the same object in memory, whereas .equals() (when properly overridden) checks if the objects have the same content.",
+          "code": "String s1 = new String(\"Hello\");\nString s2 = new String(\"Hello\");\nString s3 = s1;\n\nSystem.out.println(s1 == s2);       // false (different objects)\nSystem.out.println(s1.equals(s2));  // true (same content)\nSystem.out.println(s1 == s3);       // true (same reference)",
+          "companies": ["TCS", "Infosys", "Wipro", "Cognizant", "Accenture"],
+          "topic": "Core Java",
+          "followUp": ["What is the String pool in Java?", "How do you override equals() method correctly?"]
+        },
+        {
+          "id": "java-002",
+          "question": "What is the difference between String, StringBuilder, and StringBuffer?",
+          "difficulty": "Basic",
+          "experienceLevel": ["0-2", "3-5", "6-8"],
+          "answer": "String is immutable (cannot be changed once created). StringBuilder is mutable and not thread-safe (faster). StringBuffer is mutable and thread-safe (slower due to synchronization). Use String for simple operations, StringBuilder for single-threaded string manipulation, and StringBuffer for multi-threaded environments.",
+          "code": "// String - Immutable\nString str = \"Hello\";\nstr = str + \" World\";  // Creates new object\n\n// StringBuilder - Mutable, not thread-safe\nStringBuilder sb = new StringBuilder(\"Hello\");\nsb.append(\" World\");  // Modifies same object\n\n// StringBuffer - Mutable, thread-safe\nStringBuffer sbf = new StringBuffer(\"Hello\");\nsbf.append(\" World\");  // Synchronized",
+          "companies": ["Amazon", "Flipkart", "Paytm", "PhonePe", "Razorpay"],
+          "topic": "String Handling",
+          "followUp": ["Why is String immutable in Java?", "What is the performance difference between StringBuilder and StringBuffer?"]
+        },
+        {
+          "id": "java-003",
+          "question": "Explain HashMap internal working and collision handling",
+          "difficulty": "Medium",
+          "experienceLevel": ["3-5", "6-8"],
+          "answer": "HashMap uses array of buckets with linked lists/trees for collision handling. Hash function determines bucket index. Collisions resolved via chaining (linked list until Java 7, balanced tree from Java 8 when chain length > 8). Load factor 0.75 triggers resizing to maintain performance.",
+          "code": "// HashMap internal structure\nHashMap<String, Integer> map = new HashMap<>();\nmap.put(\"key1\", 100);\n\n// Hash calculation (simplified)\nint hash = \"key1\".hashCode();\nint index = hash & (capacity - 1);\n\n// Collision handling\nmap.put(\"key2\", 200);  // If same index, creates linked list\nmap.put(\"key3\", 300);  // Chain grows\n\n// Tree conversion (Java 8+)\n// When chain length > 8, converts to balanced tree",
+          "companies": ["Google", "Microsoft", "Amazon", "Adobe", "Oracle"],
+          "topic": "Collections Framework",
+          "followUp": ["What happens during HashMap resizing?", "Explain ConcurrentHashMap vs HashMap"]
+        },
+        {
+          "id": "java-004",
+          "question": "Explain Java 8 Stream API with practical examples",
+          "difficulty": "Medium",
+          "experienceLevel": ["3-5", "6-8"],
+          "answer": "Stream API enables functional-style operations on collections. Provides operations like filter, map, reduce, collect. Streams are lazy (intermediate operations executed only when terminal operation called), support parallel processing, and don't modify original collection.",
+          "code": "List<Employee> employees = Arrays.asList(\n    new Employee(\"John\", 25, 50000),\n    new Employee(\"Jane\", 30, 75000),\n    new Employee(\"Bob\", 35, 60000)\n);\n\n// Filter and collect\nList<Employee> youngEmp = employees.stream()\n    .filter(emp -> emp.getAge() < 30)\n    .collect(Collectors.toList());\n\n// Map and reduce\nOptional<Double> avgSalary = employees.stream()\n    .mapToDouble(Employee::getSalary)\n    .average();\n\n// Group by\nMap<Integer, List<Employee>> groupByAge = employees.stream()\n    .collect(Collectors.groupingBy(Employee::getAge));\n\n// Parallel processing\nlong count = employees.parallelStream()\n    .filter(emp -> emp.getSalary() > 60000)\n    .count();",
+          "companies": ["Thoughtworks", "Intuit", "PayPal", "Deloitte", "Capgemini"],
+          "topic": "Java 8+ Features",
+          "followUp": ["What are intermediate vs terminal operations?", "Explain flatMap with example"]
+        },
+        {
+          "id": "java-005",
+          "question": "What is Optional class and how does it prevent NullPointerException?",
+          "difficulty": "Medium",
+          "experienceLevel": ["3-5", "6-8"],
+          "answer": "Optional is a container that may or may not contain a value. It forces explicit null checks and provides methods like isPresent(), orElse(), orElseGet(), orElseThrow(). Prevents NPE by making null handling explicit and encouraging better coding practices.",
+          "code": "// Traditional null check\nString name = getName();\nif (name != null) {\n    System.out.println(name.toUpperCase());\n}\n\n// Using Optional\nOptional<String> optionalName = Optional.ofNullable(getName());\n\n// Safe operations\noptionalName.ifPresent(n -> System.out.println(n.toUpperCase()));\n\n// Default values\nString result = optionalName.orElse(\"Default Name\");\nString result2 = optionalName.orElseGet(() -> getDefaultName());\nString result3 = optionalName.orElseThrow(() -> new IllegalArgumentException(\"Name required\"));\n\n// Chaining operations\nString upperName = Optional.ofNullable(getName())\n    .filter(name -> name.length() > 3)\n    .map(String::toUpperCase)\n    .orElse(\"UNKNOWN\");",
+          "companies": ["Amazon", "Flipkart", "Swiggy", "Zomato", "Ola"],
+          "topic": "Java 8+ Features",
+          "followUp": ["When would you use orElse vs orElseGet?", "Can Optional contain null value?"]
+        },
+        {
+          "id": "java-006",
+          "question": "Explain functional interfaces and lambda expressions in Java 8",
+          "difficulty": "Medium",
+          "experienceLevel": ["3-5", "6-8"],
+          "answer": "Functional interfaces have exactly one abstract method (SAM - Single Abstract Method). Lambda expressions provide concise way to implement functional interfaces. Common types: Predicate<T> (boolean test), Consumer<T> (void accept), Supplier<T> (T get), Function<T,R> (R apply).",
+          "code": "// Predicate - takes input, returns boolean\nPredicate<Integer> isEven = num -> num % 2 == 0;\nboolean result = isEven.test(4);  // true\n\n// Consumer - takes input, returns void\nConsumer<String> printer = message -> System.out.println(message);\nprinter.accept(\"Hello World\");\n\n// Supplier - takes no input, returns value\nSupplier<String> dateSupplier = () -> LocalDateTime.now().toString();\nString currentDate = dateSupplier.get();\n\n// Function - takes input, returns output\nFunction<String, Integer> stringLength = str -> str.length();\nInteger length = stringLength.apply(\"Hello\");  // 5\n\n// Custom functional interface\n@FunctionalInterface\ninterface Calculator {\n    int calculate(int a, int b);\n}\n\nCalculator add = (a, b) -> a + b;\nCalculator multiply = (a, b) -> a * b;\n\nSystem.out.println(add.calculate(5, 3));       // 8\nSystem.out.println(multiply.calculate(5, 3));  // 15",
+          "companies": ["Microsoft", "Adobe", "Oracle", "Salesforce", "VMware"],
+          "topic": "Java 8+ Features",
+          "followUp": ["What are method references?", "Can lambda expressions access local variables?"]
+        },
+        {
+          "id": "java-007",
+          "question": "Explain memory management in Java - Heap vs Stack",
+          "difficulty": "Medium",
+          "experienceLevel": ["3-5", "6-8"],
+          "answer": "Stack stores method call frames, local variables, partial results. Each thread has own stack. Heap stores objects and instance variables. Heap divided into Young Generation (Eden, S0, S1) and Old Generation. Garbage collector manages heap memory automatically.",
+          "code": "public class MemoryExample {\n    private int instanceVar = 10;  // Stored in Heap\n    \n    public void methodExample() {\n        int localVar = 20;        // Stored in Stack\n        String str = \"Hello\";     // Reference in Stack, object in Heap\n        \n        Person person = new Person(\"John\", 25);  // Reference in Stack, object in Heap\n        \n        // When method ends:\n        // - localVar removed from Stack\n        // - str reference removed from Stack\n        // - person reference removed from Stack\n        // - Objects in Heap eligible for GC if no other references\n    }\n}\n\n// Stack overflow example\npublic void recursiveMethod() {\n    recursiveMethod();  // Eventually causes StackOverflowError\n}\n\n// OutOfMemory example\nList<String> list = new ArrayList<>();\nwhile(true) {\n    list.add(new String(\"Memory leak\"));  // Eventually causes OutOfMemoryError\n}",
+          "companies": ["Google", "Amazon", "Microsoft", "Uber", "LinkedIn"],
+          "topic": "Memory Management",
+          "followUp": ["What are different types of garbage collectors?", "How do you identify memory leaks?"]
+        },
+        {
+          "id": "java-008",
+          "question": "What are design patterns? Explain Singleton, Factory, and Observer patterns",
+          "difficulty": "Hard",
+          "experienceLevel": ["6-8", "9-12"],
+          "answer": "Design patterns are reusable solutions to common problems. Singleton ensures single instance, Factory creates objects without specifying exact class, Observer defines one-to-many dependency between objects so when one changes, all dependents are notified.",
+          "code": "// Singleton Pattern (Thread-safe)\npublic class Singleton {\n    private static volatile Singleton instance;\n    \n    private Singleton() {}\n    \n    public static Singleton getInstance() {\n        if (instance == null) {\n            synchronized (Singleton.class) {\n                if (instance == null) {\n                    instance = new Singleton();\n                }\n            }\n        }\n        return instance;\n    }\n}\n\n// Factory Pattern\nabstract class Vehicle {\n    abstract void start();\n}\n\nclass Car extends Vehicle {\n    void start() { System.out.println(\"Car started\"); }\n}\n\nclass Bike extends Vehicle {\n    void start() { System.out.println(\"Bike started\"); }\n}\n\nclass VehicleFactory {\n    public static Vehicle createVehicle(String type) {\n        switch(type) {\n            case \"car\": return new Car();\n            case \"bike\": return new Bike();\n            default: throw new IllegalArgumentException(\"Unknown vehicle type\");\n        }\n    }\n}\n\n// Observer Pattern\ninterface Observer {\n    void update(String message);\n}\n\nclass Subject {\n    private List<Observer> observers = new ArrayList<>();\n    \n    public void addObserver(Observer observer) {\n        observers.add(observer);\n    }\n    \n    public void notifyObservers(String message) {\n        observers.forEach(observer -> observer.update(message));\n    }\n}",
+          "companies": ["Google", "Microsoft", "Amazon", "Adobe", "Thoughtworks"],
+          "topic": "Design Patterns",
+          "followUp": ["What is dependency injection?", "Explain Builder pattern with example"]
+        },
+        {
+          "id": "java-009",
+          "question": "Explain multithreading and thread synchronization in Java",
+          "difficulty": "Hard",
+          "experienceLevel": ["6-8", "9-12"],
+          "answer": "Multithreading allows concurrent execution. Thread lifecycle: New → Runnable → Running → Blocked/Waiting/Timed_Waiting → Terminated. Synchronization prevents thread interference using synchronized keyword, locks, or atomic classes. ExecutorService manages thread pools efficiently.",
+          "code": "// Creating threads\nclass WorkerThread extends Thread {\n    private String task;\n    \n    public WorkerThread(String task) {\n        this.task = task;\n    }\n    \n    @Override\n    public void run() {\n        System.out.println(Thread.currentThread().getName() + \" executing \" + task);\n    }\n}\n\n// Synchronization\nclass Counter {\n    private int count = 0;\n    \n    public synchronized void increment() {\n        count++;\n    }\n    \n    public synchronized int getCount() {\n        return count;\n    }\n}\n\n// ExecutorService\nExecutorService executor = Executors.newFixedThreadPool(5);\nfor (int i = 0; i < 10; i++) {\n    executor.submit(new WorkerThread(\"Task-\" + i));\n}\nexecutor.shutdown();\n\n// Deadlock prevention\nclass Account {\n    private final Object lock1 = new Object();\n    private final Object lock2 = new Object();\n    \n    public void transfer(double amount) {\n        synchronized(lock1) {\n            synchronized(lock2) {\n                // Transfer logic\n            }\n        }\n    }\n}",
+          "companies": ["Google", "Amazon", "Microsoft", "Uber", "Netflix"],
+          "topic": "Multithreading",
+          "followUp": ["What is deadlock and how to prevent it?", "Explain volatile keyword"]
+        },
+        {
+          "id": "java-010",
+          "question": "What is reflection in Java and when would you use it?",
+          "difficulty": "Hard",
+          "experienceLevel": ["6-8", "9-12"],
+          "answer": "Reflection allows examining and modifying runtime behavior of classes, methods, and fields. Used in frameworks (Spring, Hibernate), testing, serialization, and dependency injection. Performance overhead exists, so use judiciously.",
+          "code": "// Getting class information\nClass<?> clazz = String.class;\nSystem.out.println(\"Class name: \" + clazz.getName());\nSystem.out.println(\"Simple name: \" + clazz.getSimpleName());\nSystem.out.println(\"Package: \" + clazz.getPackage().getName());\n\n// Getting methods\nMethod[] methods = clazz.getDeclaredMethods();\nfor (Method method : methods) {\n    System.out.println(\"Method: \" + method.getName());\n}\n\n// Creating objects dynamically\nClass<?> listClass = ArrayList.class;\nConstructor<?> constructor = listClass.getConstructor();\nObject listInstance = constructor.newInstance();\n\n// Accessing private fields\nclass Person {\n    private String name = \"John\";\n}\n\nPerson person = new Person();\nClass<?> personClass = person.getClass();\nField nameField = personClass.getDeclaredField(\"name\");\nnameField.setAccessible(true);  // Access private field\nString name = (String) nameField.get(person);\nSystem.out.println(\"Name: \" + name);\n\n// Invoking methods dynamically\nMethod method = String.class.getMethod(\"substring\", int.class);\nString result = (String) method.invoke(\"Hello World\", 6);\nSystem.out.println(result);  // \"World\"",
+          "companies": ["Spring framework companies", "Oracle", "Red Hat", "IBM"],
+          "topic": "Advanced Java",
+          "followUp": ["What are annotations and how are they processed?", "Explain proxy pattern using reflection"]
+        }
+      ]
+    }
+  ]
+}
