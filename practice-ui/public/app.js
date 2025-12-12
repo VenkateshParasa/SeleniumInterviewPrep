@@ -371,6 +371,22 @@ class PracticePortal {
         this.setupSettingsModalListeners();
         this.setupSettingsTabHandlers();
 
+        // Practice form buttons
+        const openPracticeFormBtn = document.getElementById('openPracticeForm');
+        const downloadPracticeFormBtn = document.getElementById('downloadPracticeForm');
+
+        if (openPracticeFormBtn) {
+            openPracticeFormBtn.addEventListener('click', () => {
+                this.openPracticeForm();
+            });
+        }
+
+        if (downloadPracticeFormBtn) {
+            downloadPracticeFormBtn.addEventListener('click', () => {
+                this.downloadPracticeForm();
+            });
+        }
+
         // Modal close
         const modal = document.getElementById('practiceModal');
         const closeBtn = document.querySelector('.close');
@@ -899,6 +915,9 @@ class PracticePortal {
             document.getElementById('questionsTab').classList.add('active');
             this.showQuestionsList();
             this.filterAndRenderQuestions();
+        } else if (tabName === 'practice') {
+            document.getElementById('practiceTab').classList.add('active');
+            this.setupPracticeTab();
         }
     }
 
@@ -1902,6 +1921,7 @@ class PracticePortal {
                     'dashboard': 'KeyD',
                     'schedule': 'KeyS',
                     'questions': 'KeyQ',
+                    'practice': 'KeyP',
                     'search': 'Slash',
                     'darkMode': 'KeyT'
                 }
@@ -2161,6 +2181,10 @@ class PracticePortal {
                         e.preventDefault();
                         this.switchTab('questions');
                         break;
+                    case shortcuts.practice:
+                        e.preventDefault();
+                        this.switchTab('practice');
+                        break;
                     case shortcuts.darkMode:
                         e.preventDefault();
                         this.toggleTheme();
@@ -2295,6 +2319,110 @@ class PracticePortal {
                this.validateDashboardData(data.dashboardData) &&
                data.settings &&
                this.validateSettings(data.settings);
+    }
+
+    /**
+     * Setup practice tab functionality
+     */
+    setupPracticeTab() {
+        // Initialize practice tab content if needed
+        console.log('Practice tab activated');
+    }
+
+    /**
+     * Open practice form in new tab/window
+     */
+    openPracticeForm() {
+        const practiceFormUrl = './selenium-practice-form.html';
+        window.open(practiceFormUrl, '_blank', 'width=1200,height=800,scrollbars=yes,resizable=yes');
+    }
+
+    /**
+     * Download practice form as HTML file
+     */
+    downloadPracticeForm() {
+        const practiceFormUrl = './selenium-practice-form.html';
+
+        // Create a temporary link element to trigger download
+        const link = document.createElement('a');
+        link.href = practiceFormUrl;
+        link.download = 'selenium-practice-form.html';
+        link.style.display = 'none';
+
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+
+        // Show success message
+        this.showNotification('Practice form download started!', 'success');
+    }
+
+    /**
+     * Show notification message
+     */
+    showNotification(message, type = 'info') {
+        // Create notification element
+        const notification = document.createElement('div');
+        notification.className = `notification notification-${type}`;
+        notification.innerHTML = `
+            <div class="notification-content">
+                <span class="notification-icon">${this.getNotificationIcon(type)}</span>
+                <span class="notification-message">${message}</span>
+                <button class="notification-close" onclick="this.parentElement.parentElement.remove()">×</button>
+            </div>
+        `;
+
+        // Style the notification
+        Object.assign(notification.style, {
+            position: 'fixed',
+            top: '20px',
+            right: '20px',
+            backgroundColor: this.getNotificationColor(type),
+            color: 'white',
+            padding: '1rem',
+            borderRadius: '8px',
+            boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
+            zIndex: '9999',
+            maxWidth: '300px',
+            animation: 'slideInRight 0.3s ease-out'
+        });
+
+        // Add to page
+        document.body.appendChild(notification);
+
+        // Auto-remove after 5 seconds
+        setTimeout(() => {
+            if (notification.parentElement) {
+                notification.style.animation = 'slideOutRight 0.3s ease-out';
+                setTimeout(() => notification.remove(), 300);
+            }
+        }, 5000);
+    }
+
+    /**
+     * Get notification icon based on type
+     */
+    getNotificationIcon(type) {
+        const icons = {
+            success: '✅',
+            error: '❌',
+            warning: '⚠️',
+            info: 'ℹ️'
+        };
+        return icons[type] || icons.info;
+    }
+
+    /**
+     * Get notification color based on type
+     */
+    getNotificationColor(type) {
+        const colors = {
+            success: '#10b981',
+            error: '#ef4444',
+            warning: '#f59e0b',
+            info: '#3b82f6'
+        };
+        return colors[type] || colors.info;
     }
 }
 

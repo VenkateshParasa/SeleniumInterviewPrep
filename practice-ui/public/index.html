@@ -85,6 +85,7 @@
                     <button class="tab-btn" data-tab="dashboard">📊 Dashboard</button>
                     <button class="tab-btn active" data-tab="schedule">📅 Schedule</button>
                     <button class="tab-btn" data-tab="questions">❓ Interview Questions</button>
+                    <button class="tab-btn" data-tab="practice">🎯 Selenium Practice</button>
                 </div>
 
                 <!-- Dashboard Tab Content -->
@@ -294,6 +295,98 @@
 
                     <div id="questionsList" class="questions-list">
                         <!-- Questions will be populated by JavaScript -->
+                    </div>
+                </div>
+
+                <!-- Selenium Practice Tab Content -->
+                <div class="tab-content" id="practiceTab">
+                    <div class="practice-header">
+                        <h3>🎯 Selenium Practice Form</h3>
+                        <p>Practice automation testing with comprehensive web elements</p>
+                    </div>
+
+                    <div class="practice-description">
+                        <div class="practice-info-card">
+                            <h4>📚 What You Can Practice</h4>
+                            <ul>
+                                <li><strong>Basic Elements:</strong> Input fields, dropdowns, checkboxes, radio buttons</li>
+                                <li><strong>Advanced Interactions:</strong> Sliders, file uploads, date pickers</li>
+                                <li><strong>Dynamic Content:</strong> Modals, alerts, dynamic loading, tooltips</li>
+                                <li><strong>Complex Scenarios:</strong> Tables, tabs, forms validation</li>
+                            </ul>
+                        </div>
+
+                        <div class="practice-actions">
+                            <button id="openPracticeForm" class="btn-primary">
+                                🚀 Open Practice Form in New Tab
+                            </button>
+                            <button id="downloadPracticeForm" class="btn-secondary">
+                                📥 Download Practice Form
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="practice-guide">
+                        <h4>🎓 Selenium Practice Guide</h4>
+                        <div class="guide-sections">
+                            <div class="guide-section">
+                                <h5>🔍 Locator Strategies</h5>
+                                <ul>
+                                    <li>Practice with ID, Name, Class, Tag locators</li>
+                                    <li>Master XPath and CSS Selector techniques</li>
+                                    <li>Test dynamic element identification</li>
+                                </ul>
+                            </div>
+
+                            <div class="guide-section">
+                                <h5>⚡ WebDriver Actions</h5>
+                                <ul>
+                                    <li>Element interactions (click, type, clear)</li>
+                                    <li>Dropdown handling with Select class</li>
+                                    <li>File upload and form submissions</li>
+                                </ul>
+                            </div>
+
+                            <div class="guide-section">
+                                <h5>⏱️ Wait Strategies</h5>
+                                <ul>
+                                    <li>Implicit vs Explicit waits</li>
+                                    <li>Dynamic content loading scenarios</li>
+                                    <li>Element state change handling</li>
+                                </ul>
+                            </div>
+
+                            <div class="guide-section">
+                                <h5>🔄 Advanced Scenarios</h5>
+                                <ul>
+                                    <li>Alert and modal dialog handling</li>
+                                    <li>Tab switching and window management</li>
+                                    <li>Table data extraction and manipulation</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="practice-tips">
+                        <h4>💡 Practice Tips</h4>
+                        <div class="tips-grid">
+                            <div class="tip-card">
+                                <h6>🎯 Start Simple</h6>
+                                <p>Begin with basic elements like text fields and buttons before moving to complex interactions.</p>
+                            </div>
+                            <div class="tip-card">
+                                <h6>🔧 Use Browser DevTools</h6>
+                                <p>Inspect elements to understand their properties and choose the best locator strategy.</p>
+                            </div>
+                            <div class="tip-card">
+                                <h6>⚡ Practice Waits</h6>
+                                <p>Use the dynamic content sections to practice different wait strategies and timing.</p>
+                            </div>
+                            <div class="tip-card">
+                                <h6>📝 Write Test Cases</h6>
+                                <p>Create complete test scenarios combining multiple element interactions.</p>
+                            </div>
+                        </div>
                     </div>
                 </div>
 

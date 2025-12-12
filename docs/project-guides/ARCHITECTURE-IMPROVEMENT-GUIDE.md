@@ -478,8 +478,10 @@ class AuthService {
       { expiresIn: '1h' }
     );
 
-    // TODO: Send email with reset link
-    // await emailService.sendPasswordResetEmail(email, resetToken);
+    // Send email with reset link
+    const emailService = require('./emailService');
+    const resetLink = `${process.env.FRONTEND_URL}/reset-password?token=${resetToken}`;
+    await emailService.sendPasswordResetEmail(email, resetLink, user.name);
 
     return resetToken;
   }
@@ -517,6 +519,246 @@ class AuthService {
     }));
   }
 }
+
+### Email Service Implementation
+
+**File**: `src/services/emailService.js`
+
+```javascript
+const nodemailer = require('nodemailer');
+
+class EmailService {
+  constructor() {
+    // Configure email transporter
+    this.transporter = nodemailer.createTransport({
+      host: process.env.SMTP_HOST || 'smtp.gmail.com',
+      port: process.env.SMTP_PORT || 587,
+      secure: false, // true for 465, false for other ports
+      auth: {
+        user: process.env.SMTP_USER,
+        pass: process.env.SMTP_PASSWORD
+      }
+    });
+  }
+
+  /**
+   * Send password reset email
+   * @param {string} email - Recipient email
+   * @param {string} resetLink - Password reset link
+   * @param {string} userName - User's name
+   */
+  async sendPasswordResetEmail(email, resetLink, userName) {
+    const mailOptions = {
+      from: `"Interview Prep Platform" <${process.env.SMTP_USER}>`,
+      to: email,
+      subject: 'Password Reset Request',
+      html: `
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <style>
+            body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+            .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+            .header { background: #4CAF50; color: white; padding: 20px; text-align: center; }
+            .content { padding: 20px; background: #f9f9f9; }
+            .button { display: inline-block; padding: 12px 24px; background: #4CAF50; 
+                     color: white; text-decoration: none; border-radius: 4px; margin: 20px 0; }
+            .footer { text-align: center; padding: 20px; color: #666; font-size: 12px; }
+          </style>
+        </head>
+        <body>
+          <div class="container">
+            <div class="header">
+              <h1>Password Reset Request</h1>
+            </div>
+            <div class="content">
+              <p>Hi ${userName},</p>
+              <p>We received a request to reset your password for your Interview Prep Platform account.</p>
+              <p>Click the button below to reset your password:</p>
+              <p style="text-align: center;">
+                <a href="${resetLink}" class="button">Reset Password</a>
+              </p>
+              <p>Or copy and paste this link into your browser:</p>
+              <p style="word-break: break-all; color: #4CAF50;">${resetLink}</p>
+              <p><strong>This link will expire in 1 hour.</strong></p>
+              <p>If you didn't request a password reset, please ignore this email or contact support if you have concerns.</p>
+              <p>Best regards,<br>Interview Prep Platform Team</p>
+            </div>
+            <div class="footer">
+              <p>This is an automated email. Please do not reply.</p>
+              <p>&copy; ${new Date().getFullYear()} Interview Prep Platform. All rights reserved.</p>
+            </div>
+          </div>
+        </body>
+        </html>
+      `
+    };
+
+    try {
+      const info = await this.transporter.sendMail(mailOptions);
+      console.log('Password reset email sent:', info.messageId);
+      return info;
+    } catch (error) {
+      console.error('Error sending password reset email:', error);
+      throw new Error('Failed to send password reset email');
+    }
+  }
+
+  /**
+   * Send welcome email to new users
+   * @param {string} email - Recipient email
+   * @param {string} userName - User's name
+   */
+  async sendWelcomeEmail(email, userName) {
+    const mailOptions = {
+      from: `"Interview Prep Platform" <${process.env.SMTP_USER}>`,
+      to: email,
+      subject: 'Welcome to Interview Prep Platform!',
+      html: `
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <style>
+            body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+            .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+            .header { background: #4CAF50; color: white; padding: 20px; text-align: center; }
+            .content { padding: 20px; background: #f9f9f9; }
+            .button { display: inline-block; padding: 12px 24px; background: #4CAF50; 
+                     color: white; text-decoration: none; border-radius: 4px; margin: 20px 0; }
+            .footer { text-align: center; padding: 20px; color: #666; font-size: 12px; }
+          </style>
+        </head>
+        <body>
+          <div class="container">
+            <div class="header">
+              <h1>Welcome to Interview Prep Platform! 🎉</h1>
+            </div>
+            <div class="content">
+              <p>Hi ${userName},</p>
+              <p>Thank you for joining Interview Prep Platform! We're excited to help you prepare for your QA Automation Engineer interviews.</p>
+              <h3>What's Next?</h3>
+              <ul>
+                <li>📚 Explore 500+ interview questions</li>
+                <li>💻 Practice coding challenges</li>
+                <li>📊 Track your progress with our dashboard</li>
+                <li>🏆 Earn achievements as you learn</li>
+              </ul>
+              <p style="text-align: center;">
+                <a href="${process.env.FRONTEND_URL}/dashboard" class="button">Get Started</a>
+              </p>
+              <p>If you have any questions, feel free to reach out to our support team.</p>
+              <p>Happy learning!<br>Interview Prep Platform Team</p>
+            </div>
+            <div class="footer">
+              <p>This is an automated email. Please do not reply.</p>
+              <p>&copy; ${new Date().getFullYear()} Interview Prep Platform. All rights reserved.</p>
+            </div>
+          </div>
+        </body>
+        </html>
+      `
+    };
+
+    try {
+      const info = await this.transporter.sendMail(mailOptions);
+      console.log('Welcome email sent:', info.messageId);
+      return info;
+    } catch (error) {
+      console.error('Error sending welcome email:', error);
+      // Don't throw error for welcome email - it's not critical
+      return null;
+    }
+  }
+
+  /**
+   * Send achievement notification email
+   * @param {string} email - Recipient email
+   * @param {string} userName - User's name
+   * @param {string} achievementName - Achievement name
+   * @param {string} achievementDescription - Achievement description
+   */
+  async sendAchievementEmail(email, userName, achievementName, achievementDescription) {
+    const mailOptions = {
+      from: `"Interview Prep Platform" <${process.env.SMTP_USER}>`,
+      to: email,
+      subject: `🏆 New Achievement Unlocked: ${achievementName}`,
+      html: `
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <style>
+            body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+            .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+            .header { background: #FFD700; color: #333; padding: 20px; text-align: center; }
+            .content { padding: 20px; background: #f9f9f9; }
+            .achievement { background: white; padding: 20px; border-radius: 8px; 
+                          text-align: center; margin: 20px 0; }
+            .button { display: inline-block; padding: 12px 24px; background: #4CAF50; 
+                     color: white; text-decoration: none; border-radius: 4px; margin: 20px 0; }
+            .footer { text-align: center; padding: 20px; color: #666; font-size: 12px; }
+          </style>
+        </head>
+        <body>
+          <div class="container">
+            <div class="header">
+              <h1>🏆 Achievement Unlocked!</h1>
+            </div>
+            <div class="content">
+              <p>Congratulations ${userName}!</p>
+              <div class="achievement">
+                <h2 style="color: #FFD700;">🏆 ${achievementName}</h2>
+                <p>${achievementDescription}</p>
+              </div>
+              <p>Keep up the great work! Continue your learning journey to unlock more achievements.</p>
+              <p style="text-align: center;">
+                <a href="${process.env.FRONTEND_URL}/dashboard" class="button">View Dashboard</a>
+              </p>
+              <p>Best regards,<br>Interview Prep Platform Team</p>
+            </div>
+            <div class="footer">
+              <p>This is an automated email. Please do not reply.</p>
+              <p>&copy; ${new Date().getFullYear()} Interview Prep Platform. All rights reserved.</p>
+            </div>
+          </div>
+        </body>
+        </html>
+      `
+    };
+
+    try {
+      const info = await this.transporter.sendMail(mailOptions);
+      console.log('Achievement email sent:', info.messageId);
+      return info;
+    } catch (error) {
+      console.error('Error sending achievement email:', error);
+      return null;
+    }
+  }
+}
+
+module.exports = new EmailService();
+```
+
+### Environment Variables for Email Service
+
+Add these to your `.env` file:
+
+```env
+# Email Configuration
+SMTP_HOST=smtp.gmail.com
+SMTP_PORT=587
+SMTP_USER=your-email@gmail.com
+SMTP_PASSWORD=your-app-password
+FRONTEND_URL=http://localhost:3000
+```
+
+**Note**: For Gmail, you need to:
+1. Enable 2-factor authentication
+2. Generate an App Password
+3. Use the App Password in `SMTP_PASSWORD`
+
+---
+
 
 module.exports = new AuthService();
 ```

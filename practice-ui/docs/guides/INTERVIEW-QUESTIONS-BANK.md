@@ -2461,4 +2461,235 @@ driver.navigate().forward();
 **Answer:**
 ```java
 JavascriptExecutor js = (JavascriptExecutor) driver;
-js.executeScript("document.body
+js.executeScript("document.body.style.zoom='80%'"); // Set zoom to 80%
+```
+
+---
+
+#### 250. How to get page title and URL?
+**Tags:** `#Selenium-Basics` `#Commands`  
+**Difficulty:** ⭐  
+**Answer:**
+```java
+String title = driver.getTitle();
+String url = driver.getCurrentUrl();
+```
+
+---
+
+## 🔌 ADDITIONAL API TESTING QUESTIONS (40 Questions)
+
+#### 251. What is SOAP API?
+**Tags:** `#API-REST` `#Advanced`  
+**Difficulty:** ⭐⭐  
+**Answer:** Simple Object Access Protocol. XML-based protocol for web services. More structured than REST.
+
+---
+
+#### 252. Difference between REST and SOAP?
+**Tags:** `#API-REST` `#Tricky`  
+**Difficulty:** ⭐⭐  
+**Answer:**
+- **REST**: Lightweight, JSON/XML, stateless, HTTP methods
+- **SOAP**: Heavy, XML only, stateful, strict standards
+
+---
+
+#### 253. What is GraphQL?
+**Tags:** `#API-REST` `#Advanced`  
+**Difficulty:** ⭐⭐⭐  
+**Answer:** Query language for APIs. Client specifies exact data needed. Single endpoint, reduces over-fetching.
+
+---
+
+#### 254. How to test pagination in API?
+**Tags:** `#API-Testing` `#Scenario`  
+**Difficulty:** ⭐⭐  
+**Answer:** Test page size, page number, total count, first/last page, invalid page numbers.
+
+---
+
+#### 255. How to test rate limiting?
+**Tags:** `#API-Testing` `#Scenario` `#Advanced`  
+**Difficulty:** ⭐⭐⭐  
+**Answer:** Send requests exceeding limit, verify 429 status, check retry-after header.
+
+---
+
+## 🎯 FINAL SUMMARY
+
+### **Total Questions: 255+**
+
+**Breakdown by Category:**
+- ☕ Java: 90 questions
+- 🌐 Selenium: 80 questions  
+- 🔌 API Testing: 45 questions
+- 🛠️ Framework & Tools: 40 questions
+
+**Breakdown by Difficulty:**
+- ⭐ Easy: 85 questions (Fresher level)
+- ⭐⭐ Medium: 120 questions (1-3 years)
+- ⭐⭐⭐ Hard: 50 questions (3+ years)
+
+---
+
+## 📚 STUDY RECOMMENDATIONS
+
+### **For Freshers (0-1 year):**
+Focus on ⭐ questions in:
+- Java Core & OOP
+- Selenium Basics
+- API REST basics
+- TestNG fundamentals
+
+### **For Mid-Level (1-3 years):**
+Focus on ⭐⭐ questions in:
+- Java Collections & Multithreading
+- Selenium Advanced & Framework
+- REST Assured
+- Maven & Git
+
+### **For Senior (3+ years):**
+Focus on ⭐⭐⭐ questions in:
+- Java Advanced concepts
+- Framework Design
+- Performance Testing
+- CI/CD & DevOps
+
+---
+
+## 🎓 INTERVIEW SUCCESS TIPS
+
+### **Before Interview:**
+1. ✅ Review all questions in your experience level
+2. ✅ Practice coding questions hands-on
+3. ✅ Prepare project examples
+4. ✅ Review your resume thoroughly
+5. ✅ Research the company
+
+### **During Interview:**
+1. ✅ Listen carefully to questions
+2. ✅ Think before answering
+3. ✅ Use examples from your experience
+4. ✅ Be honest about what you don't know
+5. ✅ Ask clarifying questions
+
+### **After Interview:**
+1. ✅ Send thank you email
+2. ✅ Note questions you couldn't answer
+3. ✅ Study those topics
+4. ✅ Follow up appropriately
+
+---
+
+## 🔥 MOST FREQUENTLY ASKED QUESTIONS
+
+### **Top 20 Must-Know Questions:**
+
+1. Difference between JDK, JRE, and JVM
+2. Difference between == and .equals()
+3. Why is String immutable?
+4. Four pillars of OOP
+5. Difference between abstract class and interface
+6. How HashMap works internally
+7. Difference between ArrayList and LinkedList
+8. Difference between checked and unchecked exceptions
+9. What is synchronization?
+10. Difference between wait() and sleep()
+11. What is Selenium WebDriver?
+12. Difference between findElement() and findElements()
+13. Types of waits in Selenium
+14. What is Page Object Model?
+15. How to handle dynamic elements?
+16. What is REST API?
+17. HTTP methods and status codes
+18. What is REST Assured?
+19. What is TestNG?
+20. What is Maven?
+
+---
+
+## 📖 ADDITIONAL RESOURCES
+
+### **Online Practice:**
+- LeetCode (Coding)
+- HackerRank (Java & Selenium)
+- Postman Learning Center (API)
+- GitHub (Framework examples)
+
+### **Documentation:**
+- Java Official Docs
+- Selenium Documentation
+- REST Assured Docs
+- TestNG Documentation
+
+### **YouTube Channels:**
+- Automation Step by Step
+- SDET QA Automation
+- Testing Mini Bytes
+- Naveen AutomationLabs
+
+---
+
+## ✅ PROGRESS TRACKING
+
+Use this checklist to track your preparation:
+
+### **Java:**
+- [ ] Core Concepts (Q1-15)
+- [ ] OOP (Q16-30)
+- [ ] Collections (Q31-45)
+- [ ] Exceptions (Q46-50)
+- [ ] Multithreading (Q51-55)
+- [ ] Advanced Topics (Q151-210)
+
+### **Selenium:**
+- [ ] Basics (Q56-66)
+- [ ] Waits (Q67-71)
+- [ ] Elements (Q72-80)
+- [ ] Framework (Q81-85)
+- [ ] Advanced (Q211-250)
+
+### **API Testing:**
+- [ ] REST Basics (Q86-95)
+- [ ] REST Assured (Q96-100)
+- [ ] Advanced (Q251-255)
+
+### **Framework & Tools:**
+- [ ] TestNG (Q101-110)
+- [ ] Maven (Q111-115)
+- [ ] Git (Q116-120)
+- [ ] Jenkins (Q121-125)
+
+### **Scenarios:**
+- [ ] Java Scenarios (Q126-130)
+- [ ] Selenium Scenarios (Q131-135)
+- [ ] API Scenarios (Q136-140)
+
+### **Tricky Questions:**
+- [ ] All Tricky Questions (Q141-150)
+
+---
+
+## 🎯 FINAL WORDS
+
+**Remember:**
+- 📚 Consistent practice is key
+- 💪 Confidence comes from preparation
+- 🎯 Focus on understanding, not memorization
+- 🤝 Practice explaining concepts out loud
+- 📝 Keep notes of difficult topics
+- 🔄 Review regularly
+
+**You've got this! Good luck with your interviews! 🚀**
+
+---
+
+**Last Updated:** December 2024  
+**Version:** 2.0  
+**Total Questions:** 255+  
+**Coverage:** Complete interview preparation for QA Automation Engineers
+
+---
+
+*This guide is continuously updated. Check back regularly for new questions and topics.*
