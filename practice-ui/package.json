@@ -4,7 +4,7 @@
   "description": "Interview Preparation Platform with Cloud Sync",
   "main": "index.html",
   "scripts": {
-    "start": "node server.js",
+    "start": "node server/server.js",
     "dev": "netlify dev",
     "build": "echo 'No build step required for static site'",
     "deploy": "netlify deploy --prod",
