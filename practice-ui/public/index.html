@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Java + Selenium + API - Interview Prep Practice</title>
+    <link rel="stylesheet" href="styles-modern.css">
     <link rel="stylesheet" href="styles.css">
 
     <!-- PWA Manifest -->
@@ -38,40 +39,53 @@
     <div class="container">
         <!-- Header -->
         <header class="header">
-            <div class="header-top">
-                <div class="header-title">
-                    <h1>🎯 Interview Prep Practice Portal</h1>
-                    <p class="subtitle">Java + Selenium + API Testing</p>
+            <div class="header-content">
+                <div class="header-brand">
+                    <span class="header-brand-icon">🎯</span>
+                    <div>
+                        <div class="header-title">Interview Prep Practice Portal</div>
+                        <div class="subtitle text-secondary">Java + Selenium + API Testing</div>
+                    </div>
                 </div>
-                <div class="header-controls">
+                <div class="header-actions">
                     <button id="settingsBtn" class="header-btn" title="Settings">
-                        <span class="header-btn-icon">⚙️</span>
+                        <span>⚙️</span>
                     </button>
                     <button id="darkModeToggle" class="header-btn" title="Toggle Dark Mode">
-                        <span class="header-btn-icon dark-mode-icon">🌙</span>
+                        <span class="dark-mode-icon">🌙</span>
                     </button>
                 </div>
             </div>
 
             <!-- Experience Level Selector -->
-            <div class="experience-selector">
-                <label for="experienceLevel">Your Experience Level:</label>
-                <select id="experienceLevel">
-                    <option value="junior">Junior (0-3 Years) - ₹3-8 LPA</option>
-                    <option value="mid">Mid-Level (4-7 Years) - ₹8-15 LPA</option>
-                    <option value="senior" selected>Senior (8-12 Years) - ₹15-40 LPA</option>
-                </select>
-                <span class="experience-info" id="experienceInfo">Senior SDET, Test Architect, QA Lead</span>
-            </div>
-
-            <div class="progress-summary">
-                <div class="stat">
-                    <span class="stat-label">Days Completed:</span>
-                    <span class="stat-value" id="completedDays">0</span>
+            <div class="container">
+                <div class="card mb-6">
+                    <div class="card-body">
+                        <div class="form-group">
+                            <label class="form-label" for="experienceLevel">Your Experience Level:</label>
+                            <select id="experienceLevel" class="form-input form-select">
+                                <option value="junior">Junior (0-3 Years) - ₹3-8 LPA</option>
+                                <option value="mid">Mid-Level (4-7 Years) - ₹8-15 LPA</option>
+                                <option value="senior" selected>Senior (8-12 Years) - ₹15-40 LPA</option>
+                            </select>
+                            <span class="text-secondary" id="experienceInfo">Senior SDET, Test Architect, QA Lead</span>
+                        </div>
+                    </div>
                 </div>
-                <div class="stat">
-                    <span class="stat-label">Total Progress:</span>
-                    <span class="stat-value" id="totalProgress">0%</span>
+
+                <div class="card mb-6">
+                    <div class="card-body">
+                        <div class="grid grid-cols-2">
+                            <div class="text-center">
+                                <span class="text-secondary">Days Completed:</span>
+                                <div class="text-2xl font-bold text-primary" id="completedDays">0</div>
+                            </div>
+                            <div class="text-center">
+                                <span class="text-secondary">Total Progress:</span>
+                                <div class="text-2xl font-bold text-primary" id="totalProgress">0%</div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </header>
@@ -81,11 +95,14 @@
             <!-- Sidebar - Week/Day Navigation -->
             <aside class="sidebar">
                 <!-- Navigation Tabs -->
-                <div class="sidebar-tabs">
-                    <button class="tab-btn" data-tab="dashboard">📊 Dashboard</button>
-                    <button class="tab-btn active" data-tab="schedule">📅 Schedule</button>
-                    <button class="tab-btn" data-tab="questions">❓ Interview Questions</button>
-                    <button class="tab-btn" data-tab="practice">🎯 Selenium Practice</button>
+                <div class="nav-tabs">
+                    <button class="nav-tab" data-tab="dashboard">📊 Dashboard</button>
+                    <button class="nav-tab active" data-tab="schedule">📅 Schedule</button>
+                    <button class="nav-tab" data-tab="questions">❓ Interview Questions</button>
+                    <button class="nav-tab" data-tab="practice">🎯 Selenium Practice</button>
+                    <button class="nav-tab" data-tab="admin" style="display: none;">🎛️ Admin Panel</button>
+                    <button class="nav-tab" data-tab="social">👥 Social Learning</button>
+                    <button class="nav-tab" data-tab="integrations">🔗 Integrations</button>
                 </div>
 
                 <!-- Dashboard Tab Content -->
@@ -94,148 +111,200 @@
                         <h3>📊 Your Progress Dashboard</h3>
 
                         <!-- Overall Progress Summary -->
-                        <div class="dashboard-section">
-                            <h4>📈 Overall Progress</h4>
-                            <div class="progress-cards">
-                                <div class="progress-card">
-                                    <div class="progress-number" id="dashboardDaysCompleted">0</div>
-                                    <div class="progress-label">Days Completed</div>
-                                </div>
-                                <div class="progress-card">
-                                    <div class="progress-number" id="dashboardTotalDays">30</div>
-                                    <div class="progress-label">Total Days</div>
-                                </div>
-                                <div class="progress-card">
-                                    <div class="progress-number" id="dashboardCompletionRate">0%</div>
-                                    <div class="progress-label">Completion Rate</div>
-                                </div>
+                        <div class="card mb-6">
+                            <div class="card-header">
+                                <h4>📈 Overall Progress</h4>
                             </div>
+                            <div class="card-body">
+                                <div class="grid grid-cols-3 mb-6">
+                                    <div class="card">
+                                        <div class="card-body text-center">
+                                            <div class="text-3xl font-bold text-primary" id="dashboardDaysCompleted">0</div>
+                                            <div class="text-secondary">Days Completed</div>
+                                        </div>
+                                    </div>
+                                    <div class="card">
+                                        <div class="card-body text-center">
+                                            <div class="text-3xl font-bold text-secondary" id="dashboardTotalDays">30</div>
+                                            <div class="text-secondary">Total Days</div>
+                                        </div>
+                                    </div>
+                                    <div class="card">
+                                        <div class="card-body text-center">
+                                            <div class="text-3xl font-bold text-success" id="dashboardCompletionRate">0%</div>
+                                            <div class="text-secondary">Completion Rate</div>
+                                        </div>
+                                    </div>
+                                </div>
 
-                            <!-- Progress Bar -->
-                            <div class="overall-progress-bar">
-                                <div class="progress-bar-container">
+                                <!-- Progress Bar -->
+                                <div class="progress mb-4">
                                     <div class="progress-bar" id="dashboardProgressBar" style="width: 0%"></div>
                                 </div>
-                                <div class="progress-text">
-                                    <span id="dashboardProgressText">0% Complete</span>
+                                <div class="text-center">
+                                    <span class="text-secondary" id="dashboardProgressText">0% Complete</span>
                                 </div>
                             </div>
                         </div>
 
                         <!-- Learning Streak -->
-                        <div class="dashboard-section">
-                            <h4>🔥 Learning Streak</h4>
-                            <div class="streak-container">
-                                <div class="streak-card">
-                                    <div class="streak-number" id="currentStreak">0</div>
-                                    <div class="streak-label">Current Streak</div>
-                                    <div class="streak-unit">days</div>
-                                </div>
-                                <div class="streak-card">
-                                    <div class="streak-number" id="longestStreak">0</div>
-                                    <div class="streak-label">Longest Streak</div>
-                                    <div class="streak-unit">days</div>
-                                </div>
+                        <div class="card mb-6">
+                            <div class="card-header">
+                                <h4>🔥 Learning Streak</h4>
                             </div>
-                            <div class="streak-calendar" id="streakCalendar">
-                                <!-- Calendar will be populated by JavaScript -->
+                            <div class="card-body">
+                                <div class="grid grid-cols-2 mb-4">
+                                    <div class="card">
+                                        <div class="card-body text-center">
+                                            <div class="text-2xl font-bold text-danger" id="currentStreak">0</div>
+                                            <div class="text-secondary">Current Streak</div>
+                                            <div class="text-sm text-tertiary">days</div>
+                                        </div>
+                                    </div>
+                                    <div class="card">
+                                        <div class="card-body text-center">
+                                            <div class="text-2xl font-bold text-warning" id="longestStreak">0</div>
+                                            <div class="text-secondary">Longest Streak</div>
+                                            <div class="text-sm text-tertiary">days</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="streak-calendar" id="streakCalendar">
+                                    <!-- Calendar will be populated by JavaScript -->
+                                </div>
                             </div>
                         </div>
 
                         <!-- Weekly Breakdown -->
-                        <div class="dashboard-section">
-                            <h4>📅 Weekly Breakdown</h4>
-                            <div class="weekly-progress" id="weeklyBreakdown">
-                                <!-- Weekly progress will be populated by JavaScript -->
+                        <div class="card mb-6">
+                            <div class="card-header">
+                                <h4>📅 Weekly Breakdown</h4>
+                            </div>
+                            <div class="card-body">
+                                <div class="weekly-progress" id="weeklyBreakdown">
+                                    <!-- Weekly progress will be populated by JavaScript -->
+                                </div>
                             </div>
                         </div>
 
                         <!-- Questions Statistics -->
-                        <div class="dashboard-section">
-                            <h4>❓ Questions Progress</h4>
-                            <div class="questions-stats">
-                                <div class="stat-card">
-                                    <div class="stat-number" id="questionsStudied">0</div>
-                                    <div class="stat-label">Questions Studied</div>
-                                </div>
-                                <div class="stat-card">
-                                    <div class="stat-number" id="totalQuestions">250+</div>
-                                    <div class="stat-label">Total Questions</div>
-                                </div>
-                                <div class="stat-card">
-                                    <div class="stat-number" id="averageTime">0</div>
-                                    <div class="stat-label">Avg. Time/Question</div>
-                                    <div class="stat-unit">min</div>
-                                </div>
+                        <div class="card mb-6">
+                            <div class="card-header">
+                                <h4>❓ Questions Progress</h4>
                             </div>
+                            <div class="card-body">
+                                <div class="grid grid-cols-3 mb-4">
+                                    <div class="card">
+                                        <div class="card-body text-center">
+                                            <div class="text-2xl font-bold text-primary" id="questionsStudied">0</div>
+                                            <div class="text-secondary">Questions Studied</div>
+                                        </div>
+                                    </div>
+                                    <div class="card">
+                                        <div class="card-body text-center">
+                                            <div class="text-2xl font-bold text-info" id="totalQuestions">250+</div>
+                                            <div class="text-secondary">Total Questions</div>
+                                        </div>
+                                    </div>
+                                    <div class="card">
+                                        <div class="card-body text-center">
+                                            <div class="text-2xl font-bold text-success" id="averageTime">0</div>
+                                            <div class="text-secondary">Avg. Time/Question</div>
+                                            <div class="text-sm text-tertiary">min</div>
+                                        </div>
+                                    </div>
+                                </div>
 
-                            <!-- Category Progress -->
-                            <div class="category-progress" id="categoryProgress">
-                                <!-- Category progress bars will be populated by JavaScript -->
+                                <!-- Category Progress -->
+                                <div class="category-progress" id="categoryProgress">
+                                    <!-- Category progress bars will be populated by JavaScript -->
+                                </div>
                             </div>
                         </div>
 
                         <!-- Achievements -->
-                        <div class="dashboard-section">
-                            <h4>🏆 Achievements</h4>
-                            <div class="achievements-grid" id="achievementsGrid">
-                                <!-- Achievements will be populated by JavaScript -->
+                        <div class="card mb-6">
+                            <div class="card-header">
+                                <h4>🏆 Achievements</h4>
+                            </div>
+                            <div class="card-body">
+                                <div class="grid grid-cols-3" id="achievementsGrid">
+                                    <!-- Achievements will be populated by JavaScript -->
+                                </div>
                             </div>
                         </div>
 
                         <!-- Study Goals -->
-                        <div class="dashboard-section">
-                            <h4>🎯 Study Goals</h4>
-                            <div class="goals-container">
-                                <div class="goal-card">
-                                    <div class="goal-title">Daily Goal</div>
-                                    <div class="goal-progress">
-                                        <div class="goal-bar">
-                                            <div class="goal-fill" id="dailyGoalProgress" style="width: 0%"></div>
+                        <div class="card mb-6">
+                            <div class="card-header">
+                                <h4>🎯 Study Goals</h4>
+                            </div>
+                            <div class="card-body">
+                                <div class="grid grid-cols-2">
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <div class="goal-title font-medium mb-2">Daily Goal</div>
+                                            <div class="progress mb-2">
+                                                <div class="progress-bar" id="dailyGoalProgress" style="width: 0%"></div>
+                                            </div>
+                                            <span class="text-sm text-secondary" id="dailyGoalText">0 / 1 day studied</span>
                                         </div>
-                                        <span id="dailyGoalText">0 / 1 day studied</span>
                                     </div>
-                                </div>
-                                <div class="goal-card">
-                                    <div class="goal-title">Weekly Goal</div>
-                                    <div class="goal-progress">
-                                        <div class="goal-bar">
-                                            <div class="goal-fill" id="weeklyGoalProgress" style="width: 0%"></div>
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <div class="goal-title font-medium mb-2">Weekly Goal</div>
+                                            <div class="progress mb-2">
+                                                <div class="progress-bar" id="weeklyGoalProgress" style="width: 0%"></div>
+                                            </div>
+                                            <span class="text-sm text-secondary" id="weeklyGoalText">0 / 5 days this week</span>
                                         </div>
-                                        <span id="weeklyGoalText">0 / 5 days this week</span>
                                     </div>
                                 </div>
                             </div>
                         </div>
 
                         <!-- Study Time Analytics -->
-                        <div class="dashboard-section">
-                            <h4>⏰ Study Time Analytics</h4>
-                            <div class="time-stats">
-                                <div class="time-card">
-                                    <div class="time-number" id="totalStudyTime">0h 0m</div>
-                                    <div class="time-label">Total Study Time</div>
-                                </div>
-                                <div class="time-card">
-                                    <div class="time-number" id="averageSessionTime">0m</div>
-                                    <div class="time-label">Average Session</div>
-                                </div>
-                                <div class="time-card">
-                                    <div class="time-number" id="studySessionsCount">0</div>
-                                    <div class="time-label">Study Sessions</div>
+                        <div class="card mb-6">
+                            <div class="card-header">
+                                <h4>⏰ Study Time Analytics</h4>
+                            </div>
+                            <div class="card-body">
+                                <div class="grid grid-cols-3">
+                                    <div class="card">
+                                        <div class="card-body text-center">
+                                            <div class="text-2xl font-bold text-primary" id="totalStudyTime">0h 0m</div>
+                                            <div class="text-secondary">Total Study Time</div>
+                                        </div>
+                                    </div>
+                                    <div class="card">
+                                        <div class="card-body text-center">
+                                            <div class="text-2xl font-bold text-secondary" id="averageSessionTime">0m</div>
+                                            <div class="text-secondary">Average Session</div>
+                                        </div>
+                                    </div>
+                                    <div class="card">
+                                        <div class="card-body text-center">
+                                            <div class="text-2xl font-bold text-success" id="studySessionsCount">0</div>
+                                            <div class="text-secondary">Study Sessions</div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
 
                         <!-- Motivational Messages -->
-                        <div class="dashboard-section">
-                            <h4>💪 Motivation</h4>
-                            <div class="motivation-card" id="motivationCard">
-                                <div class="motivation-text" id="motivationText">
-                                    Keep up the great work! Every step brings you closer to your dream job! 🌟
+                        <div class="card mb-6">
+                            <div class="card-header">
+                                <h4>💪 Motivation</h4>
+                            </div>
+                            <div class="card-body">
+                                <div class="alert alert-info mb-4" id="motivationCard">
+                                    <div class="motivation-text" id="motivationText">
+                                        Keep up the great work! Every step brings you closer to your dream job! 🌟
+                                    </div>
                                 </div>
-                                <div class="motivation-action">
-                                    <button class="btn-motivation" id="getNewMotivation">Get New Motivation</button>
+                                <div class="text-center">
+                                    <button class="btn btn-primary" id="getNewMotivation">Get New Motivation</button>
                                 </div>
                             </div>
                         </div>
@@ -244,295 +313,420 @@
 
                 <!-- Schedule Tab Content -->
                 <div class="tab-content active" id="scheduleTab">
-                    <div class="track-selector">
-                        <label for="trackSelect">Choose Your Track:</label>
-                        <select id="trackSelect">
-                            <option value="fast">Fast Track (2-3 Months)</option>
-                            <option value="standard" selected>Standard Track (3-4 Months)</option>
-                        </select>
-                    </div>
+                    <div class="card mb-6">
+                        <div class="card-header">
+                            <h3>📅 Study Schedule</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="form-group">
+                                <label class="form-label" for="trackSelect">Choose Your Track:</label>
+                                <select id="trackSelect" class="form-input form-select">
+                                    <option value="fast">Fast Track (2-3 Months)</option>
+                                    <option value="standard" selected>Standard Track (3-4 Months)</option>
+                                </select>
+                            </div>
 
-                    <div class="navigation">
-                        <h3>📅 Study Schedule</h3>
-                        <div id="weekList" class="week-list">
-                            <!-- Weeks will be populated by JavaScript -->
+                            <div id="weekList" class="week-list">
+                                <!-- Weeks will be populated by JavaScript -->
+                            </div>
                         </div>
                     </div>
                 </div>
 
                 <!-- Interview Questions Tab Content -->
                 <div class="tab-content" id="questionsTab">
-                    <div class="questions-search">
-                        <div class="search-container">
-                            <input type="text" id="questionSearch" placeholder="🔍 Search questions..." class="search-input">
-                            <button id="clearSearch" class="clear-search" style="display: none;">×</button>
+                    <div class="card mb-6">
+                        <div class="card-header">
+                            <h3>🔍 Question Search & Filters</h3>
                         </div>
-                        <div class="search-stats" id="searchStats" style="display: none;">
-                            <span id="searchResultCount">0</span> questions found
+                        <div class="card-body">
+                            <div class="form-group">
+                                <div class="search-container">
+                                    <input type="text" id="questionSearch" placeholder="🔍 Search questions..." class="form-input">
+                                    <button id="clearSearch" class="btn btn-secondary btn-sm" style="display: none;">Clear</button>
+                                </div>
+                                <div class="alert alert-info" id="searchStats" style="display: none;">
+                                    <span id="searchResultCount">0</span> questions found
+                                </div>
+                            </div>
+
+                            <div class="grid grid-cols-2">
+                                <div class="form-group">
+                                    <label class="form-label" for="categoryFilter">Category:</label>
+                                    <select id="categoryFilter" class="form-input form-select">
+                                        <option value="all">All Categories</option>
+                                        <option value="java">☕ Java</option>
+                                        <option value="selenium">🌐 Selenium</option>
+                                        <option value="api-testing">🔌 API Testing</option>
+                                        <option value="testng">🧪 TestNG</option>
+                                        <option value="framework">🏗️ Framework (Senior)</option>
+                                        <option value="leadership">👔 Leadership (Senior)</option>
+                                    </select>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label" for="difficultyFilter">Difficulty:</label>
+                                    <select id="difficultyFilter" class="form-input form-select">
+                                        <option value="all">All Levels</option>
+                                        <option value="Basic">Basic</option>
+                                        <option value="Medium">Medium</option>
+                                        <option value="Hard">Hard</option>
+                                    </select>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
-                    <div class="questions-filter">
-                        <label for="categoryFilter">Category:</label>
-                        <select id="categoryFilter">
-                            <option value="all">All Categories</option>
-                            <option value="java">☕ Java</option>
-                            <option value="selenium">🌐 Selenium</option>
-                            <option value="api-testing">🔌 API Testing</option>
-                            <option value="testng">🧪 TestNG</option>
-                            <option value="framework">🏗️ Framework (Senior)</option>
-                            <option value="leadership">👔 Leadership (Senior)</option>
-                        </select>
+                    <div class="card">
+                        <div class="card-header">
+                            <h3>❓ Questions List</h3>
+                        </div>
+                        <div class="card-body">
+                            <div id="questionsList" class="questions-list">
+                                <!-- Questions will be populated by JavaScript -->
+                            </div>
 
-                        <label for="difficultyFilter">Difficulty:</label>
-                        <select id="difficultyFilter">
-                            <option value="all">All Levels</option>
-                            <option value="Basic">Basic</option>
-                            <option value="Medium">Medium</option>
-                            <option value="Hard">Hard</option>
-                        </select>
-                    </div>
-
-                    <div id="questionsList" class="questions-list">
-                        <!-- Questions will be populated by JavaScript -->
+                            <!-- Pagination Controls -->
+                            <div class="pagination-container" id="paginationContainer" style="display: none;">
+                                <div class="pagination-info mb-4">
+                                    <span class="text-secondary" id="paginationInfo">Showing 1-20 of 536 questions</span>
+                                </div>
+                                <div class="flex items-center justify-between">
+                                    <button id="prevPageBtn" class="btn btn-secondary" disabled>
+                                        <span>← Previous</span>
+                                    </button>
+                                    <div class="pagination-numbers flex items-center gap-2" id="paginationNumbers">
+                                        <!-- Page numbers will be populated by JavaScript -->
+                                    </div>
+                                    <button id="nextPageBtn" class="btn btn-secondary" disabled>
+                                        <span>Next →</span>
+                                    </button>
+                                </div>
+                                <div class="text-center mt-4">
+                                    <span class="text-secondary" id="paginationMeta">Page 1 of 27</span>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
                 <!-- Selenium Practice Tab Content -->
                 <div class="tab-content" id="practiceTab">
-                    <div class="practice-header">
-                        <h3>🎯 Selenium Practice Form</h3>
-                        <p>Practice automation testing with comprehensive web elements</p>
-                    </div>
-
-                    <div class="practice-description">
-                        <div class="practice-info-card">
-                            <h4>📚 What You Can Practice</h4>
-                            <ul>
-                                <li><strong>Basic Elements:</strong> Input fields, dropdowns, checkboxes, radio buttons</li>
-                                <li><strong>Advanced Interactions:</strong> Sliders, file uploads, date pickers</li>
-                                <li><strong>Dynamic Content:</strong> Modals, alerts, dynamic loading, tooltips</li>
-                                <li><strong>Complex Scenarios:</strong> Tables, tabs, forms validation</li>
-                            </ul>
+                    <div class="card mb-6">
+                        <div class="card-header">
+                            <h3>🎯 Selenium Practice Form</h3>
+                            <p class="text-secondary mb-0">Practice automation testing with comprehensive web elements</p>
                         </div>
-
-                        <div class="practice-actions">
-                            <button id="openPracticeForm" class="btn-primary">
-                                🚀 Open Practice Form in New Tab
-                            </button>
-                            <button id="downloadPracticeForm" class="btn-secondary">
-                                📥 Download Practice Form
-                            </button>
-                        </div>
-                    </div>
-
-                    <div class="practice-guide">
-                        <h4>🎓 Selenium Practice Guide</h4>
-                        <div class="guide-sections">
-                            <div class="guide-section">
-                                <h5>🔍 Locator Strategies</h5>
-                                <ul>
-                                    <li>Practice with ID, Name, Class, Tag locators</li>
-                                    <li>Master XPath and CSS Selector techniques</li>
-                                    <li>Test dynamic element identification</li>
+                        <div class="card-body">
+                            <div class="alert alert-info mb-6">
+                                <h4 class="mb-2">📚 What You Can Practice</h4>
+                                <ul class="mb-0">
+                                    <li><strong>Basic Elements:</strong> Input fields, dropdowns, checkboxes, radio buttons</li>
+                                    <li><strong>Advanced Interactions:</strong> Sliders, file uploads, date pickers</li>
+                                    <li><strong>Dynamic Content:</strong> Modals, alerts, dynamic loading, tooltips</li>
+                                    <li><strong>Complex Scenarios:</strong> Tables, tabs, forms validation</li>
                                 </ul>
                             </div>
 
-                            <div class="guide-section">
-                                <h5>⚡ WebDriver Actions</h5>
-                                <ul>
-                                    <li>Element interactions (click, type, clear)</li>
-                                    <li>Dropdown handling with Select class</li>
-                                    <li>File upload and form submissions</li>
-                                </ul>
-                            </div>
-
-                            <div class="guide-section">
-                                <h5>⏱️ Wait Strategies</h5>
-                                <ul>
-                                    <li>Implicit vs Explicit waits</li>
-                                    <li>Dynamic content loading scenarios</li>
-                                    <li>Element state change handling</li>
-                                </ul>
-                            </div>
-
-                            <div class="guide-section">
-                                <h5>🔄 Advanced Scenarios</h5>
-                                <ul>
-                                    <li>Alert and modal dialog handling</li>
-                                    <li>Tab switching and window management</li>
-                                    <li>Table data extraction and manipulation</li>
-                                </ul>
+                            <div class="flex items-center gap-4 mb-6">
+                                <button id="openPracticeForm" class="btn btn-primary btn-lg">
+                                    🚀 Open Practice Form in New Tab
+                                </button>
+                                <button id="downloadPracticeForm" class="btn btn-secondary btn-lg">
+                                    📥 Download Practice Form
+                                </button>
                             </div>
                         </div>
                     </div>
 
-                    <div class="practice-tips">
-                        <h4>💡 Practice Tips</h4>
-                        <div class="tips-grid">
-                            <div class="tip-card">
-                                <h6>🎯 Start Simple</h6>
-                                <p>Begin with basic elements like text fields and buttons before moving to complex interactions.</p>
-                            </div>
-                            <div class="tip-card">
-                                <h6>🔧 Use Browser DevTools</h6>
-                                <p>Inspect elements to understand their properties and choose the best locator strategy.</p>
-                            </div>
-                            <div class="tip-card">
-                                <h6>⚡ Practice Waits</h6>
-                                <p>Use the dynamic content sections to practice different wait strategies and timing.</p>
-                            </div>
-                            <div class="tip-card">
-                                <h6>📝 Write Test Cases</h6>
-                                <p>Create complete test scenarios combining multiple element interactions.</p>
+                    <div class="card mb-6">
+                        <div class="card-header">
+                            <h4>🎓 Selenium Practice Guide</h4>
+                        </div>
+                        <div class="card-body">
+                            <div class="grid grid-cols-2">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <h5 class="mb-3">🔍 Locator Strategies</h5>
+                                        <ul class="text-sm">
+                                            <li>Practice with ID, Name, Class, Tag locators</li>
+                                            <li>Master XPath and CSS Selector techniques</li>
+                                            <li>Test dynamic element identification</li>
+                                        </ul>
+                                    </div>
+                                </div>
+
+                                <div class="card">
+                                    <div class="card-body">
+                                        <h5 class="mb-3">⚡ WebDriver Actions</h5>
+                                        <ul class="text-sm">
+                                            <li>Element interactions (click, type, clear)</li>
+                                            <li>Dropdown handling with Select class</li>
+                                            <li>File upload and form submissions</li>
+                                        </ul>
+                                    </div>
+                                </div>
+
+                                <div class="card">
+                                    <div class="card-body">
+                                        <h5 class="mb-3">⏱️ Wait Strategies</h5>
+                                        <ul class="text-sm">
+                                            <li>Implicit vs Explicit waits</li>
+                                            <li>Dynamic content loading scenarios</li>
+                                            <li>Element state change handling</li>
+                                        </ul>
+                                    </div>
+                                </div>
+
+                                <div class="card">
+                                    <div class="card-body">
+                                        <h5 class="mb-3">🔄 Advanced Scenarios</h5>
+                                        <ul class="text-sm">
+                                            <li>Alert and modal dialog handling</li>
+                                            <li>Tab switching and window management</li>
+                                            <li>Table data extraction and manipulation</li>
+                                        </ul>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
 
-                <div class="quick-actions">
-                    <button id="resetProgress" class="btn-secondary">Reset Progress</button>
-                    <button id="exportProgress" class="btn-secondary">Export Progress</button>
+                    <div class="card">
+                        <div class="card-header">
+                            <h4>💡 Practice Tips</h4>
+                        </div>
+                        <div class="card-body">
+                            <div class="grid grid-cols-2">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <h6 class="mb-2">🎯 Start Simple</h6>
+                                        <p class="text-sm text-secondary mb-0">Begin with basic elements like text fields and buttons before moving to complex interactions.</p>
+                                    </div>
+                                </div>
+                                <div class="card">
+                                    <div class="card-body">
+                                        <h6 class="mb-2">🔧 Use Browser DevTools</h6>
+                                        <p class="text-sm text-secondary mb-0">Inspect elements to understand their properties and choose the best locator strategy.</p>
+                                    </div>
+                                </div>
+                                <div class="card">
+                                    <div class="card-body">
+                                        <h6 class="mb-2">⚡ Practice Waits</h6>
+                                        <p class="text-sm text-secondary mb-0">Use the dynamic content sections to practice different wait strategies and timing.</p>
+                                    </div>
+                                </div>
+                                <div class="card">
+                                    <div class="card-body">
+                                        <h6 class="mb-2">📝 Write Test Cases</h6>
+                                        <p class="text-sm text-secondary mb-0">Create complete test scenarios combining multiple element interactions.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center justify-center gap-4 mt-6">
+                        <button id="resetProgress" class="btn btn-secondary">Reset Progress</button>
+                        <button id="exportProgress" class="btn btn-secondary">Export Progress</button>
+                    </div>
                 </div>
             </aside>
 
             <!-- Content Area -->
             <main class="content-area">
                 <div id="welcomeScreen" class="welcome-screen">
-                    <div class="welcome-card">
-                        <h2>👋 Welcome to Your Practice Portal!</h2>
-                        <p>This interactive platform will guide you through your interview preparation journey.</p>
-                        
-                        <div class="features">
-                            <div class="feature">
-                                <span class="icon">📚</span>
-                                <h3>Structured Learning</h3>
-                                <p>Follow a day-by-day schedule with clear objectives</p>
-                            </div>
-                            <div class="feature">
-                                <span class="icon">✅</span>
-                                <h3>Track Progress</h3>
-                                <p>Mark tasks as complete and monitor your advancement</p>
-                            </div>
-                            <div class="feature">
-                                <span class="icon">💻</span>
-                                <h3>Hands-on Practice</h3>
-                                <p>Code examples and exercises for each topic</p>
-                            </div>
-                            <div class="feature">
-                                <span class="icon">🎯</span>
-                                <h3>Interview Ready</h3>
-                                <p>Prepare systematically for automation testing roles</p>
-                            </div>
+                    <div class="card">
+                        <div class="card-header text-center">
+                            <h2>👋 Welcome to Your Practice Portal!</h2>
+                            <p class="text-secondary">This interactive platform will guide you through your interview preparation journey.</p>
                         </div>
+                        <div class="card-body">
+                            <div class="grid grid-cols-2 mb-6">
+                                <div class="card text-center">
+                                    <div class="card-body">
+                                        <span class="text-4xl mb-3 block">📚</span>
+                                        <h3 class="mb-2">Structured Learning</h3>
+                                        <p class="text-secondary">Follow a day-by-day schedule with clear objectives</p>
+                                    </div>
+                                </div>
+                                <div class="card text-center">
+                                    <div class="card-body">
+                                        <span class="text-4xl mb-3 block">✅</span>
+                                        <h3 class="mb-2">Track Progress</h3>
+                                        <p class="text-secondary">Mark tasks as complete and monitor your advancement</p>
+                                    </div>
+                                </div>
+                                <div class="card text-center">
+                                    <div class="card-body">
+                                        <span class="text-4xl mb-3 block">💻</span>
+                                        <h3 class="mb-2">Hands-on Practice</h3>
+                                        <p class="text-secondary">Code examples and exercises for each topic</p>
+                                    </div>
+                                </div>
+                                <div class="card text-center">
+                                    <div class="card-body">
+                                        <span class="text-4xl mb-3 block">🎯</span>
+                                        <h3 class="mb-2">Interview Ready</h3>
+                                        <p class="text-secondary">Prepare systematically for automation testing roles</p>
+                                    </div>
+                                </div>
+                            </div>
 
-                        <div class="get-started">
-                            <h3>🚀 Get Started</h3>
-                            <p>Select a week from the sidebar to begin your practice journey!</p>
-                            <ul>
-                                <li>Choose your preferred track (Fast/Standard/Comfortable)</li>
-                                <li>Click on any week to see the daily breakdown</li>
-                                <li>Complete tasks and mark them as done</li>
-                                <li>Track your overall progress</li>
-                            </ul>
+                            <div class="alert alert-success">
+                                <h3 class="mb-3">🚀 Get Started</h3>
+                                <p class="mb-3">Select a week from the sidebar to begin your practice journey!</p>
+                                <ul class="mb-0">
+                                    <li>Choose your preferred track (Fast/Standard/Comfortable)</li>
+                                    <li>Click on any week to see the daily breakdown</li>
+                                    <li>Complete tasks and mark them as done</li>
+                                    <li>Track your overall progress</li>
+                                </ul>
+                            </div>
                         </div>
                     </div>
                 </div>
 
                 <div id="dayContent" class="day-content" style="display: none;">
-                    <div class="content-header">
-                        <button id="backBtn" class="btn-back">← Back to Weeks</button>
-                        <h2 id="dayTitle">Day 1</h2>
-                        <div class="day-meta">
-                            <span id="dayWeek" class="badge">Week 1</span>
-                            <span id="dayTrack" class="badge">Standard Track</span>
+                    <div class="card mb-6">
+                        <div class="card-header flex items-center justify-between">
+                            <button id="backBtn" class="btn btn-secondary">← Back to Weeks</button>
+                            <h2 id="dayTitle" class="mb-0">Day 1</h2>
+                            <div class="flex items-center gap-2">
+                                <span id="dayWeek" class="badge badge-primary">Week 1</span>
+                                <span id="dayTrack" class="badge badge-secondary">Standard Track</span>
+                            </div>
                         </div>
                     </div>
 
-                    <div class="day-info">
-                        <div class="info-card">
-                            <h3>📋 Today's Focus</h3>
-                            <p id="dayFocus">Loading...</p>
+                    <div class="grid grid-cols-2 mb-6">
+                        <div class="card">
+                            <div class="card-header">
+                                <h3>📋 Today's Focus</h3>
+                            </div>
+                            <div class="card-body">
+                                <p id="dayFocus" class="mb-0">Loading...</p>
+                            </div>
                         </div>
-                        <div class="info-card">
-                            <h3>⏱️ Time Commitment</h3>
-                            <p id="dayTime">Loading...</p>
-                        </div>
-                    </div>
-
-                    <div class="tasks-section">
-                        <h3>✅ Tasks & Objectives</h3>
-                        <div id="tasksList" class="tasks-list">
-                            <!-- Tasks will be populated by JavaScript -->
-                        </div>
-                    </div>
-
-                    <div class="practice-section">
-                        <h3>💻 Practice Exercises</h3>
-                        <div id="practiceList" class="practice-list">
-                            <!-- Practice exercises will be populated by JavaScript -->
+                        <div class="card">
+                            <div class="card-header">
+                                <h3>⏱️ Time Commitment</h3>
+                            </div>
+                            <div class="card-body">
+                                <p id="dayTime" class="mb-0">Loading...</p>
+                            </div>
                         </div>
                     </div>
 
-                    <div class="resources-section">
-                        <h3>📚 Resources</h3>
-                        <div id="resourcesList" class="resources-list">
-                            <!-- Resources will be populated by JavaScript -->
+                    <div class="card mb-6">
+                        <div class="card-header">
+                            <h3>✅ Tasks & Objectives</h3>
+                        </div>
+                        <div class="card-body">
+                            <div id="tasksList" class="tasks-list">
+                                <!-- Tasks will be populated by JavaScript -->
+                            </div>
                         </div>
                     </div>
 
-                    <div class="completion-section">
-                        <button id="markCompleteBtn" class="btn-primary">Mark Day as Complete</button>
-                        <button id="nextDayBtn" class="btn-primary" style="display: none;">Next Day →</button>
+                    <div class="card mb-6">
+                        <div class="card-header">
+                            <h3>💻 Practice Exercises</h3>
+                        </div>
+                        <div class="card-body">
+                            <div id="practiceList" class="practice-list">
+                                <!-- Practice exercises will be populated by JavaScript -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card mb-6">
+                        <div class="card-header">
+                            <h3>📚 Resources</h3>
+                        </div>
+                        <div class="card-body">
+                            <div id="resourcesList" class="resources-list">
+                                <!-- Resources will be populated by JavaScript -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center justify-center gap-4">
+                        <button id="markCompleteBtn" class="btn btn-primary btn-lg">Mark Day as Complete</button>
+                        <button id="nextDayBtn" class="btn btn-primary btn-lg" style="display: none;">Next Day →</button>
                     </div>
                 </div>
 
                 <!-- Interview Question Detail View -->
                 <div id="questionContent" class="question-content" style="display: none;">
-                    <div class="content-header">
-                        <button id="backToQuestionsBtn" class="btn-back">← Back to Questions</button>
-                        <h2 id="questionTitle">Question</h2>
-                        <div class="question-meta">
-                            <span id="questionDifficulty" class="badge">Medium</span>
-                            <span id="questionTopic" class="badge">Topic</span>
+                    <div class="card mb-6">
+                        <div class="card-header flex items-center justify-between">
+                            <button id="backToQuestionsBtn" class="btn btn-secondary">← Back to Questions</button>
+                            <h2 id="questionTitle" class="mb-0">Question</h2>
+                            <div class="flex items-center gap-2">
+                                <span id="questionDifficulty" class="badge badge-warning">Medium</span>
+                                <span id="questionTopic" class="badge badge-info">Topic</span>
+                            </div>
                         </div>
                     </div>
 
-                    <div class="question-details">
-                        <div class="question-section">
+                    <div class="card mb-6">
+                        <div class="card-header">
                             <h3>❓ Question</h3>
+                        </div>
+                        <div class="card-body">
                             <p id="questionText" class="question-text"></p>
                         </div>
+                    </div>
 
-                        <div class="question-section">
+                    <div class="card mb-6">
+                        <div class="card-header">
                             <h3>💡 Answer</h3>
+                        </div>
+                        <div class="card-body">
                             <div id="questionAnswer" class="question-answer"></div>
                         </div>
+                    </div>
 
-                        <div class="question-section" id="codeSection" style="display: none;">
+                    <div class="card mb-6" id="codeSection" style="display: none;">
+                        <div class="card-header">
                             <h3>💻 Code Example</h3>
+                        </div>
+                        <div class="card-body">
                             <pre><code id="questionCode"></code></pre>
                         </div>
+                    </div>
 
-                        <div class="question-section" id="companiesSection">
+                    <div class="card mb-6" id="companiesSection">
+                        <div class="card-header">
                             <h3>🏢 Asked By Companies</h3>
+                        </div>
+                        <div class="card-body">
                             <div id="companiesList" class="companies-list"></div>
                         </div>
+                    </div>
 
-                        <div class="question-section" id="followUpSection" style="display: none;">
+                    <div class="card mb-6" id="followUpSection" style="display: none;">
+                        <div class="card-header">
                             <h3>🔄 Follow-up Questions</h3>
+                        </div>
+                        <div class="card-body">
                             <ul id="followUpList"></ul>
                         </div>
+                    </div>
 
-                        <div class="question-section">
+                    <div class="card mb-6">
+                        <div class="card-header">
                             <h3>📊 Applicable For</h3>
+                        </div>
+                        <div class="card-body">
                             <div id="experienceLevels" class="experience-badges"></div>
                         </div>
                     </div>
 
-                    <div class="question-actions">
-                        <button id="markQuestionStudied" class="btn-primary">Mark as Studied</button>
-                        <button id="nextQuestionBtn" class="btn-secondary">Next Question →</button>
+                    <div class="flex items-center justify-center gap-4">
+                        <button id="markQuestionStudied" class="btn btn-primary btn-lg">Mark as Studied</button>
+                        <button id="nextQuestionBtn" class="btn btn-secondary btn-lg">Next Question →</button>
                     </div>
                 </div>
             </main>
@@ -551,239 +745,329 @@
     </div>
 
     <!-- Settings Modal -->
-    <div id="settingsModal" class="settings-modal">
-        <div class="settings-modal-content">
-            <div class="settings-header">
-                <h2>⚙️ Settings</h2>
-                <button class="settings-close-btn" id="closeSettingsBtn" aria-label="Close Settings">
-                    <span>&times;</span>
-                </button>
-            </div>
-
-            <div class="settings-body">
-                <div class="settings-tabs">
-                    <button class="settings-tab active" data-tab="general">General</button>
-                    <button class="settings-tab" data-tab="display">Display</button>
-                    <button class="settings-tab" data-tab="study">Study</button>
-                    <button class="settings-tab" data-tab="keyboard">Keyboard</button>
-                    <button class="settings-tab" data-tab="data">Data</button>
+    <div id="settingsModal" class="modal">
+        <div class="modal-content">
+            <div class="card">
+                <div class="card-header flex items-center justify-between">
+                    <h2 class="mb-0">⚙️ Settings</h2>
+                    <button class="btn btn-secondary" id="closeSettingsBtn" aria-label="Close Settings">
+                        <span>&times;</span>
+                    </button>
                 </div>
 
-                <!-- General Settings Tab -->
-                <div class="settings-tab-content active" id="generalTab">
-                    <div class="settings-section">
-                        <h3>🎨 Theme</h3>
-                        <p>Choose your preferred color theme</p>
-                        <div class="form-group">
-                            <label for="themeSelect">Theme</label>
-                            <select id="themeSelect">
-                                <option value="light">☀️ Light Mode</option>
-                                <option value="dark">🌙 Dark Mode</option>
-                                <option value="auto">🌓 Auto (System)</option>
-                            </select>
-                        </div>
+                <div class="card-body">
+                    <div class="nav-tabs mb-6">
+                        <button class="nav-tab active" data-tab="general">General</button>
+                        <button class="nav-tab" data-tab="display">Display</button>
+                        <button class="nav-tab" data-tab="study">Study</button>
+                        <button class="nav-tab" data-tab="keyboard">Keyboard</button>
+                        <button class="nav-tab" data-tab="data">Data</button>
                     </div>
 
-                    <div class="settings-section">
-                        <h3>🔔 Notifications</h3>
-                        <p>Control how you receive feedback and updates</p>
-                        <div class="checkbox-group">
-                            <input type="checkbox" id="notificationsEnabled" checked>
-                            <label for="notificationsEnabled">Enable notifications</label>
-                        </div>
-                        <div class="checkbox-group">
-                            <input type="checkbox" id="notificationSound">
-                            <label for="notificationSound">Play notification sounds</label>
-                        </div>
-                        <div class="checkbox-group">
-                            <input type="checkbox" id="achievementNotifications" checked>
-                            <label for="achievementNotifications">Show achievement notifications</label>
-                        </div>
-                        <div class="checkbox-group">
-                            <input type="checkbox" id="streakReminders" checked>
-                            <label for="streakReminders">Show streak reminders</label>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Display Settings Tab -->
-                <div class="settings-tab-content" id="displayTab">
-                    <div class="settings-section">
-                        <h3>🖥️ Layout</h3>
-                        <p>Customize the appearance and layout</p>
-                        <div class="checkbox-group">
-                            <input type="checkbox" id="compactMode">
-                            <label for="compactMode">Compact mode (reduce spacing)</label>
-                        </div>
-                        <div class="checkbox-group">
-                            <input type="checkbox" id="showProgress" checked>
-                            <label for="showProgress">Show progress indicators</label>
-                        </div>
-                        <div class="checkbox-group">
-                            <input type="checkbox" id="animationsEnabled" checked>
-                            <label for="animationsEnabled">Enable animations</label>
-                        </div>
-                    </div>
-
-                    <div class="settings-section">
-                        <h3>📝 Text</h3>
-                        <p>Adjust text size and readability</p>
-                        <div class="form-group">
-                            <label for="fontSize">Font size</label>
-                            <select id="fontSize">
-                                <option value="small">Small</option>
-                                <option value="medium" selected>Medium</option>
-                                <option value="large">Large</option>
-                            </select>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Study Settings Tab -->
-                <div class="settings-tab-content" id="studyTab">
-                    <div class="settings-section">
-                        <h3>🎯 Goals</h3>
-                        <p>Set your learning targets and preferences</p>
-                        <div class="form-group">
-                            <label for="dailyGoal">Daily goal (days per week)</label>
-                            <input type="number" id="dailyGoal" min="1" max="7" value="1">
-                        </div>
-                        <div class="form-group">
-                            <label for="weeklyGoal">Weekly goal (days per week)</label>
-                            <input type="number" id="weeklyGoal" min="1" max="7" value="5">
-                        </div>
-                        <div class="checkbox-group">
-                            <input type="checkbox" id="autoMarkComplete">
-                            <label for="autoMarkComplete">Auto-mark tasks as complete</label>
-                        </div>
-                        <div class="checkbox-group">
-                            <input type="checkbox" id="showDifficulty" checked>
-                            <label for="showDifficulty">Show question difficulty</label>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Keyboard Settings Tab -->
-                <div class="settings-tab-content" id="keyboardTab">
-                    <div class="settings-section">
-                        <h3>⌨️ Shortcuts</h3>
-                        <p>Enable keyboard shortcuts for faster navigation</p>
-                        <div class="checkbox-group">
-                            <input type="checkbox" id="keyboardEnabled" checked>
-                            <label for="keyboardEnabled">Enable keyboard shortcuts</label>
-                        </div>
-
-                        <div class="keyboard-shortcuts-grid">
-                            <div class="keyboard-shortcut">
-                                <span class="shortcut-action">Dashboard</span>
-                                <div class="shortcut-keys">
-                                    <span class="shortcut-key">Ctrl</span>
-                                    <span class="shortcut-key">D</span>
+                    <!-- General Settings Tab -->
+                    <div class="settings-tab-content active" id="generalTab">
+                        <div class="card mb-6">
+                            <div class="card-header">
+                                <h3>🎨 Theme</h3>
+                                <p class="text-secondary mb-0">Choose your preferred color theme</p>
+                            </div>
+                            <div class="card-body">
+                                <div class="form-group">
+                                    <label class="form-label" for="themeSelect">Theme</label>
+                                    <select id="themeSelect" class="form-input form-select">
+                                        <option value="light">☀️ Light Mode</option>
+                                        <option value="dark">🌙 Dark Mode</option>
+                                        <option value="auto">🌓 Auto (System)</option>
+                                    </select>
                                 </div>
                             </div>
-                            <div class="keyboard-shortcut">
-                                <span class="shortcut-action">Schedule</span>
-                                <div class="shortcut-keys">
-                                    <span class="shortcut-key">Ctrl</span>
-                                    <span class="shortcut-key">S</span>
-                                </div>
+                        </div>
+
+                        <div class="card">
+                            <div class="card-header">
+                                <h3>🔔 Notifications</h3>
+                                <p class="text-secondary mb-0">Control how you receive feedback and updates</p>
                             </div>
-                            <div class="keyboard-shortcut">
-                                <span class="shortcut-action">Questions</span>
-                                <div class="shortcut-keys">
-                                    <span class="shortcut-key">Ctrl</span>
-                                    <span class="shortcut-key">Q</span>
+                            <div class="card-body">
+                                <div class="form-group">
+                                    <div class="checkbox-group flex items-center gap-2">
+                                        <input type="checkbox" id="notificationsEnabled" checked>
+                                        <label for="notificationsEnabled" class="form-label mb-0">Enable notifications</label>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="keyboard-shortcut">
-                                <span class="shortcut-action">Search</span>
-                                <div class="shortcut-keys">
-                                    <span class="shortcut-key">/</span>
+                                <div class="form-group">
+                                    <div class="checkbox-group flex items-center gap-2">
+                                        <input type="checkbox" id="notificationSound">
+                                        <label for="notificationSound" class="form-label mb-0">Play notification sounds</label>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="keyboard-shortcut">
-                                <span class="shortcut-action">Toggle Theme</span>
-                                <div class="shortcut-keys">
-                                    <span class="shortcut-key">Ctrl</span>
-                                    <span class="shortcut-key">T</span>
+                                <div class="form-group">
+                                    <div class="checkbox-group flex items-center gap-2">
+                                        <input type="checkbox" id="achievementNotifications" checked>
+                                        <label for="achievementNotifications" class="form-label mb-0">Show achievement notifications</label>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="keyboard-shortcut">
-                                <span class="shortcut-action">Close Modal</span>
-                                <div class="shortcut-keys">
-                                    <span class="shortcut-key">Esc</span>
+                                <div class="form-group">
+                                    <div class="checkbox-group flex items-center gap-2">
+                                        <input type="checkbox" id="streakReminders" checked>
+                                        <label for="streakReminders" class="form-label mb-0">Show streak reminders</label>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
 
-                <!-- Data Settings Tab -->
-                <div class="settings-tab-content" id="dataTab">
-                    <div class="settings-section">
-                        <h3>💾 Export & Import</h3>
-                        <p>Backup and restore your progress and settings</p>
-                        <div class="form-group">
-                            <button id="exportDataBtn" class="btn-settings btn-settings-secondary">📤 Export Data</button>
+                    <!-- Display Settings Tab -->
+                    <div class="settings-tab-content" id="displayTab">
+                        <div class="card mb-6">
+                            <div class="card-header">
+                                <h3>🖥️ Layout</h3>
+                                <p class="text-secondary mb-0">Customize the appearance and layout</p>
+                            </div>
+                            <div class="card-body">
+                                <div class="form-group">
+                                    <div class="checkbox-group flex items-center gap-2">
+                                        <input type="checkbox" id="compactMode">
+                                        <label for="compactMode" class="form-label mb-0">Compact mode (reduce spacing)</label>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="checkbox-group flex items-center gap-2">
+                                        <input type="checkbox" id="showProgress" checked>
+                                        <label for="showProgress" class="form-label mb-0">Show progress indicators</label>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="checkbox-group flex items-center gap-2">
+                                        <input type="checkbox" id="animationsEnabled" checked>
+                                        <label for="animationsEnabled" class="form-label mb-0">Enable animations</label>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                        <div class="form-group">
-                            <button id="importDataBtn" class="btn-settings btn-settings-secondary">📥 Import Data</button>
+
+                        <div class="card">
+                            <div class="card-header">
+                                <h3>📝 Text</h3>
+                                <p class="text-secondary mb-0">Adjust text size and readability</p>
+                            </div>
+                            <div class="card-body">
+                                <div class="form-group">
+                                    <label class="form-label" for="fontSize">Font size</label>
+                                    <select id="fontSize" class="form-input form-select">
+                                        <option value="small">Small</option>
+                                        <option value="medium" selected>Medium</option>
+                                        <option value="large">Large</option>
+                                    </select>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
-                    <div class="settings-section">
-                        <h3>🔄 Reset</h3>
-                        <p>Clear all data and start fresh</p>
-                        <div class="form-group">
-                            <button id="resetSettingsBtn" class="btn-settings btn-settings-danger">🔄 Reset Settings</button>
+                    <!-- Study Settings Tab -->
+                    <div class="settings-tab-content" id="studyTab">
+                        <div class="card">
+                            <div class="card-header">
+                                <h3>🎯 Goals</h3>
+                                <p class="text-secondary mb-0">Set your learning targets and preferences</p>
+                            </div>
+                            <div class="card-body">
+                                <div class="grid grid-cols-2">
+                                    <div class="form-group">
+                                        <label class="form-label" for="dailyGoal">Daily goal (days per week)</label>
+                                        <input type="number" id="dailyGoal" class="form-input" min="1" max="7" value="1">
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label" for="weeklyGoal">Weekly goal (days per week)</label>
+                                        <input type="number" id="weeklyGoal" class="form-input" min="1" max="7" value="5">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="checkbox-group flex items-center gap-2">
+                                        <input type="checkbox" id="autoMarkComplete">
+                                        <label for="autoMarkComplete" class="form-label mb-0">Auto-mark tasks as complete</label>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="checkbox-group flex items-center gap-2">
+                                        <input type="checkbox" id="showDifficulty" checked>
+                                        <label for="showDifficulty" class="form-label mb-0">Show question difficulty</label>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
-                    <div class="settings-section">
-                        <h3>🔒 Privacy</h3>
-                        <p>Control data collection and usage</p>
-                        <div class="checkbox-group">
-                            <input type="checkbox" id="analytics" checked>
-                            <label for="analytics">Allow usage analytics</label>
+                    <!-- Keyboard Settings Tab -->
+                    <div class="settings-tab-content" id="keyboardTab">
+                        <div class="card">
+                            <div class="card-header">
+                                <h3>⌨️ Shortcuts</h3>
+                                <p class="text-secondary mb-0">Enable keyboard shortcuts for faster navigation</p>
+                            </div>
+                            <div class="card-body">
+                                <div class="form-group mb-6">
+                                    <div class="checkbox-group flex items-center gap-2">
+                                        <input type="checkbox" id="keyboardEnabled" checked>
+                                        <label for="keyboardEnabled" class="form-label mb-0">Enable keyboard shortcuts</label>
+                                    </div>
+                                </div>
+
+                                <div class="grid grid-cols-2">
+                                    <div class="card mb-4">
+                                        <div class="card-body flex items-center justify-between">
+                                            <span class="font-medium">Dashboard</span>
+                                            <div class="flex items-center gap-1">
+                                                <span class="badge badge-secondary">Ctrl</span>
+                                                <span class="badge badge-secondary">D</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="card mb-4">
+                                        <div class="card-body flex items-center justify-between">
+                                            <span class="font-medium">Schedule</span>
+                                            <div class="flex items-center gap-1">
+                                                <span class="badge badge-secondary">Ctrl</span>
+                                                <span class="badge badge-secondary">S</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="card mb-4">
+                                        <div class="card-body flex items-center justify-between">
+                                            <span class="font-medium">Questions</span>
+                                            <div class="flex items-center gap-1">
+                                                <span class="badge badge-secondary">Ctrl</span>
+                                                <span class="badge badge-secondary">Q</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="card mb-4">
+                                        <div class="card-body flex items-center justify-between">
+                                            <span class="font-medium">Search</span>
+                                            <div class="flex items-center gap-1">
+                                                <span class="badge badge-secondary">/</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="card mb-4">
+                                        <div class="card-body flex items-center justify-between">
+                                            <span class="font-medium">Toggle Theme</span>
+                                            <div class="flex items-center gap-1">
+                                                <span class="badge badge-secondary">Ctrl</span>
+                                                <span class="badge badge-secondary">T</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="card mb-4">
+                                        <div class="card-body flex items-center justify-between">
+                                            <span class="font-medium">Close Modal</span>
+                                            <div class="flex items-center gap-1">
+                                                <span class="badge badge-secondary">Esc</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                        <div class="checkbox-group">
-                            <input type="checkbox" id="crashReporting" checked>
-                            <label for="crashReporting">Enable crash reporting</label>
+                    </div>
+
+                    <!-- Data Settings Tab -->
+                    <div class="settings-tab-content" id="dataTab">
+                        <div class="card mb-6">
+                            <div class="card-header">
+                                <h3>💾 Export & Import</h3>
+                                <p class="text-secondary mb-0">Backup and restore your progress and settings</p>
+                            </div>
+                            <div class="card-body">
+                                <div class="flex items-center gap-4">
+                                    <button id="exportDataBtn" class="btn btn-secondary">📤 Export Data</button>
+                                    <button id="importDataBtn" class="btn btn-secondary">📥 Import Data</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card mb-6">
+                            <div class="card-header">
+                                <h3>🔄 Reset</h3>
+                                <p class="text-secondary mb-0">Clear all data and start fresh</p>
+                            </div>
+                            <div class="card-body">
+                                <button id="resetSettingsBtn" class="btn btn-danger">🔄 Reset Settings</button>
+                            </div>
+                        </div>
+
+                        <div class="card">
+                            <div class="card-header">
+                                <h3>🔒 Privacy</h3>
+                                <p class="text-secondary mb-0">Control data collection and usage</p>
+                            </div>
+                            <div class="card-body">
+                                <div class="form-group">
+                                    <div class="checkbox-group flex items-center gap-2">
+                                        <input type="checkbox" id="analytics" checked>
+                                        <label for="analytics" class="form-label mb-0">Allow usage analytics</label>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="checkbox-group flex items-center gap-2">
+                                        <input type="checkbox" id="crashReporting" checked>
+                                        <label for="crashReporting" class="form-label mb-0">Enable crash reporting</label>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
 
-            <div class="settings-footer">
-                <div class="settings-footer-left">
-                    <span class="settings-version">v2.0.0</span>
-                </div>
-                <div class="settings-footer-right">
-                    <button id="saveSettingsBtn" class="btn-settings btn-settings-primary">💾 Save Changes</button>
+                <div class="card-footer flex items-center justify-between">
+                    <span class="text-secondary">v2.0.0</span>
+                    <button id="saveSettingsBtn" class="btn btn-primary">💾 Save Changes</button>
                 </div>
             </div>
         </div>
     </div>
 
     <!-- PWA Installation Banner -->
-    <div id="pwaInstallBanner" class="pwa-install-banner" style="display: none;">
-        <div class="pwa-banner-content">
-            <div class="pwa-banner-info">
-                <span class="pwa-banner-icon">📱</span>
-                <div class="pwa-banner-text">
-                    <strong>Install Interview Prep App</strong>
-                    <small>Get offline access and app-like experience</small>
-                </div>
+    <div id="pwaInstallBanner" class="notification" style="display: none;">
+        <div class="notification-content">
+            <span class="notification-icon">📱</span>
+            <div class="notification-message">
+                <strong>Install Interview Prep App</strong>
+                <small>Get offline access and app-like experience</small>
             </div>
-            <div class="pwa-banner-actions">
-                <button id="pwaInstallBtn" class="btn-pwa-install">Install</button>
-                <button id="pwaDismissBtn" class="btn-pwa-dismiss">×</button>
+            <div class="flex items-center gap-2">
+                <button id="pwaInstallBtn" class="btn btn-primary btn-sm">Install</button>
+                <button id="pwaDismissBtn" class="notification-close">×</button>
             </div>
         </div>
     </div>
 
+    <!-- JavaScript Files -->
+    <!-- Load embedded data first for offline capability -->
+    <script src="js/embedded-data.js"></script>
+
+    <!-- Load performance and bundling modules first -->
+    <script src="js/performance-manager.js"></script>
+    <script src="js/module-bundler.js"></script>
+    <script src="js/analytics-manager.js"></script>
+
+    <!-- Phase 7 - Content Management & Advanced Features -->
+    <script src="js/content-management-system.js"></script>
+    <script src="js/adaptive-learning-engine.js"></script>
+    <script src="js/social-features-system.js"></script>
+    <script src="js/external-integration-system.js"></script>
+
+    <!-- Load modular JavaScript files -->
+    <script src="js/ui-utils.js"></script>
     <script src="js/api-client.js"></script>
-    <script src="app.js"></script>
+    <script src="js/api-v2-client.js"></script>
+    <script src="js/offline-storage.js"></script>
+    <script src="js/conflict-resolver.js"></script>
+    <script src="js/offline-progress-tracker.js"></script>
+    <script src="js/data-manager.js"></script>
+    <script src="js/question-manager.js"></script>
+    <script src="js/progress-manager.js"></script>
+    <script src="app-modular.js"></script>
 
     <!-- PWA Service Worker Registration -->
     <script>
@@ -796,12 +1080,20 @@
         let installButton;
         let dismissButton;
 
-        // Register service worker
-        if ('serviceWorker' in navigator) {
+        // Register service worker (only for HTTP/HTTPS)
+        if ('serviceWorker' in navigator && window.location.protocol !== 'file:') {
             window.addEventListener('load', async () => {
                 try {
-                    const registration = await navigator.serviceWorker.register('/sw.js');
-                    console.log('✅ Service Worker registered:', registration);
+                    // Try enhanced service worker first, fallback to basic
+                    let registration;
+                    try {
+                        registration = await navigator.serviceWorker.register('/sw-enhanced.js');
+                        console.log('✅ Enhanced Service Worker registered:', registration);
+                    } catch (enhancedError) {
+                        console.warn('⚠️ Enhanced Service Worker failed, using basic SW:', enhancedError);
+                        registration = await navigator.serviceWorker.register('/sw.js');
+                        console.log('✅ Basic Service Worker registered:', registration);
+                    }
 
                     // Check for updates
                     registration.addEventListener('updatefound', () => {
@@ -885,18 +1177,144 @@
             const dismissTime = dismissed ? parseInt(dismissed) : 0;
             const daysSinceDismiss = (Date.now() - dismissTime) / (1000 * 60 * 60 * 24);
 
-            // Show banner if not dismissed in the last 7 days
-            if (daysSinceDismiss > 7 && pwaInstallBanner) {
+            // Check if user has engaged enough to show install prompt
+            const pageViews = parseInt(localStorage.getItem('pwa-page-views') || '0');
+            const studyTime = parseInt(localStorage.getItem('pwa-study-time') || '0');
+            const questionsStudied = parseInt(localStorage.getItem('pwa-questions-studied') || '0');
+
+            // Show banner if conditions are met
+            const shouldShow =
+                daysSinceDismiss > 7 && // Not dismissed in last 7 days
+                (pageViews >= 3 || studyTime >= 300000 || questionsStudied >= 5) && // User engaged
+                !isPWA(); // Not already installed
+
+            if (shouldShow && pwaInstallBanner) {
+                // Create enhanced install prompt with benefits
+                updateInstallBannerContent();
                 pwaInstallBanner.style.display = 'block';
                 pwaInstallBanner.classList.add('show');
 
-                // Auto-hide after 10 seconds
+                // Track install prompt shown
+                console.log('📱 PWA install banner shown');
+
+                // Auto-hide after 15 seconds (longer for better UX)
                 setTimeout(() => {
                     if (pwaInstallBanner.style.display !== 'none') {
                         hideInstallBanner();
                     }
-                }, 10000);
+                }, 15000);
+
+                // Show reminder after 2 minutes if still on page
+                setTimeout(() => {
+                    if (!isPWA() && document.visibilityState === 'visible') {
+                        showInstallReminder();
+                    }
+                }, 120000);
             }
+        }
+
+        // Update banner content with personalized benefits
+        function updateInstallBannerContent() {
+            const questionsStudied = parseInt(localStorage.getItem('pwa-questions-studied') || '0');
+            const studyTime = parseInt(localStorage.getItem('pwa-study-time') || '0');
+            const studyHours = Math.round(studyTime / (1000 * 60 * 60));
+
+            let personalizedMessage = 'Get offline access and app-like experience';
+
+            if (questionsStudied > 0) {
+                personalizedMessage = `Continue studying your ${questionsStudied} questions offline`;
+            } else if (studyHours > 0) {
+                personalizedMessage = `Keep your ${studyHours}h+ of progress safe offline`;
+            }
+
+            const bannerText = pwaInstallBanner.querySelector('.pwa-banner-text small');
+            if (bannerText) {
+                bannerText.textContent = personalizedMessage;
+            }
+        }
+
+        // Show install reminder (subtle notification)
+        function showInstallReminder() {
+            const reminder = document.createElement('div');
+            reminder.className = 'pwa-install-reminder';
+            reminder.innerHTML = `
+                <div class="reminder-content">
+                    <span class="reminder-icon">💡</span>
+                    <span class="reminder-text">Tip: Install the app for faster access and offline studying!</span>
+                    <button class="reminder-install" onclick="showInstallBanner(); this.parentElement.parentElement.remove()">Install</button>
+                    <button class="reminder-close" onclick="this.parentElement.parentElement.remove()">×</button>
+                </div>
+            `;
+
+            // Add styles
+            reminder.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: #fff;
+                border: 1px solid #e0e0e0;
+                border-radius: 8px;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+                z-index: 10001;
+                max-width: 320px;
+                animation: slideInRight 0.3s ease;
+            `;
+
+            document.body.appendChild(reminder);
+
+            // Auto-remove after 8 seconds
+            setTimeout(() => {
+                if (reminder.parentElement) {
+                    reminder.remove();
+                }
+            }, 8000);
+        }
+
+        // Track user engagement for install prompting
+        function trackEngagement() {
+            // Track page views
+            const currentViews = parseInt(localStorage.getItem('pwa-page-views') || '0');
+            localStorage.setItem('pwa-page-views', (currentViews + 1).toString());
+
+            // Track time spent
+            let sessionStart = Date.now();
+            let totalTime = parseInt(localStorage.getItem('pwa-study-time') || '0');
+
+            const updateTime = () => {
+                const sessionTime = Date.now() - sessionStart;
+                localStorage.setItem('pwa-study-time', (totalTime + sessionTime).toString());
+            };
+
+            // Update time on visibility change and beforeunload
+            document.addEventListener('visibilitychange', updateTime);
+            window.addEventListener('beforeunload', updateTime);
+
+            // Track questions studied (if available)
+            if (window.portal && window.portal.progressManager) {
+                const originalMarkStudied = window.portal.progressManager.markQuestionStudied;
+                if (originalMarkStudied) {
+                    window.portal.progressManager.markQuestionStudied = function(...args) {
+                        const result = originalMarkStudied.apply(this, args);
+                        const questionsStudied = parseInt(localStorage.getItem('pwa-questions-studied') || '0');
+                        localStorage.setItem('pwa-questions-studied', (questionsStudied + 1).toString());
+                        return result;
+                    };
+                }
+            }
+
+            // Show install prompt based on engagement
+            setTimeout(() => {
+                if (!isPWA() && deferredPrompt) {
+                    const views = parseInt(localStorage.getItem('pwa-page-views') || '0');
+                    const time = parseInt(localStorage.getItem('pwa-study-time') || '0');
+                    const questions = parseInt(localStorage.getItem('pwa-questions-studied') || '0');
+
+                    // Show after sufficient engagement
+                    if (views >= 3 && time >= 180000) { // 3 views and 3+ minutes
+                        showInstallBanner();
+                    }
+                }
+            }, 30000); // Check after 30 seconds
         }
 
         // Hide install banner
@@ -1004,8 +1422,69 @@
                 console.log('✅ Running as installed PWA');
                 // Hide install banner if running as PWA
                 hideInstallBanner();
+            } else {
+                // Start tracking engagement for install promotion
+                trackEngagement();
             }
+
+            // Initialize performance and analytics systems
+            initializePerformanceSystem();
         });
+
+        // Initialize performance monitoring and analytics
+        async function initializePerformanceSystem() {
+            try {
+                // Initialize Performance Manager
+                if (typeof PerformanceManager !== 'undefined') {
+                    window.performanceManager = new PerformanceManager();
+                    window.performanceManager.setupInteractionTracking();
+                    window.performanceManager.optimizeImages();
+                    console.log('⚡ Performance Manager initialized');
+                }
+
+                // Initialize Analytics Manager
+                if (typeof AnalyticsManager !== 'undefined') {
+                    window.analyticsManager = new AnalyticsManager();
+                    console.log('📊 Analytics Manager initialized');
+
+                    // Example A/B test
+                    const buttonVariant = window.analyticsManager.initializeABTest(
+                        'button_color_test',
+                        ['blue', 'green', 'red'],
+                        { trafficAllocation: 0.5 }
+                    );
+
+                    if (buttonVariant) {
+                        console.log(`🧪 A/B Test: Button variant ${buttonVariant}`);
+                    }
+                }
+
+                // Setup performance monitoring
+                if (window.performanceManager) {
+                    // Wrap API functions for performance tracking
+                    if (window.apiV2Client) {
+                        const originalGetQuestions = window.apiV2Client.getQuestions;
+                        window.apiV2Client.getQuestions = window.performanceManager.wrapAPIFunction(
+                            originalGetQuestions,
+                            'getQuestions'
+                        );
+                    }
+
+                    // Monitor virtual scrolling performance
+                    const questionsList = document.getElementById('questionsList');
+                    if (questionsList) {
+                        window.performanceManager.registerLazyElement(questionsList, () => {
+                            console.log('📜 Questions list loaded lazily');
+                        });
+                    }
+                }
+
+                console.log('🚀 Performance system fully initialized');
+
+            } catch (error) {
+                console.error('❌ Failed to initialize performance system:', error);
+            }
+        }
 
         // Handle PWA lifecycle
         document.addEventListener('visibilitychange', () => {

@@ -1,0 +1,65 @@
+{
+  "userId": "user_001",
+  "progress": {
+    "completedDays": {},
+    "tasks": {}
+  },
+  "dashboardData": {
+    "streak": {
+      "current": 0,
+      "longest": 0,
+      "lastStudyDate": null,
+      "studyDates": []
+    },
+    "studyTime": {
+      "total": 0,
+      "sessions": [],
+      "averageSession": 0
+    },
+    "questions": {
+      "studied": [],
+      "timeSpent": [],
+      "categories": {
+        "java": 0,
+        "selenium": 0,
+        "api-testing": 0,
+        "testng": 0,
+        "framework": 0,
+        "leadership": 0
+      }
+    },
+    "achievements": {
+      "first-day": false,
+      "week-warrior": false,
+      "streak-master": false,
+      "question-solver": false,
+      "category-explorer": false,
+      "time-keeper": false,
+      "consistency-king": false,
+      "knowledge-seeker": false
+    }
+  },
+  "settings": {
+    "theme": "auto",
+    "notifications": {
+      "enabled": true,
+      "sound": false,
+      "achievements": true,
+      "streakReminders": true
+    },
+    "display": {
+      "compactMode": false,
+      "showProgress": true,
+      "animationsEnabled": true,
+      "fontSize": "medium"
+    },
+    "study": {
+      "dailyGoal": 1,
+      "weeklyGoal": 5,
+      "autoMarkComplete": false,
+      "showDifficulty": true
+    }
+  },
+  "createdAt": "2025-12-12T05:13:14.394Z",
+  "updatedAt": "2025-12-12T05:13:51.118Z"
+}

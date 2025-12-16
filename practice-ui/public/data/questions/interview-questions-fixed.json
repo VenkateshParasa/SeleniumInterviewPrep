@@ -1,0 +1,104 @@
+{
+  "version": "2.0.0",
+  "lastUpdated": "2024-12-15",
+  "totalQuestions": 35,
+  "description": "Interview questions database for QA Automation Engineers (Fixed Version)",
+  "categories": [
+    {
+      "id": "java",
+      "name": "Java Programming",
+      "icon": "☕",
+      "totalQuestions": 5,
+      "questions": [
+        {
+          "id": "java-001",
+          "question": "Explain the difference between == and .equals() in Java",
+          "difficulty": "Medium",
+          "experienceLevel": ["0-2", "3-5"],
+          "answer": "== compares references (memory addresses) while .equals() compares object content. For primitives, == compares values. String literals with same value may share memory (interning), but new String() creates new objects.",
+          "companies": ["All Java applications", "Banking", "E-commerce"],
+          "topic": "Java Fundamentals",
+          "followUp": ["What is String interning?", "When should you override equals()?"]
+        },
+        {
+          "id": "java-002",
+          "question": "What is the difference between String, StringBuilder, and StringBuffer?",
+          "difficulty": "Medium",
+          "experienceLevel": ["0-2", "3-5"],
+          "answer": "String is immutable - creates new objects on modification. StringBuilder is mutable and not thread-safe, best for single-threaded string building. StringBuffer is mutable and thread-safe but slower due to synchronization.",
+          "companies": ["Performance-critical applications", "Banking", "Real-time systems"],
+          "topic": "Java Fundamentals",
+          "followUp": ["When would you use each type?", "What is string immutability?"]
+        },
+        {
+          "id": "java-003",
+          "question": "Explain Java exception handling and the difference between checked and unchecked exceptions",
+          "difficulty": "Medium",
+          "experienceLevel": ["0-2", "3-5"],
+          "answer": "Exception handling manages runtime errors using try-catch-finally blocks. Checked exceptions (compile-time) must be caught or declared (IOException, SQLException). Unchecked exceptions (runtime) don't require explicit handling (NullPointerException, ArrayIndexOutOfBoundsException).",
+          "companies": ["All Java applications", "Banking", "Healthcare", "E-commerce"],
+          "topic": "Exception Handling",
+          "followUp": ["What is try-with-resources?", "When should you create custom exceptions?"]
+        },
+        {
+          "id": "java-004",
+          "question": "What are Java Collections and explain the difference between List, Set, and Map",
+          "difficulty": "Medium",
+          "experienceLevel": ["3-5", "6-8"],
+          "answer": "Collections framework provides data structures. List allows duplicates and maintains order (ArrayList, LinkedList). Set doesn't allow duplicates (HashSet, TreeSet). Map stores key-value pairs (HashMap, TreeMap). Choose based on use case: ArrayList for random access, LinkedList for frequent insertions, HashMap for key lookups.",
+          "companies": ["All Java applications", "Data processing", "Enterprise applications"],
+          "topic": "Collections",
+          "followUp": ["What's the difference between ArrayList and LinkedList?", "When to use HashMap vs TreeMap?"]
+        },
+        {
+          "id": "java-005",
+          "question": "Explain Java multithreading and synchronization",
+          "difficulty": "Hard",
+          "experienceLevel": ["3-5", "6-8"],
+          "answer": "Multithreading allows concurrent execution. Create threads by extending Thread or implementing Runnable. Synchronization prevents race conditions using synchronized keyword, locks, or concurrent collections. Thread states: NEW, RUNNABLE, BLOCKED, WAITING, TIMED_WAITING, TERMINATED.",
+          "companies": ["High-performance applications", "Real-time systems", "Banking"],
+          "topic": "Multithreading",
+          "followUp": ["What is deadlock and how to prevent it?", "Explain volatile keyword"]
+        }
+      ]
+    },
+    {
+      "id": "selenium",
+      "name": "Selenium WebDriver",
+      "icon": "🧪",
+      "totalQuestions": 3,
+      "questions": [
+        {
+          "id": "selenium-001",
+          "question": "What is Selenium WebDriver and how does it work?",
+          "difficulty": "Easy",
+          "experienceLevel": ["0-2", "3-5"],
+          "answer": "Selenium WebDriver is a web automation tool that controls browsers programmatically. It sends HTTP requests to browser drivers (ChromeDriver, GeckoDriver) which translate commands to browser-specific actions. Supports multiple languages and browsers.",
+          "companies": ["QA teams", "Automation companies", "E-commerce"],
+          "topic": "Selenium Basics",
+          "followUp": ["What are the different Selenium components?", "How do you handle different browsers?"]
+        },
+        {
+          "id": "selenium-002",
+          "question": "Explain different types of waits in Selenium",
+          "difficulty": "Medium",
+          "experienceLevel": ["0-2", "3-5"],
+          "answer": "Implicit Wait: Global timeout for element location. Explicit Wait: Wait for specific conditions using WebDriverWait and ExpectedConditions. Fluent Wait: Configurable polling interval and exceptions to ignore. Avoid Thread.sleep() as it's not dynamic.",
+          "companies": ["Automation testing", "Web applications", "E-commerce"],
+          "topic": "Selenium Waits",
+          "followUp": ["When would you use each type of wait?", "How do you handle dynamic elements?"]
+        },
+        {
+          "id": "selenium-003",
+          "question": "How do you handle dynamic elements and synchronization issues?",
+          "difficulty": "Medium",
+          "experienceLevel": ["3-5", "6-8"],
+          "answer": "Use explicit waits with expected conditions, implement custom wait conditions, use fluent waits for complex scenarios. Handle AJAX with WebDriverWait. For SPAs, wait for specific elements or JavaScript completion. Implement retry mechanisms and proper exception handling.",
+          "companies": ["Modern web applications", "SPA testing", "Complex UI testing"],
+          "topic": "Advanced Selenium",
+          "followUp": ["How do you test single-page applications?", "What are Page Object Models?"]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,1210 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Interview Preparation Platform API",
+    "description": "Complete API reference for the Interview Preparation Platform backend services. This API provides endpoints for managing interview questions, practice sessions, user analytics, and application configuration for Java, Selenium, and API testing preparation.",
+    "version": "1.0.0",
+    "contact": {
+      "name": "API Support",
+      "email": "support@interviewprep.com"
+    },
+    "license": {
+      "name": "MIT",
+      "url": "https://opensource.org/licenses/MIT"
+    }
+  },
+  "servers": [
+    {
+      "url": "http://localhost:3000/api",
+      "description": "Development server"
+    },
+    {
+      "url": "https://seleniuminterviewprep.netlify.app/api",
+      "description": "Production server"
+    }
+  ],
+  "paths": {
+    "/questions": {
+      "get": {
+        "tags": ["Questions Management"],
+        "summary": "Get All Questions",
+        "description": "Retrieve all interview questions across all categories",
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Maximum number of questions to return",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 1000,
+              "default": 100
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "description": "Number of questions to skip",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0
+            }
+          },
+          {
+            "name": "difficulty",
+            "in": "query",
+            "description": "Filter by difficulty level",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": ["beginner", "intermediate", "advanced"]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Questions retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/QuestionsResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/questions/{category}": {
+      "get": {
+        "tags": ["Questions Management"],
+        "summary": "Get Questions by Category",
+        "description": "Retrieve questions for a specific category (java, selenium, api, database, etc.)",
+        "parameters": [
+          {
+            "name": "category",
+            "in": "path",
+            "description": "Question category",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": ["java", "selenium", "api", "database", "testng", "framework", "performance", "mobile", "security", "cicd", "leadership"]
+            }
+          },
+          {
+            "name": "difficulty",
+            "in": "query",
+            "description": "Filter by difficulty level",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": ["beginner", "intermediate", "advanced"]
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Maximum number of questions to return",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100,
+              "default": 50
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Category questions retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CategoryQuestionsResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      }
+    },
+    "/questions/{category}/{id}": {
+      "get": {
+        "tags": ["Questions Management"],
+        "summary": "Get Question by ID",
+        "description": "Retrieve a specific question by category and ID",
+        "parameters": [
+          {
+            "name": "category",
+            "in": "path",
+            "description": "Question category",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Question ID",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Question retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/QuestionResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      }
+    },
+    "/practice/start": {
+      "post": {
+        "tags": ["Practice Session"],
+        "summary": "Start Practice Session",
+        "description": "Start a new practice session with specified parameters",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/StartSessionRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Practice session started successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SessionResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          }
+        }
+      }
+    },
+    "/practice/submit": {
+      "post": {
+        "tags": ["Practice Session"],
+        "summary": "Submit Answer",
+        "description": "Submit an answer for a question in an active practice session",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SubmitAnswerRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Answer submitted successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SubmitAnswerResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      }
+    },
+    "/practice/results/{sessionId}": {
+      "get": {
+        "tags": ["Practice Session"],
+        "summary": "Get Session Results",
+        "description": "Retrieve results for a completed practice session",
+        "parameters": [
+          {
+            "name": "sessionId",
+            "in": "path",
+            "description": "Practice session ID",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Session results retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SessionResultsResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      }
+    },
+    "/analytics/stats": {
+      "get": {
+        "tags": ["Analytics"],
+        "summary": "Get User Statistics",
+        "description": "Retrieve comprehensive user performance statistics",
+        "responses": {
+          "200": {
+            "description": "User statistics retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserStatsResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          }
+        }
+      }
+    },
+    "/analytics/progress": {
+      "get": {
+        "tags": ["Analytics"],
+        "summary": "Get Progress Data",
+        "description": "Retrieve user progress data over time",
+        "parameters": [
+          {
+            "name": "days",
+            "in": "query",
+            "description": "Number of days to retrieve data for",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 365,
+              "default": 30
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Progress data retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProgressDataResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/config": {
+      "get": {
+        "tags": ["Configuration"],
+        "summary": "Get Application Config",
+        "description": "Retrieve application configuration and feature flags",
+        "responses": {
+          "200": {
+            "description": "Configuration retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ConfigResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/config/settings": {
+      "put": {
+        "tags": ["Configuration"],
+        "summary": "Update User Settings",
+        "description": "Update user-specific settings and preferences",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserSettingsRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Settings updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SuccessResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          }
+        }
+      }
+    },
+    "/auth/login": {
+      "post": {
+        "tags": ["Authentication"],
+        "summary": "User Login",
+        "description": "Authenticate user with username and password",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Login successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LoginResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          }
+        }
+      }
+    },
+    "/auth/logout": {
+      "post": {
+        "tags": ["Authentication"],
+        "summary": "User Logout",
+        "description": "Logout user and invalidate session",
+        "responses": {
+          "200": {
+            "description": "Logout successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SuccessResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Question": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Unique question identifier",
+            "example": "q001"
+          },
+          "category": {
+            "type": "string",
+            "description": "Question category",
+            "enum": ["java", "selenium", "api", "database", "testng", "framework", "performance", "mobile", "security", "cicd", "leadership"],
+            "example": "java"
+          },
+          "question": {
+            "type": "string",
+            "description": "The question text",
+            "example": "What is JVM?"
+          },
+          "answer": {
+            "type": "string",
+            "description": "The answer text",
+            "example": "Java Virtual Machine is a runtime environment that executes Java bytecode..."
+          },
+          "difficulty": {
+            "type": "string",
+            "description": "Question difficulty level",
+            "enum": ["beginner", "intermediate", "advanced"],
+            "example": "beginner"
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Question tags for filtering",
+            "example": ["java", "basics", "jvm"]
+          },
+          "experienceLevel": {
+            "type": "string",
+            "description": "Target experience level",
+            "enum": ["0-2", "3-5", "6-8", "8+"],
+            "example": "0-2"
+          }
+        },
+        "required": ["id", "category", "question", "difficulty"]
+      },
+      "QuestionsResponse": {
+        "allOf": [
+          {"$ref": "#/components/schemas/BaseResponse"},
+          {
+            "type": "object",
+            "properties": {
+              "data": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/Question"
+                }
+              },
+              "total": {
+                "type": "integer",
+                "description": "Total number of questions available",
+                "example": 155
+              },
+              "pagination": {
+                "$ref": "#/components/schemas/Pagination"
+              }
+            }
+          }
+        ]
+      },
+      "CategoryQuestionsResponse": {
+        "allOf": [
+          {"$ref": "#/components/schemas/BaseResponse"},
+          {
+            "type": "object",
+            "properties": {
+              "data": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/Question"
+                }
+              },
+              "category": {
+                "type": "string",
+                "example": "java"
+              },
+              "count": {
+                "type": "integer",
+                "example": 32
+              }
+            }
+          }
+        ]
+      },
+      "QuestionResponse": {
+        "allOf": [
+          {"$ref": "#/components/schemas/BaseResponse"},
+          {
+            "type": "object",
+            "properties": {
+              "data": {
+                "$ref": "#/components/schemas/Question"
+              }
+            }
+          }
+        ]
+      },
+      "StartSessionRequest": {
+        "type": "object",
+        "properties": {
+          "category": {
+            "type": "string",
+            "description": "Question category for the session",
+            "enum": ["java", "selenium", "api", "database", "mixed"],
+            "example": "java"
+          },
+          "difficulty": {
+            "type": "string",
+            "description": "Difficulty level",
+            "enum": ["beginner", "intermediate", "advanced", "mixed"],
+            "example": "intermediate"
+          },
+          "questionCount": {
+            "type": "integer",
+            "description": "Number of questions for the session",
+            "minimum": 1,
+            "maximum": 50,
+            "example": 10
+          },
+          "timeLimit": {
+            "type": "integer",
+            "description": "Time limit in minutes (optional)",
+            "minimum": 5,
+            "maximum": 120,
+            "example": 30
+          }
+        },
+        "required": ["category", "difficulty", "questionCount"]
+      },
+      "SessionResponse": {
+        "allOf": [
+          {"$ref": "#/components/schemas/BaseResponse"},
+          {
+            "type": "object",
+            "properties": {
+              "sessionId": {
+                "type": "string",
+                "example": "session_123"
+              },
+              "questions": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/Question"
+                }
+              },
+              "startTime": {
+                "type": "string",
+                "format": "date-time",
+                "example": "2025-12-15T10:00:00Z"
+              },
+              "timeLimit": {
+                "type": "integer",
+                "description": "Session time limit in minutes",
+                "example": 30
+              }
+            }
+          }
+        ]
+      },
+      "SubmitAnswerRequest": {
+        "type": "object",
+        "properties": {
+          "sessionId": {
+            "type": "string",
+            "description": "Active session ID",
+            "example": "session_123"
+          },
+          "questionId": {
+            "type": "string",
+            "description": "Question ID being answered",
+            "example": "q001"
+          },
+          "userAnswer": {
+            "type": "string",
+            "description": "User's answer",
+            "example": "Java Virtual Machine"
+          },
+          "timeTaken": {
+            "type": "integer",
+            "description": "Time taken to answer in seconds",
+            "example": 30
+          }
+        },
+        "required": ["sessionId", "questionId", "userAnswer", "timeTaken"]
+      },
+      "SubmitAnswerResponse": {
+        "allOf": [
+          {"$ref": "#/components/schemas/BaseResponse"},
+          {
+            "type": "object",
+            "properties": {
+              "correct": {
+                "type": "boolean",
+                "example": true
+              },
+              "explanation": {
+                "type": "string",
+                "example": "Correct! JVM is indeed the Java Virtual Machine..."
+              },
+              "score": {
+                "type": "integer",
+                "description": "Current session score percentage",
+                "example": 95
+              },
+              "nextQuestion": {
+                "$ref": "#/components/schemas/Question"
+              }
+            }
+          }
+        ]
+      },
+      "SessionResultsResponse": {
+        "allOf": [
+          {"$ref": "#/components/schemas/BaseResponse"},
+          {
+            "type": "object",
+            "properties": {
+              "data": {
+                "$ref": "#/components/schemas/SessionResults"
+              }
+            }
+          }
+        ]
+      },
+      "SessionResults": {
+        "type": "object",
+        "properties": {
+          "sessionId": {
+            "type": "string",
+            "example": "session_123"
+          },
+          "totalQuestions": {
+            "type": "integer",
+            "example": 10
+          },
+          "correctAnswers": {
+            "type": "integer",
+            "example": 8
+          },
+          "score": {
+            "type": "integer",
+            "description": "Score percentage",
+            "example": 80
+          },
+          "timeTaken": {
+            "type": "integer",
+            "description": "Total time taken in seconds",
+            "example": 300
+          },
+          "category": {
+            "type": "string",
+            "example": "java"
+          },
+          "difficulty": {
+            "type": "string",
+            "example": "intermediate"
+          },
+          "results": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/QuestionResult"
+            }
+          },
+          "completedAt": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2025-12-15T10:30:00Z"
+          }
+        }
+      },
+      "QuestionResult": {
+        "type": "object",
+        "properties": {
+          "questionId": {
+            "type": "string",
+            "example": "q001"
+          },
+          "correct": {
+            "type": "boolean",
+            "example": true
+          },
+          "userAnswer": {
+            "type": "string",
+            "example": "Java Virtual Machine"
+          },
+          "correctAnswer": {
+            "type": "string",
+            "example": "Java Virtual Machine is a runtime environment..."
+          },
+          "timeTaken": {
+            "type": "integer",
+            "example": 30
+          }
+        }
+      },
+      "UserStatsResponse": {
+        "allOf": [
+          {"$ref": "#/components/schemas/BaseResponse"},
+          {
+            "type": "object",
+            "properties": {
+              "data": {
+                "$ref": "#/components/schemas/UserStats"
+              }
+            }
+          }
+        ]
+      },
+      "UserStats": {
+        "type": "object",
+        "properties": {
+          "totalSessions": {
+            "type": "integer",
+            "example": 25
+          },
+          "averageScore": {
+            "type": "integer",
+            "example": 82
+          },
+          "totalQuestions": {
+            "type": "integer",
+            "example": 250
+          },
+          "correctAnswers": {
+            "type": "integer",
+            "example": 205
+          },
+          "categoryStats": {
+            "type": "object",
+            "additionalProperties": {
+              "$ref": "#/components/schemas/CategoryStats"
+            }
+          },
+          "recentSessions": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SessionSummary"
+            }
+          }
+        }
+      },
+      "CategoryStats": {
+        "type": "object",
+        "properties": {
+          "sessions": {
+            "type": "integer",
+            "example": 10
+          },
+          "avgScore": {
+            "type": "integer",
+            "example": 85
+          },
+          "totalQuestions": {
+            "type": "integer",
+            "example": 100
+          },
+          "correctAnswers": {
+            "type": "integer",
+            "example": 85
+          }
+        }
+      },
+      "SessionSummary": {
+        "type": "object",
+        "properties": {
+          "sessionId": {
+            "type": "string",
+            "example": "session_123"
+          },
+          "category": {
+            "type": "string",
+            "example": "java"
+          },
+          "score": {
+            "type": "integer",
+            "example": 85
+          },
+          "date": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2025-12-15T10:00:00Z"
+          }
+        }
+      },
+      "ProgressDataResponse": {
+        "allOf": [
+          {"$ref": "#/components/schemas/BaseResponse"},
+          {
+            "type": "object",
+            "properties": {
+              "data": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/ProgressData"
+                }
+              }
+            }
+          }
+        ]
+      },
+      "ProgressData": {
+        "type": "object",
+        "properties": {
+          "date": {
+            "type": "string",
+            "format": "date",
+            "example": "2025-12-15"
+          },
+          "score": {
+            "type": "integer",
+            "example": 85
+          },
+          "questionsAnswered": {
+            "type": "integer",
+            "example": 20
+          },
+          "categories": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "example": ["java", "selenium"]
+          }
+        }
+      },
+      "ConfigResponse": {
+        "allOf": [
+          {"$ref": "#/components/schemas/BaseResponse"},
+          {
+            "type": "object",
+            "properties": {
+              "data": {
+                "$ref": "#/components/schemas/AppConfig"
+              }
+            }
+          }
+        ]
+      },
+      "AppConfig": {
+        "type": "object",
+        "properties": {
+          "version": {
+            "type": "string",
+            "example": "1.0.0"
+          },
+          "features": {
+            "type": "object",
+            "properties": {
+              "analytics": {
+                "type": "boolean",
+                "example": true
+              },
+              "offline": {
+                "type": "boolean",
+                "example": true
+              },
+              "export": {
+                "type": "boolean",
+                "example": true
+              }
+            }
+          },
+          "categories": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "example": ["java", "selenium", "api", "database"]
+          },
+          "difficulties": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "example": ["beginner", "intermediate", "advanced"]
+          }
+        }
+      },
+      "UserSettingsRequest": {
+        "type": "object",
+        "properties": {
+          "theme": {
+            "type": "string",
+            "enum": ["light", "dark"],
+            "example": "dark"
+          },
+          "language": {
+            "type": "string",
+            "enum": ["en", "es", "fr", "de"],
+            "example": "en"
+          },
+          "notifications": {
+            "type": "boolean",
+            "example": true
+          },
+          "autoSave": {
+            "type": "boolean",
+            "example": true
+          }
+        }
+      },
+      "LoginRequest": {
+        "type": "object",
+        "properties": {
+          "username": {
+            "type": "string",
+            "example": "testuser"
+          },
+          "password": {
+            "type": "string",
+            "format": "password",
+            "example": "password123"
+          }
+        },
+        "required": ["username", "password"]
+      },
+      "LoginResponse": {
+        "allOf": [
+          {"$ref": "#/components/schemas/BaseResponse"},
+          {
+            "type": "object",
+            "properties": {
+              "sessionId": {
+                "type": "string",
+                "example": "sess_abc123"
+              },
+              "user": {
+                "$ref": "#/components/schemas/User"
+              }
+            }
+          }
+        ]
+      },
+      "User": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "user_123"
+          },
+          "username": {
+            "type": "string",
+            "example": "testuser"
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "example": "user@example.com"
+          },
+          "role": {
+            "type": "string",
+            "enum": ["user", "admin"],
+            "example": "user"
+          }
+        }
+      },
+      "BaseResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "description": "Whether the request was successful"
+          },
+          "message": {
+            "type": "string",
+            "description": "Optional message"
+          },
+          "timestamp": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Response timestamp",
+            "example": "2025-12-15T10:00:00Z"
+          }
+        },
+        "required": ["success"]
+      },
+      "SuccessResponse": {
+        "allOf": [
+          {"$ref": "#/components/schemas/BaseResponse"},
+          {
+            "type": "object",
+            "properties": {
+              "success": {
+                "type": "boolean",
+                "example": true
+              }
+            }
+          }
+        ]
+      },
+      "ErrorResponse": {
+        "allOf": [
+          {"$ref": "#/components/schemas/BaseResponse"},
+          {
+            "type": "object",
+            "properties": {
+              "success": {
+                "type": "boolean",
+                "example": false
+              },
+              "error": {
+                "type": "string",
+                "description": "Error message"
+              },
+              "code": {
+                "type": "string",
+                "description": "Error code"
+              },
+              "details": {
+                "type": "string",
+                "description": "Detailed error information"
+              }
+            },
+            "required": ["error"]
+          }
+        ]
+      },
+      "Pagination": {
+        "type": "object",
+        "properties": {
+          "limit": {
+            "type": "integer",
+            "example": 100
+          },
+          "offset": {
+            "type": "integer",
+            "example": 0
+          },
+          "total": {
+            "type": "integer",
+            "example": 155
+          },
+          "hasMore": {
+            "type": "boolean",
+            "example": true
+          }
+        }
+      }
+    },
+    "responses": {
+      "BadRequest": {
+        "description": "Bad Request",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorResponse"
+            },
+            "example": {
+              "success": false,
+              "error": "Invalid request parameters",
+              "code": "INVALID_PARAMS",
+              "timestamp": "2025-12-15T10:00:00Z"
+            }
+          }
+        }
+      },
+      "Unauthorized": {
+        "description": "Unauthorized",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorResponse"
+            },
+            "example": {
+              "success": false,
+              "error": "Authentication required",
+              "code": "UNAUTHORIZED",
+              "timestamp": "2025-12-15T10:00:00Z"
+            }
+          }
+        }
+      },
+      "NotFound": {
+        "description": "Not Found",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorResponse"
+            },
+            "example": {
+              "success": false,
+              "error": "Resource not found",
+              "code": "NOT_FOUND",
+              "timestamp": "2025-12-15T10:00:00Z"
+            }
+          }
+        }
+      },
+      "InternalServerError": {
+        "description": "Internal Server Error",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorResponse"
+            },
+            "example": {
+              "success": false,
+              "error": "Internal server error",
+              "code": "INTERNAL_ERROR",
+              "timestamp": "2025-12-15T10:00:00Z"
+            }
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "SessionAuth": {
+        "type": "apiKey",
+        "in": "cookie",
+        "name": "sessionId",
+        "description": "Session-based authentication using cookies"
+      },
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "description": "JWT Bearer token authentication"
+      }
+    }
+  },
+  "security": [
+    {
+      "SessionAuth": []
+    },
+    {
+      "BearerAuth": []
+    }
+  ],
+  "tags": [
+    {
+      "name": "Questions Management",
+      "description": "Operations for managing interview questions"
+    },
+    {
+      "name": "Practice Session",
+      "description": "Operations for practice sessions and quiz functionality"
+    },
+    {
+      "name": "Analytics",
+      "description": "User analytics and progress tracking"
+    },
+    {
+      "name": "Configuration",
+      "description": "Application configuration and user settings"
+    },
+    {
+      "name": "Authentication",
+      "description": "User authentication operations"
+    }
+  ],
+  "externalDocs": {
+    "description": "API Documentation Guide",
+    "url": "/docs/api/"
+  }
+}

@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test File Access</title>
+</head>
+<body>
+    <h1>Testing Data File Access</h1>
+    <div id="results"></div>
+
+    <script>
+        async function testDataAccess() {
+            const results = document.getElementById('results');
+
+            // Test practice data
+            try {
+                console.log('Testing practice data access...');
+                const response = await fetch('/data/practice/practice-data.json');
+                console.log('Practice data response:', response.status, response.ok);
+
+                if (response.ok) {
+                    const data = await response.json();
+                    console.log('Practice data keys:', Object.keys(data));
+                    results.innerHTML += '<p>✅ Practice data loaded successfully</p>';
+                    results.innerHTML += '<p>Available tracks: ' + Object.keys(data).join(', ') + '</p>';
+                } else {
+                    results.innerHTML += '<p>❌ Practice data failed: ' + response.status + '</p>';
+                }
+            } catch (error) {
+                console.error('Practice data error:', error);
+                results.innerHTML += '<p>❌ Practice data error: ' + error.message + '</p>';
+            }
+
+            // Test questions data
+            try {
+                console.log('Testing questions data access...');
+                const response = await fetch('/data/questions/interview-questions-fixed.json');
+                console.log('Questions data response:', response.status, response.ok);
+
+                if (response.ok) {
+                    const data = await response.json();
+                    console.log('Questions data categories:', data.categories?.length);
+                    results.innerHTML += '<p>✅ Questions data loaded successfully</p>';
+                    results.innerHTML += '<p>Categories: ' + (data.categories?.length || 0) + '</p>';
+                } else {
+                    results.innerHTML += '<p>❌ Questions data failed: ' + response.status + '</p>';
+                }
+            } catch (error) {
+                console.error('Questions data error:', error);
+                results.innerHTML += '<p>❌ Questions data error: ' + error.message + '</p>';
+            }
+        }
+
+        testDataAccess();
+    </script>
+</body>
+</html>

@@ -5,7 +5,7 @@ class PracticePortal {
         this.currentTrack = 'standard';
         this.currentWeek = null;
         this.currentDay = null;
-        this.progress = this.loadProgress();
+        this.progress = null; // Will be loaded async
         this.practiceData = null;
         this.interviewQuestions = null;
         this.currentQuestion = null;
@@ -57,12 +57,17 @@ class PracticePortal {
             // Try to load from cloud first
             await this.loadFromCloudIfAvailable();
 
+            // Load progress early for better UX
+            this.progress = await this.loadProgress();
+
             await this.loadPracticeData();
             await this.loadInterviewQuestions();
 
             this.setupEventListeners();
             this.initializeTheme();
             this.applySettings();
+            this.setupAutoSync(); // Enable progress synchronization
+            this.setupRealTimeUpdates(); // Enable real-time updates and error handling
             this.renderWeeks();
             this.updateProgressSummary();
             this.initializeDashboard();
@@ -70,9 +75,18 @@ class PracticePortal {
             // Hide loading state
             this.showLoadingState(false);
 
-            // Show success message with sync status
-            const deviceInfo = window.apiClient.getDeviceInfo();
-            this.showErrorMessage(`✅ Application loaded successfully! Device: ${deviceInfo.deviceId.substring(0, 20)}...`, 'success');
+            // Show success message with progress source info
+            const progressSource = this.progress?.source || 'local';
+            const message = progressSource === 'database'
+                ? '✅ Application loaded with synced progress!'
+                : '✅ Application loaded successfully!';
+
+            if (window.apiClient) {
+                const deviceInfo = window.apiClient.getDeviceInfo();
+                this.showErrorMessage(`${message} Device: ${deviceInfo.deviceId.substring(0, 20)}...`, 'success');
+            } else {
+                this.showErrorMessage(message, 'success');
+            }
 
         } catch (error) {
             console.error('❌ Critical error during initialization:', error);
@@ -86,6 +100,18 @@ class PracticePortal {
      */
     async loadFromCloudIfAvailable() {
         try {
+            // Check if apiClient exists and cloud sync is available
+            if (!window.apiClient) {
+                console.log('💾 Cloud sync not available, using local data only');
+                return;
+            }
+
+            // Check if we're in an environment where cloud sync is disabled
+            if (window.location.protocol === 'file:' || !window.apiClient.baseURL) {
+                console.log('💾 Cloud sync disabled for current environment, using local data only');
+                return;
+            }
+
             const cloudData = await window.apiClient.loadFromCloud();
             
             if (cloudData) {
@@ -146,32 +172,153 @@ class PracticePortal {
 
     async loadPracticeData() {
         try {
-            // Load from local files
-            let response;
-            let dataFile;
+            console.log('🔄 Starting practice data load from database...');
 
-            if (this.currentExperienceLevel === 'senior') {
-                dataFile = '../data/practice/practice-data-senior.json';
-                response = await fetch(dataFile);
-            } else {
-                dataFile = '../data/practice/practice-data.json';
-                response = await fetch(dataFile);
+            // Use database API exclusively - load tracks from API v2
+            if (!window.apiV2Client) {
+                throw new Error('Database API client not available');
             }
 
-            // Check if response is ok
-            if (!response.ok) {
-                throw new Error(`Failed to fetch ${dataFile}: ${response.status} ${response.statusText}`);
+            console.log('🗄️ Loading tracks from database...');
+            const tracksResponse = await window.apiV2Client.getTracks();
+
+            if (!tracksResponse || !tracksResponse.success) {
+                throw new Error('Failed to load tracks from database: ' + (tracksResponse?.error || 'Unknown error'));
             }
 
-            const data = await response.json();
+            if (!tracksResponse.data || tracksResponse.data.length === 0) {
+                throw new Error('No tracks found in database');
+            }
 
-            // Validate data structure
-            if (!data || !data.standard || !data.standard.weeks) {
-                throw new Error('Invalid practice data structure');
+            // Transform database tracks to expected format
+            const data = {};
+            let tracksProcessed = 0;
+
+            tracksResponse.data.forEach(track => {
+                const trackKey = track.name.toLowerCase().replace(/[^a-z0-9]/g, '');
+                data[trackKey] = {
+                    id: track.id,
+                    name: track.name,
+                    description: track.description,
+                    duration: track.duration,
+                    difficulty: track.difficulty,
+                    weeks: this.transformDaysToWeeks(track.days || [])
+                };
+                tracksProcessed++;
+            });
+
+            if (tracksProcessed === 0) {
+                throw new Error('No valid tracks could be processed from database');
+            }
+
+            this.practiceData = data;
+            console.log(`✅ Successfully loaded ${tracksProcessed} practice tracks from database`);
+            console.log(`📊 Available tracks: ${Object.keys(data).join(', ')}`);
+            this.showSuccessMessage(`Loaded ${tracksProcessed} practice tracks from database`, 'success');
+            return data;
+        } catch (error) {
+            console.error('❌ Error loading practice data from database:', error);
+            this.showErrorMessage('Failed to load practice data from database. Please check your connection.', 'error');
+
+            // No fallback - database is required
+            throw error;
+        }
+    }
+
+    // Helper function to transform database days to weeks structure
+    transformDaysToWeeks(days) {
+        if (!days || !Array.isArray(days)) {
+            return [];
+        }
+
+        const weeks = [];
+        let currentWeek = null;
+        let currentWeekDays = [];
+
+        days.forEach(day => {
+            const weekTitle = day.week_title || `Week ${Math.ceil(day.day_number / 7)}`;
+
+            if (!currentWeek || currentWeek !== weekTitle) {
+                if (currentWeek) {
+                    weeks.push({
+                        title: currentWeek,
+                        days: [...currentWeekDays]
+                    });
+                }
+                currentWeek = weekTitle;
+                currentWeekDays = [];
+            }
+
+            currentWeekDays.push({
+                id: day.day_number,
+                title: day.title,
+                focus: day.focus,
+                timeCommitment: day.time_commitment,
+                tasks: day.tasks ? JSON.parse(day.tasks) : [],
+                practice: day.practice ? JSON.parse(day.practice) : [],
+                resources: day.resources ? JSON.parse(day.resources) : []
+            });
+        });
+
+        if (currentWeek && currentWeekDays.length > 0) {
+            weeks.push({
+                title: currentWeek,
+                days: currentWeekDays
+            });
+        }
+
+        return weeks;
+    }
+
+            // Try to parse JSON with better error handling
+            let data;
+            try {
+                data = JSON.parse(responseText);
+                console.log('✅ JSON parsed successfully');
+            } catch (parseError) {
+                console.error('JSON Parse Error:', parseError);
+                throw new Error(`Invalid JSON format in practice data file: ${parseError.message}`);
+            }
+
+            // Validate data structure - check for any valid track
+            console.log('🔍 Validating practice data...');
+            console.log('📊 Data received:', data);
+            console.log('📊 Data type:', typeof data);
+            console.log('📊 Data keys:', data ? Object.keys(data) : 'null/undefined');
+
+            // More robust validation - check if data exists and has any object with weeks array
+            let hasValidTrack = false;
+
+            if (data && typeof data === 'object') {
+                const dataKeys = Object.keys(data);
+                console.log('🔍 Found data keys:', dataKeys);
+
+                for (const key of dataKeys) {
+                    const trackData = data[key];
+                    console.log(`🔍 Checking track "${key}":`, trackData);
+
+                    if (trackData &&
+                        typeof trackData === 'object' &&
+                        trackData.weeks &&
+                        Array.isArray(trackData.weeks)) {
+                        console.log(`✅ Valid track found: "${key}" with ${trackData.weeks.length} weeks`);
+                        hasValidTrack = true;
+                        break;
+                    }
+                }
+            }
+
+            console.log('✅ Has valid track:', hasValidTrack);
+
+            if (!data || !hasValidTrack) {
+                console.warn('Available tracks in data:', Object.keys(data || {}));
+                console.warn('Expected: Any object with "weeks" array property');
+                throw new Error('Invalid practice data structure: missing valid track with weeks');
             }
 
             this.practiceData = data;
             console.log(`✅ Successfully loaded practice data: ${dataFile}`);
+            console.log(`📊 Available tracks: ${Object.keys(data).join(', ')}`);
 
         } catch (error) {
             console.error('❌ Error loading practice data:', error);
@@ -184,53 +331,229 @@ class PracticePortal {
 
     async loadInterviewQuestions() {
         try {
-            // Load from local file
-            const response = await fetch('../data/questions/interview-questions.json');
+            // Initialize pagination state
+            this.currentQuestionPage = 1;
+            this.questionsPerPage = 20;
+            this.totalQuestions = 0;
+            this.totalPages = 0;
+            this.hasNextPage = false;
+            this.hasPrevPage = false;
 
-            // Check if response is ok
-            if (!response.ok) {
-                throw new Error(`Failed to fetch interview questions: ${response.status} ${response.statusText}`);
+            // Use database API exclusively
+            if (!window.apiV2Client) {
+                throw new Error('Database API client not available');
             }
 
-            const data = await response.json();
+            console.log('🗄️ Loading questions from database...');
+            const apiResult = await window.apiV2Client.getQuestions({
+                page: this.currentQuestionPage,
+                limit: this.questionsPerPage,
+                useCache: true
+            });
 
-            // Validate data structure
-            if (!data || !data.categories || !Array.isArray(data.categories)) {
-                throw new Error('Invalid interview questions data structure');
+            if (!apiResult || !apiResult.success) {
+                throw new Error('Failed to load questions from database: ' + (apiResult?.error || 'Unknown error'));
             }
 
-            this.interviewQuestions = data;
+            if (!apiResult.data || apiResult.data.length === 0) {
+                throw new Error('No questions found in database');
+            }
+
+            console.log(`✅ Successfully loaded ${apiResult.data.length} questions from database`);
+
+            // Store pagination info
+            if (apiResult.pagination) {
+                this.totalQuestions = apiResult.pagination.total;
+                this.totalPages = apiResult.pagination.totalPages;
+                this.hasNextPage = apiResult.pagination.hasNext;
+                this.hasPrevPage = apiResult.pagination.hasPrev;
+                this.currentQuestionPage = apiResult.pagination.currentPage;
+            }
+
+            // Convert database format to existing frontend format
+            this.interviewQuestions = this.convertDatabaseToLegacyFormat(apiResult.data);
             this.filteredQuestions = this.getAllQuestions();
-            console.log(`✅ Successfully loaded ${data.categories.length} question categories`);
+
+            console.log(`✅ Questions loaded from database: ${this.totalQuestions} total, showing ${this.filteredQuestions.length} questions`);
+            this.showSuccessMessage(`Loaded ${this.totalQuestions} questions from database`, 'success');
 
         } catch (error) {
-            console.error('❌ Error loading interview questions:', error);
-            this.showErrorMessage('Failed to load interview questions. Using fallback content.', 'warning');
+            console.error('❌ Error loading interview questions from database:', error);
+            this.showErrorMessage('Failed to load questions from database. Please check your connection.', 'error');
 
-            // Fallback to minimal structure
-            this.interviewQuestions = {
-                categories: [
-                    {
-                        id: 'java',
-                        name: 'Java Programming',
-                        icon: '☕',
-                        questions: [
-                            {
-                                id: 'fallback-001',
-                                question: 'What is Java?',
-                                difficulty: 'Basic',
-                                experienceLevel: ['0-2', '3-5'],
-                                answer: 'Java is a high-level, object-oriented programming language.',
-                                companies: ['Sample Company'],
-                                topic: 'Core Java',
-                                followUp: []
-                            }
-                        ]
-                    }
-                ]
-            };
-            this.filteredQuestions = this.getAllQuestions();
+            // No fallback - database is required
+            throw error;
         }
+    }
+
+    // Helper function to convert database format to legacy frontend format
+    convertDatabaseToLegacyFormat(questions) {
+        if (!questions || !Array.isArray(questions)) {
+            return { categories: [] };
+        }
+
+        // Group questions by category
+        const categoriesMap = new Map();
+
+        questions.forEach(question => {
+            const categoryName = question.category || 'General';
+
+            if (!categoriesMap.has(categoryName)) {
+                categoriesMap.set(categoryName, {
+                    name: categoryName,
+                    questions: []
+                });
+            }
+
+            categoriesMap.get(categoryName).questions.push({
+                id: question.id,
+                question: question.question,
+                answer: question.answer,
+                difficulty: question.difficulty || 'medium',
+                tags: question.tags ? question.tags.split(',').map(t => t.trim()) : [],
+                category: categoryName
+            });
+        });
+
+        return {
+            categories: Array.from(categoriesMap.values())
+        };
+    }
+
+    // Helper method to load from static files (legacy fallback)
+    async loadQuestionsFromFiles() {
+        // Load from local file - use fixed version
+        let response = await fetch('/data/questions/interview-questions-fixed.json');
+
+        // If fixed file fails, try comprehensive file, then fallback
+        if (!response.ok) {
+            console.warn('Fixed questions file not found, trying comprehensive file...');
+            response = await fetch('/data/questions/interview-questions-comprehensive.json');
+
+            if (!response.ok) {
+                console.warn('Comprehensive questions file not found, trying regular file...');
+                response = await fetch('/data/questions/interview-questions.json');
+            }
+        }
+
+        if (!response.ok) {
+            throw new Error(`Failed to fetch interview questions: ${response.status} ${response.statusText}`);
+        }
+
+        const responseText = await response.text();
+        const data = JSON.parse(responseText);
+
+        if (!data || !data.categories || !Array.isArray(data.categories)) {
+            throw new Error('Invalid interview questions data structure: missing categories array');
+        }
+
+        this.interviewQuestions = data;
+        this.filteredQuestions = this.getAllQuestions();
+        this.totalQuestions = this.filteredQuestions.length;
+        this.totalPages = Math.ceil(this.totalQuestions / this.questionsPerPage);
+        console.log(`✅ Successfully loaded ${data.categories.length} question categories from files`);
+    }
+
+    // Convert API v2 format to legacy frontend format
+    convertApiV2ToLegacyFormat(apiQuestions) {
+        if (!Array.isArray(apiQuestions)) {
+            return { categories: [] };
+        }
+
+        // Group questions by category
+        const categoriesMap = new Map();
+
+        apiQuestions.forEach(q => {
+            const categoryId = q.category_slug || q.category_id || 'unknown';
+            const categoryName = q.category_name || 'Unknown Category';
+
+            if (!categoriesMap.has(categoryId)) {
+                categoriesMap.set(categoryId, {
+                    id: categoryId,
+                    name: categoryName,
+                    icon: this.getCategoryIcon(categoryId),
+                    questions: []
+                });
+            }
+
+            // Convert API v2 question format to legacy format
+            categoriesMap.get(categoryId).questions.push({
+                id: q.id,
+                question: q.question,
+                difficulty: q.difficulty,
+                experienceLevel: this.mapExperienceLevels(q.experience_levels),
+                answer: q.answer,
+                companies: q.companies || [],
+                topic: q.topic || categoryName,
+                followUp: q.follow_up_questions || [],
+                code: q.code_example || null
+            });
+        });
+
+        return {
+            categories: Array.from(categoriesMap.values())
+        };
+    }
+
+    // Helper to get category icon
+    getCategoryIcon(categoryId) {
+        const iconMap = {
+            'java': '☕',
+            'selenium': '🌐',
+            'api-testing': '🔌',
+            'testng': '🧪',
+            'framework': '🏗️',
+            'leadership': '👔'
+        };
+        return iconMap[categoryId] || '📝';
+    }
+
+    // Map API v2 experience levels to legacy format
+    mapExperienceLevels(apiLevels) {
+        if (!Array.isArray(apiLevels)) return ['0-2', '3-5', '6-8'];
+
+        const mapping = {
+            'junior': ['0-2', '3-5'],
+            'mid': ['3-5', '6-8'],
+            'senior': ['6-8', '9-12']
+        };
+
+        const mapped = [];
+        apiLevels.forEach(level => {
+            if (mapping[level]) {
+                mapped.push(...mapping[level]);
+            }
+        });
+
+        return mapped.length > 0 ? [...new Set(mapped)] : ['0-2', '3-5', '6-8'];
+    }
+
+    // Create minimal fallback structure
+    createMinimalFallback() {
+        this.interviewQuestions = {
+            categories: [
+                {
+                    id: 'java',
+                    name: 'Java Programming',
+                    icon: '☕',
+                    questions: [
+                        {
+                            id: 'fallback-001',
+                            question: 'What is Java?',
+                            difficulty: 'Basic',
+                            experienceLevel: ['0-2', '3-5'],
+                            answer: 'Java is a high-level, object-oriented programming language.',
+                            companies: ['Sample Company'],
+                            topic: 'Core Java',
+                            followUp: []
+                        }
+                    ]
+                }
+            ]
+        };
+        this.filteredQuestions = this.getAllQuestions();
+        this.totalQuestions = this.filteredQuestions.length;
+        this.totalPages = 1;
     }
 
     getAllQuestions() {
@@ -295,6 +618,19 @@ class PracticePortal {
 
             clearSearch.addEventListener('click', () => {
                 this.clearSearch();
+            });
+        }
+
+        // Pagination controls
+        if (document.getElementById('prevPageBtn')) {
+            document.getElementById('prevPageBtn').addEventListener('click', () => {
+                this.goToPreviousPage();
+            });
+        }
+
+        if (document.getElementById('nextPageBtn')) {
+            document.getElementById('nextPageBtn').addEventListener('click', () => {
+                this.goToNextPage();
             });
         }
 
@@ -630,14 +966,22 @@ class PracticePortal {
 
     renderTasks(tasks) {
         const tasksList = document.getElementById('tasksList');
+
+        // Handle undefined or null tasks
+        if (!tasks || !Array.isArray(tasks)) {
+            console.warn('⚠️ Tasks data is undefined or not an array:', tasks);
+            tasksList.innerHTML = '<p class="no-tasks">No tasks available for this day.</p>';
+            return;
+        }
+
         tasksList.innerHTML = tasks.map((task, index) => {
             const taskKey = `${this.currentWeek}-${this.currentDay}-task-${index}`;
             const isCompleted = this.progress.tasks[taskKey] || false;
 
             return `
                 <div class="task-item ${isCompleted ? 'completed' : ''}" data-task-key="${taskKey}">
-                    <input type="checkbox" 
-                           class="task-checkbox" 
+                    <input type="checkbox"
+                           class="task-checkbox"
                            ${isCompleted ? 'checked' : ''}
                            onchange="portal.toggleTask('${taskKey}')">
                     <div class="task-content">
@@ -651,6 +995,14 @@ class PracticePortal {
 
     renderPracticeExercises(exercises) {
         const practiceList = document.getElementById('practiceList');
+
+        // Handle undefined or null exercises
+        if (!exercises || !Array.isArray(exercises)) {
+            console.warn('⚠️ Practice exercises data is undefined or not an array:', exercises);
+            practiceList.innerHTML = '<p class="no-exercises">No practice exercises available for this day.</p>';
+            return;
+        }
+
         practiceList.innerHTML = exercises.map(exercise => `
             <div class="practice-card" onclick="portal.showPracticeDetails(${JSON.stringify(exercise).replace(/"/g, '&quot;')})">
                 <h4>${exercise.title}</h4>
@@ -664,6 +1016,14 @@ class PracticePortal {
 
     renderResources(resources) {
         const resourcesList = document.getElementById('resourcesList');
+
+        // Handle undefined or null resources
+        if (!resources || !Array.isArray(resources)) {
+            console.warn('⚠️ Resources data is undefined or not an array:', resources);
+            resourcesList.innerHTML = '<p class="no-resources">No resources available for this day.</p>';
+            return;
+        }
+
         resourcesList.innerHTML = resources.map(resource => `
             <div class="resource-item">
                 <span class="resource-icon">${resource.icon}</span>
@@ -785,8 +1145,38 @@ class PracticePortal {
         document.getElementById('totalProgress').textContent = `${progressPercent}%`;
     }
 
-    loadProgress() {
+    async loadProgress() {
         try {
+            // Try to load from database API v2 first
+            if (window.apiV2Client) {
+                console.log('🚀 Loading progress from database API v2...');
+
+                const [progressResult, statsResult] = await Promise.allSettled([
+                    window.apiV2Client.getProgress(this.currentTrack),
+                    window.apiV2Client.getStats()
+                ]);
+
+                if (progressResult.status === 'fulfilled' && progressResult.value.success) {
+                    const dbProgress = progressResult.value.data;
+                    console.log('✅ Progress loaded from database:', dbProgress);
+
+                    // Convert database format to frontend format
+                    const convertedProgress = this.convertDbProgressToLocal(dbProgress);
+
+                    // Also merge with stats if available
+                    if (statsResult.status === 'fulfilled' && statsResult.value.success) {
+                        const stats = statsResult.value.data;
+                        console.log('✅ Stats loaded from database:', stats);
+                        this.mergeStatsWithProgress(convertedProgress, stats);
+                    }
+
+                    return convertedProgress;
+                } else {
+                    console.warn('⚠️ Database progress not available, falling back to localStorage');
+                }
+            }
+
+            // Fallback to localStorage for offline mode
             const saved = localStorage.getItem('practicePortalProgress');
 
             if (saved) {
@@ -794,7 +1184,7 @@ class PracticePortal {
 
                 // Validate progress data structure
                 if (this.validateProgressData(parsed)) {
-                    console.log('✅ Progress data loaded successfully');
+                    console.log('✅ Progress data loaded from localStorage');
                     return parsed;
                 } else {
                     console.warn('⚠️ Invalid progress data found, resetting to defaults');
@@ -802,15 +1192,68 @@ class PracticePortal {
                 }
             }
         } catch (error) {
-            console.error('❌ Error loading progress from localStorage:', error);
+            console.error('❌ Error loading progress:', error);
             this.showErrorMessage('Failed to load saved progress. Starting fresh.', 'warning');
         }
 
         // Return default progress structure
         return {
             completedDays: {},
-            tasks: {}
+            tasks: {},
+            lastSynced: null,
+            source: 'default'
         };
+    }
+
+    // Convert database progress format to frontend format
+    convertDbProgressToLocal(dbProgress) {
+        const converted = {
+            completedDays: {},
+            tasks: {},
+            lastSynced: new Date().toISOString(),
+            source: 'database'
+        };
+
+        // Convert database progress entries to frontend format
+        if (Array.isArray(dbProgress)) {
+            dbProgress.forEach(entry => {
+                // Convert track progress to day completion format
+                const dayKey = `${entry.track_id}-${entry.day_number}`;
+                converted.completedDays[dayKey] = entry.completed || false;
+
+                // Convert tasks if available
+                if (entry.tasks_completed) {
+                    try {
+                        const tasks = typeof entry.tasks_completed === 'string'
+                            ? JSON.parse(entry.tasks_completed)
+                            : entry.tasks_completed;
+
+                        Object.assign(converted.tasks, tasks);
+                    } catch (e) {
+                        console.warn('Failed to parse tasks data:', e);
+                    }
+                }
+            });
+        }
+
+        console.log('🔄 Converted database progress to local format:', converted);
+        return converted;
+    }
+
+    // Merge database stats with progress data
+    mergeStatsWithProgress(progress, stats) {
+        if (!stats) return;
+
+        // Add analytics data from stats
+        progress.analytics = {
+            totalStudyTime: stats.total_study_time || 0,
+            questionsStudied: stats.questions_studied || 0,
+            currentStreak: stats.current_streak || 0,
+            longestStreak: stats.longest_streak || 0,
+            lastActivity: stats.last_activity || null
+        };
+
+        console.log('📊 Merged stats with progress data');
     }
 
     validateProgressData(data) {
@@ -821,7 +1264,7 @@ class PracticePortal {
                typeof data.tasks === 'object';
     }
 
-    saveProgress() {
+    async saveProgress() {
         try {
             // Validate data before saving
             if (!this.validateProgressData(this.progress)) {
@@ -829,6 +1272,46 @@ class PracticePortal {
                 return false;
             }
 
+            // Update timestamp
+            this.progress.lastSynced = new Date().toISOString();
+
+            // Try to save to database API v2 first
+            if (window.apiV2Client && this.progress.source !== 'default') {
+                console.log('🚀 Saving progress to database API v2...');
+
+                try {
+                    const dbProgress = this.convertLocalToDbProgress(this.progress);
+
+                    // Save each day's progress to the database
+                    const savePromises = dbProgress.map(entry =>
+                        window.apiV2Client.updateProgress(
+                            entry.track_id,
+                            entry.day_number,
+                            {
+                                completed: entry.completed,
+                                tasks_completed: entry.tasks_completed,
+                                study_time: entry.study_time,
+                                completion_date: entry.completion_date
+                            }
+                        )
+                    );
+
+                    const results = await Promise.allSettled(savePromises);
+                    const successful = results.filter(r => r.status === 'fulfilled' && r.value.success).length;
+
+                    if (successful > 0) {
+                        console.log(`✅ Saved ${successful}/${savePromises.length} progress entries to database`);
+                        this.progress.source = 'database';
+                    } else {
+                        console.warn('⚠️ Database save failed, falling back to localStorage');
+                    }
+
+                } catch (dbError) {
+                    console.warn('⚠️ Database save error, falling back to localStorage:', dbError);
+                }
+            }
+
+            // Always save to localStorage as backup
             const dataString = JSON.stringify(this.progress);
 
             // Check if we're within localStorage limits (usually ~5MB)
@@ -838,7 +1321,7 @@ class PracticePortal {
             }
 
             localStorage.setItem('practicePortalProgress', dataString);
-            console.log('✅ Progress saved successfully');
+            console.log('✅ Progress saved to localStorage');
 
             return true;
 
@@ -851,6 +1334,404 @@ class PracticePortal {
                 this.showErrorMessage('Failed to save progress. Please try again.', 'error');
             }
             return false;
+        }
+    }
+
+    // Convert frontend progress format to database format
+    convertLocalToDbProgress(localProgress) {
+        const dbProgress = [];
+
+        // Convert completed days to database entries
+        Object.entries(localProgress.completedDays || {}).forEach(([dayKey, completed]) => {
+            // Parse day key format: "track-dayNumber" or "weekIndex-dayId"
+            const parts = dayKey.split('-');
+            if (parts.length >= 2) {
+                const trackId = parts[0];
+                const dayNumber = parseInt(parts[1]) || parseInt(parts[parts.length - 1]);
+
+                // Get related tasks for this day
+                const dayTasks = {};
+                Object.entries(localProgress.tasks || {}).forEach(([taskKey, taskCompleted]) => {
+                    if (taskKey.startsWith(dayKey)) {
+                        dayTasks[taskKey] = taskCompleted;
+                    }
+                });
+
+                dbProgress.push({
+                    track_id: trackId || this.currentTrack,
+                    day_number: dayNumber,
+                    completed: completed,
+                    tasks_completed: JSON.stringify(dayTasks),
+                    study_time: this.estimateStudyTime(completed),
+                    completion_date: completed ? new Date().toISOString() : null
+                });
+            }
+        });
+
+        return dbProgress;
+    }
+
+    // Estimate study time based on completion
+    estimateStudyTime(completed) {
+        if (!completed) return 0;
+        // Estimate 60-180 minutes per completed day
+        return Math.floor(Math.random() * 120) + 60;
+    }
+
+    // ===================================
+    // PROGRESS SYNCHRONIZATION
+    // ===================================
+
+    async syncProgress() {
+        if (!window.apiV2Client) {
+            console.log('📱 No API client available, skipping sync');
+            return { success: false, message: 'API not available' };
+        }
+
+        try {
+            console.log('🔄 Starting progress synchronization...');
+
+            // Get current local progress
+            const localProgress = this.progress || {};
+            const localTimestamp = new Date(localProgress.lastSynced || 0);
+
+            // Get remote progress from database
+            const remoteResult = await window.apiV2Client.getProgress(this.currentTrack);
+
+            if (!remoteResult.success) {
+                console.warn('⚠️ Failed to fetch remote progress');
+                return { success: false, message: 'Failed to fetch remote progress' };
+            }
+
+            const remoteProgress = this.convertDbProgressToLocal(remoteResult.data);
+            const remoteTimestamp = new Date(remoteProgress.lastSynced || 0);
+
+            console.log('📊 Sync comparison:', {
+                localTimestamp: localTimestamp.toISOString(),
+                remoteTimestamp: remoteTimestamp.toISOString(),
+                localDays: Object.keys(localProgress.completedDays || {}).length,
+                remoteDays: Object.keys(remoteProgress.completedDays || {}).length
+            });
+
+            // Determine sync strategy
+            let syncResult;
+            if (localTimestamp > remoteTimestamp) {
+                // Local is newer, push to server
+                syncResult = await this.pushProgressToServer(localProgress);
+            } else if (remoteTimestamp > localTimestamp) {
+                // Remote is newer, pull from server
+                syncResult = await this.pullProgressFromServer(remoteProgress);
+            } else {
+                // Same timestamp, merge both
+                syncResult = await this.mergeProgress(localProgress, remoteProgress);
+            }
+
+            return syncResult;
+
+        } catch (error) {
+            console.error('❌ Progress sync failed:', error);
+            return { success: false, message: error.message };
+        }
+    }
+
+    async pushProgressToServer(localProgress) {
+        console.log('⬆️ Pushing local progress to server...');
+        const saveResult = await this.saveProgress();
+
+        return {
+            success: saveResult,
+            message: saveResult ? 'Progress pushed to server' : 'Failed to push progress',
+            action: 'push'
+        };
+    }
+
+    async pullProgressFromServer(remoteProgress) {
+        console.log('⬇️ Pulling progress from server...');
+
+        // Backup current local progress
+        const localBackup = JSON.parse(JSON.stringify(this.progress));
+
+        // Replace with remote progress
+        this.progress = remoteProgress;
+
+        // Save to localStorage
+        localStorage.setItem('practicePortalProgress', JSON.stringify(this.progress));
+
+        // Update UI
+        this.updateProgressSummary();
+        this.renderWeeks();
+
+        return {
+            success: true,
+            message: 'Progress synced from server',
+            action: 'pull',
+            backup: localBackup
+        };
+    }
+
+    async mergeProgress(localProgress, remoteProgress) {
+        console.log('🔀 Merging local and remote progress...');
+
+        const merged = {
+            completedDays: { ...localProgress.completedDays, ...remoteProgress.completedDays },
+            tasks: { ...localProgress.tasks, ...remoteProgress.tasks },
+            lastSynced: new Date().toISOString(),
+            source: 'merged'
+        };
+
+        // Merge analytics if available
+        if (localProgress.analytics || remoteProgress.analytics) {
+            merged.analytics = {
+                ...localProgress.analytics,
+                ...remoteProgress.analytics
+            };
+        }
+
+        this.progress = merged;
+
+        // Save merged progress
+        const saveResult = await this.saveProgress();
+
+        return {
+            success: saveResult,
+            message: 'Progress merged successfully',
+            action: 'merge'
+        };
+    }
+
+    // Auto-sync on visibility change (when user returns to tab)
+    setupAutoSync() {
+        document.addEventListener('visibilitychange', async () => {
+            if (!document.hidden && window.apiV2Client) {
+                console.log('👁️ Tab became visible, checking for sync...');
+
+                const lastSync = new Date(this.progress?.lastSynced || 0);
+                const now = new Date();
+                const minutesSinceSync = (now - lastSync) / (1000 * 60);
+
+                // Auto-sync if last sync was more than 5 minutes ago
+                if (minutesSinceSync > 5) {
+                    const syncResult = await this.syncProgress();
+
+                    if (syncResult.success && syncResult.action !== 'push') {
+                        this.showErrorMessage(`🔄 Progress synced (${syncResult.action})`, 'info');
+                    }
+                }
+            }
+        });
+
+        console.log('🔄 Auto-sync enabled');
+    }
+
+    // ===================================
+    // REAL-TIME UPDATES & ERROR HANDLING
+    // ===================================
+
+    setupRealTimeUpdates() {
+        // Enhanced error handling with retry mechanism
+        this.errorQueue = [];
+        this.retryAttempts = 3;
+        this.retryDelay = 2000; // 2 seconds
+
+        // Real-time progress updates
+        this.setupProgressUpdates();
+
+        // Enhanced error handling
+        this.setupAdvancedErrorHandling();
+
+        // Connection monitoring
+        this.setupConnectionMonitoring();
+
+        console.log('🔄 Real-time updates enabled');
+    }
+
+    setupProgressUpdates() {
+        // Update progress in real-time after actions
+        const originalMarkDayComplete = this.markDayComplete.bind(this);
+        this.markDayComplete = async function() {
+            const result = await originalMarkDayComplete.call(this);
+
+            // Real-time sync after completion
+            if (window.apiV2Client) {
+                const syncResult = await this.syncProgress();
+                if (syncResult.success) {
+                    this.showErrorMessage('✅ Progress synced in real-time!', 'success');
+                } else {
+                    this.showErrorMessage('⚠️ Progress saved locally, will sync when online', 'warning');
+                }
+            }
+
+            return result;
+        }.bind(this);
+
+        // Real-time dashboard updates
+        const originalUpdateProgressSummary = this.updateProgressSummary.bind(this);
+        this.updateProgressSummary = function() {
+            originalUpdateProgressSummary.call(this);
+
+            // Trigger real-time analytics refresh
+            if (this.progress?.source === 'database') {
+                this.refreshAnalyticsInBackground();
+            }
+        }.bind(this);
+    }
+
+    setupAdvancedErrorHandling() {
+        // Global error handler for unhandled API errors
+        window.addEventListener('unhandledrejection', (event) => {
+            console.error('🚨 Unhandled promise rejection:', event.reason);
+
+            // Check if it's an API error
+            if (event.reason?.message?.includes('API')) {
+                this.handleApiError(event.reason);
+                event.preventDefault(); // Prevent default browser error handling
+            }
+        });
+
+        // Network error handling
+        window.addEventListener('online', () => {
+            console.log('🌐 Connection restored');
+            this.showErrorMessage('🌐 Connection restored! Syncing data...', 'success');
+            this.handleConnectionRestored();
+        });
+
+        window.addEventListener('offline', () => {
+            console.log('📱 Connection lost, switching to offline mode');
+            this.showErrorMessage('📱 Offline mode: Changes will sync when reconnected', 'info');
+        });
+    }
+
+    setupConnectionMonitoring() {
+        // Periodic connection check
+        setInterval(async () => {
+            if (window.apiV2Client && navigator.onLine) {
+                try {
+                    const healthCheck = await window.apiV2Client.isAvailable();
+                    if (!healthCheck && this.lastConnectionState !== false) {
+                        console.log('🔄 API server unavailable');
+                        this.showErrorMessage('⚠️ Server temporarily unavailable', 'warning');
+                        this.lastConnectionState = false;
+                    } else if (healthCheck && this.lastConnectionState === false) {
+                        console.log('✅ API server connection restored');
+                        this.showErrorMessage('✅ Server connection restored', 'success');
+                        this.handleConnectionRestored();
+                        this.lastConnectionState = true;
+                    }
+                } catch (error) {
+                    // Ignore connection check errors
+                }
+            }
+        }, 30000); // Check every 30 seconds
+    }
+
+    async handleApiError(error) {
+        console.error('🚨 API Error:', error);
+
+        const errorItem = {
+            error,
+            timestamp: Date.now(),
+            attempts: 0
+        };
+
+        this.errorQueue.push(errorItem);
+        await this.processErrorQueue();
+    }
+
+    async processErrorQueue() {
+        if (this.errorQueue.length === 0) return;
+
+        const errorItem = this.errorQueue[0];
+
+        if (errorItem.attempts >= this.retryAttempts) {
+            // Remove failed item and show persistent error
+            this.errorQueue.shift();
+            this.showPersistentError(errorItem.error);
+            return;
+        }
+
+        errorItem.attempts++;
+
+        try {
+            // Wait before retry
+            await new Promise(resolve => setTimeout(resolve, this.retryDelay * errorItem.attempts));
+
+            // Attempt to retry based on error type
+            await this.retryFailedOperation(errorItem.error);
+
+            // Success - remove from queue
+            this.errorQueue.shift();
+            this.showErrorMessage('✅ Operation completed successfully', 'success');
+
+            // Process next error if any
+            if (this.errorQueue.length > 0) {
+                this.processErrorQueue();
+            }
+
+        } catch (retryError) {
+            console.warn(`Retry ${errorItem.attempts}/${this.retryAttempts} failed:`, retryError);
+
+            // Try again
+            setTimeout(() => this.processErrorQueue(), 1000);
+        }
+    }
+
+    async retryFailedOperation(error) {
+        // Determine retry strategy based on error type
+        if (error.message?.includes('progress')) {
+            // Retry progress save
+            return await this.saveProgress();
+        } else if (error.message?.includes('sync')) {
+            // Retry sync
+            return await this.syncProgress();
+        } else if (error.message?.includes('questions')) {
+            // Retry question loading
+            return await this.loadQuestionsPage();
+        } else {
+            // Generic retry - attempt sync
+            return await this.syncProgress();
+        }
+    }
+
+    showPersistentError(error) {
+        const errorDiv = document.createElement('div');
+        errorDiv.className = 'persistent-error';
+        errorDiv.innerHTML = `
+            <div class="error-content">
+                <span class="error-icon">⚠️</span>
+                <div class="error-text">
+                    <strong>Persistent Error</strong>
+                    <p>${error.message}</p>
+                    <small>Some features may be limited. Your progress is saved locally.</small>
+                </div>
+                <button onclick="this.parentElement.parentElement.remove()" class="error-dismiss">×</button>
+            </div>
+        `;
+
+        document.body.appendChild(errorDiv);
+
+        // Auto-remove after 15 seconds
+        setTimeout(() => {
+            if (errorDiv.parentElement) {
+                errorDiv.remove();
+            }
+        }, 15000);
+    }
+
+    async handleConnectionRestored() {
+        // Attempt to sync when connection is restored
+        try {
+            const syncResult = await this.syncProgress();
+            if (syncResult.success) {
+                console.log('🔄 Auto-sync completed after connection restoration');
+            }
+
+            // Process any queued errors
+            if (this.errorQueue.length > 0) {
+                this.processErrorQueue();
+            }
+
+        } catch (error) {
+            console.warn('⚠️ Failed to sync after connection restoration:', error);
         }
     }
 
@@ -922,6 +1803,16 @@ class PracticePortal {
     }
 
     filterAndRenderQuestions() {
+        // Reset to page 1 when filters change
+        this.currentQuestionPage = 1;
+
+        // If we have API v2 client, use paginated API calls with filters
+        if (window.apiV2Client) {
+            this.loadQuestionsPage();
+            return;
+        }
+
+        // Fallback: client-side filtering for embedded data
         const category = document.getElementById('categoryFilter').value;
         const difficulty = document.getElementById('difficultyFilter').value;
         const searchTerm = document.getElementById('questionSearch')?.value?.toLowerCase().trim() || '';
@@ -966,8 +1857,12 @@ class PracticePortal {
             return true;
         });
 
-        this.renderQuestionsList();
-        this.updateSearchStats();
+        // Update pagination metadata for embedded data
+        this.totalQuestions = this.filteredQuestions.length;
+        this.totalPages = Math.ceil(this.totalQuestions / this.questionsPerPage);
+
+        // Simulate pagination with embedded data
+        this.simulatePaginationWithEmbeddedData();
     }
 
     handleSearchInput(searchTerm) {
@@ -1001,6 +1896,215 @@ class PracticePortal {
 
         this.filterAndRenderQuestions();
         searchInput.focus();
+    }
+
+    // ===================================
+    // PAGINATION METHODS
+    // ===================================
+
+    async goToPreviousPage() {
+        if (this.currentQuestionPage > 1) {
+            this.currentQuestionPage--;
+            await this.loadQuestionsPage();
+        }
+    }
+
+    async goToNextPage() {
+        if (this.currentQuestionPage < this.totalPages) {
+            this.currentQuestionPage++;
+            await this.loadQuestionsPage();
+        }
+    }
+
+    async goToPage(pageNumber) {
+        if (pageNumber >= 1 && pageNumber <= this.totalPages) {
+            this.currentQuestionPage = pageNumber;
+            await this.loadQuestionsPage();
+        }
+    }
+
+    async loadQuestionsPage() {
+        try {
+            // Show loading state for pagination
+            this.showPaginationLoading(true);
+
+            // Get current filter values
+            const category = document.getElementById('categoryFilter')?.value || 'all';
+            const difficulty = document.getElementById('difficultyFilter')?.value || 'all';
+            const searchTerm = document.getElementById('questionSearch')?.value?.trim() || '';
+
+            // Build options for API call
+            const options = {
+                page: this.currentQuestionPage,
+                limit: this.questionsPerPage,
+                useCache: false // Don't cache during pagination for fresh results
+            };
+
+            // Add filters if not 'all'
+            if (category !== 'all') {
+                options.category_id = category;
+            }
+            if (difficulty !== 'all') {
+                options.difficulty = difficulty;
+            }
+            if (searchTerm) {
+                options.search = searchTerm;
+            }
+
+            // Load questions using API v2 hybrid approach
+            if (window.apiV2Client) {
+                const apiResult = await window.apiV2Client.getQuestionsHybrid(options);
+
+                if (apiResult.success) {
+                    // Update pagination state
+                    if (apiResult.pagination) {
+                        this.totalQuestions = apiResult.pagination.total;
+                        this.totalPages = apiResult.pagination.totalPages;
+                        this.hasNextPage = apiResult.pagination.hasNext;
+                        this.hasPrevPage = apiResult.pagination.hasPrev;
+                    }
+
+                    // Convert and update questions
+                    this.interviewQuestions = this.convertApiV2ToLegacyFormat(apiResult.data);
+                    this.filteredQuestions = this.getAllQuestions();
+
+                    // Render the new page
+                    this.renderQuestionsList();
+                    this.updatePaginationControls();
+                    this.updateSearchStats();
+
+                    console.log(`📄 Loaded page ${this.currentQuestionPage} of ${this.totalPages} (${apiResult.source})`);
+                } else {
+                    throw new Error('Failed to load questions page');
+                }
+            } else {
+                // Fallback: simulate pagination with embedded data
+                this.simulatePaginationWithEmbeddedData();
+            }
+
+        } catch (error) {
+            console.error('❌ Error loading questions page:', error);
+            this.showErrorMessage('Failed to load questions page. Please try again.', 'error');
+        } finally {
+            this.showPaginationLoading(false);
+        }
+    }
+
+    simulatePaginationWithEmbeddedData() {
+        // When using embedded data, simulate pagination by slicing the full dataset
+        const allQuestions = this.getAllQuestions();
+        const startIndex = (this.currentQuestionPage - 1) * this.questionsPerPage;
+        const endIndex = startIndex + this.questionsPerPage;
+
+        // Create a mock paginated result
+        const paginatedQuestions = allQuestions.slice(startIndex, endIndex);
+
+        // Update pagination metadata
+        this.totalQuestions = allQuestions.length;
+        this.totalPages = Math.ceil(this.totalQuestions / this.questionsPerPage);
+        this.hasNextPage = this.currentQuestionPage < this.totalPages;
+        this.hasPrevPage = this.currentQuestionPage > 1;
+
+        // Set filtered questions to the current page
+        this.filteredQuestions = paginatedQuestions;
+
+        // Render and update controls
+        this.renderQuestionsList();
+        this.updatePaginationControls();
+        this.updateSearchStats();
+    }
+
+    showPaginationLoading(show) {
+        const questionsList = document.getElementById('questionsList');
+        if (show) {
+            questionsList.innerHTML = '<div class="loading-pagination">🔄 Loading questions...</div>';
+        }
+    }
+
+    updatePaginationControls() {
+        const paginationContainer = document.getElementById('paginationContainer');
+        const prevBtn = document.getElementById('prevPageBtn');
+        const nextBtn = document.getElementById('nextPageBtn');
+        const paginationInfo = document.getElementById('paginationInfo');
+        const paginationMeta = document.getElementById('paginationMeta');
+        const paginationNumbers = document.getElementById('paginationNumbers');
+
+        if (!paginationContainer) return;
+
+        // Show pagination only if we have multiple pages or are using API v2
+        const shouldShowPagination = this.totalPages > 1 || (window.apiV2Client && this.totalQuestions > 0);
+
+        if (shouldShowPagination) {
+            paginationContainer.style.display = 'block';
+
+            // Update pagination info
+            const startItem = ((this.currentQuestionPage - 1) * this.questionsPerPage) + 1;
+            const endItem = Math.min(this.currentQuestionPage * this.questionsPerPage, this.totalQuestions);
+
+            if (paginationInfo) {
+                paginationInfo.textContent = `Showing ${startItem}-${endItem} of ${this.totalQuestions} questions`;
+            }
+
+            if (paginationMeta) {
+                paginationMeta.textContent = `Page ${this.currentQuestionPage} of ${this.totalPages}`;
+            }
+
+            // Update button states
+            if (prevBtn) {
+                prevBtn.disabled = !this.hasPrevPage;
+                prevBtn.classList.toggle('disabled', !this.hasPrevPage);
+            }
+
+            if (nextBtn) {
+                nextBtn.disabled = !this.hasNextPage;
+                nextBtn.classList.toggle('disabled', !this.hasNextPage);
+            }
+
+            // Update page numbers (show max 5 page numbers)
+            if (paginationNumbers) {
+                this.renderPaginationNumbers(paginationNumbers);
+            }
+
+        } else {
+            paginationContainer.style.display = 'none';
+        }
+    }
+
+    renderPaginationNumbers(container) {
+        const maxVisible = 5;
+        let startPage = Math.max(1, this.currentQuestionPage - Math.floor(maxVisible / 2));
+        let endPage = Math.min(this.totalPages, startPage + maxVisible - 1);
+
+        // Adjust start if we're near the end
+        if (endPage - startPage < maxVisible - 1) {
+            startPage = Math.max(1, endPage - maxVisible + 1);
+        }
+
+        let html = '';
+
+        // Previous ellipsis
+        if (startPage > 1) {
+            html += `<button class="page-number" onclick="portal.goToPage(1)">1</button>`;
+            if (startPage > 2) {
+                html += `<span class="page-ellipsis">...</span>`;
+            }
+        }
+
+        // Page numbers
+        for (let i = startPage; i <= endPage; i++) {
+            const isActive = i === this.currentQuestionPage;
+            html += `<button class="page-number ${isActive ? 'active' : ''}" onclick="portal.goToPage(${i})">${i}</button>`;
+        }
+
+        // Next ellipsis
+        if (endPage < this.totalPages) {
+            if (endPage < this.totalPages - 1) {
+                html += `<span class="page-ellipsis">...</span>`;
+            }
+            html += `<button class="page-number" onclick="portal.goToPage(${this.totalPages})">${this.totalPages}</button>`;
+        }
+
+        container.innerHTML = html;
     }
 
     updateSearchStats() {
@@ -1093,6 +2197,9 @@ class PracticePortal {
                 this.showQuestion(index);
             });
         });
+
+        // Update pagination controls after rendering
+        this.updatePaginationControls();
     }
 
     searchSuggestion(term) {
@@ -1373,8 +2480,57 @@ class PracticePortal {
         this.checkAndUnlockAchievements();
     }
 
-    updateProgressStats() {
-        const completedDaysCount = Object.keys(this.progress.completedDays).length;
+    async updateProgressStats() {
+        // Use database analytics if available, otherwise fall back to local calculation
+        if (this.progress?.analytics && this.progress.source === 'database') {
+            this.updateProgressStatsFromDatabase();
+        } else {
+            this.updateProgressStatsLocal();
+        }
+
+        // Try to fetch fresh analytics from database in background
+        if (window.apiV2Client) {
+            this.refreshAnalyticsInBackground();
+        }
+    }
+
+    updateProgressStatsFromDatabase() {
+        const analytics = this.progress.analytics;
+        const completedDaysCount = Object.keys(this.progress.completedDays || {}).length;
+
+        // Update with database analytics
+        document.getElementById('dashboardDaysCompleted').textContent = completedDaysCount;
+
+        // Use analytics data if available
+        if (analytics.totalStudyTime) {
+            const hours = Math.floor(analytics.totalStudyTime / 60);
+            const minutes = analytics.totalStudyTime % 60;
+            const studyTimeEl = document.getElementById('totalStudyTime');
+            if (studyTimeEl) {
+                studyTimeEl.textContent = `${hours}h ${minutes}m`;
+            }
+        }
+
+        // Calculate completion rate
+        const trackData = this.practiceData[this.currentTrack];
+        const totalDays = trackData.weeks.reduce((sum, week) => sum + week.days.length, 0);
+        const progressPercent = Math.round((completedDaysCount / totalDays) * 100);
+
+        document.getElementById('dashboardTotalDays').textContent = totalDays;
+        document.getElementById('dashboardCompletionRate').textContent = `${progressPercent}%`;
+
+        const progressBar = document.getElementById('dashboardProgressBar');
+        const progressText = document.getElementById('dashboardProgressText');
+
+        progressBar.style.width = `${progressPercent}%`;
+        progressText.textContent = `${progressPercent}% Complete (Database Synced)`;
+
+        console.log('📊 Dashboard updated with database analytics');
+    }
+
+    updateProgressStatsLocal() {
+        // Fallback to local calculation
+        const completedDaysCount = Object.keys(this.progress?.completedDays || {}).length;
         const trackData = this.practiceData[this.currentTrack];
         const totalDays = trackData.weeks.reduce((sum, week) => sum + week.days.length, 0);
         const progressPercent = Math.round((completedDaysCount / totalDays) * 100);
@@ -1388,6 +2544,28 @@ class PracticePortal {
 
         progressBar.style.width = `${progressPercent}%`;
         progressText.textContent = `${progressPercent}% Complete`;
+    }
+
+    async refreshAnalyticsInBackground() {
+        try {
+            const statsResult = await window.apiV2Client.getStats();
+
+            if (statsResult.success) {
+                // Merge fresh analytics with progress data
+                if (!this.progress.analytics) {
+                    this.progress.analytics = {};
+                }
+
+                this.mergeStatsWithProgress(this.progress, statsResult.data);
+
+                // Update dashboard with fresh data
+                this.updateProgressStatsFromDatabase();
+
+                console.log('📊 Analytics refreshed in background');
+            }
+        } catch (error) {
+            console.warn('⚠️ Background analytics refresh failed:', error);
+        }
     }
 
     updateStreakData() {
@@ -1957,8 +3135,10 @@ class PracticePortal {
             localStorage.setItem('userSettings', JSON.stringify(this.settings));
             console.log('✅ Settings saved to localStorage');
 
-            // Sync to cloud in background
-            this.syncToCloudBackground();
+            // Sync to cloud in background if available
+            if (window.apiClient) {
+                this.syncToCloudBackground();
+            }
 
             return true;
         } catch (error) {
@@ -2423,6 +3603,31 @@ class PracticePortal {
             info: '#3b82f6'
         };
         return colors[type] || colors.info;
+    }
+
+    /**
+     * Sync data to cloud in background (non-blocking)
+     */
+    syncToCloudBackground() {
+        if (!window.apiClient) {
+            console.log('💾 Cloud sync not available');
+            return;
+        }
+
+        // Don't await - let it run in background
+        window.apiClient.syncToCloud(
+            this.progress,
+            this.dashboardData,
+            this.settings
+        ).then(result => {
+            if (result.success) {
+                console.log('☁️ Background sync completed');
+            } else {
+                console.warn('⚠️ Background sync failed:', result.error);
+            }
+        }).catch(error => {
+            console.warn('⚠️ Background sync error:', error);
+        });
     }
 }
 

@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Embedded Data</title>
+</head>
+<body>
+    <h1>Testing Embedded Data Loading</h1>
+    <div id="results"></div>
+
+    <script src="js/embedded-data.js"></script>
+    <script>
+        console.log('=== Testing Embedded Data ===');
+
+        const results = document.getElementById('results');
+
+        function addResult(message, isSuccess = true) {
+            const p = document.createElement('p');
+            p.textContent = message;
+            p.style.color = isSuccess ? 'green' : 'red';
+            results.appendChild(p);
+            console.log(message);
+        }
+
+        // Test practice data
+        if (window.PRACTICE_DATA) {
+            addResult('✅ PRACTICE_DATA loaded successfully');
+            const tracks = Object.keys(window.PRACTICE_DATA);
+            addResult('📊 Available tracks: ' + tracks.join(', '));
+
+            // Test structure
+            let validTracks = 0;
+            for (const track of tracks) {
+                if (window.PRACTICE_DATA[track].weeks && Array.isArray(window.PRACTICE_DATA[track].weeks)) {
+                    validTracks++;
+                    addResult(`✅ Track "${track}" has valid structure with ${window.PRACTICE_DATA[track].weeks.length} weeks`);
+                }
+            }
+            addResult(`✅ ${validTracks} valid tracks found`);
+        } else {
+            addResult('❌ PRACTICE_DATA not found', false);
+        }
+
+        // Test questions data
+        if (window.QUESTIONS_DATA) {
+            addResult('✅ QUESTIONS_DATA loaded successfully');
+            const categories = window.QUESTIONS_DATA.categories;
+            if (categories && Array.isArray(categories)) {
+                addResult(`📊 ${categories.length} question categories found`);
+                categories.forEach(cat => {
+                    addResult(`✅ Category "${cat.name}" has ${cat.questions?.length || 0} questions`);
+                });
+            } else {
+                addResult('❌ Invalid questions structure', false);
+            }
+        } else {
+            addResult('❌ QUESTIONS_DATA not found', false);
+        }
+
+        console.log('=== Test Complete ===');
+        console.log('Practice Data:', window.PRACTICE_DATA);
+        console.log('Questions Data:', window.QUESTIONS_DATA);
+    </script>
+</body>
+</html>
