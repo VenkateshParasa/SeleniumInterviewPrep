@@ -1,21 +1,21 @@
 # 📋 Master Interview Questions Index - Java + Selenium + API Testing
 
 **Purpose**: Central hub for all interview question banks
-**Total Questions**: 1,690+ Questions across 4 categories
+**Total Questions**: 1,755+ Questions across 4 categories (Updated Dec 2025)
 **Target Audience**: 0-12 years experience in automation testing
-**Status**: Question banks ready - Answer creation phase next
+**Status**: ✅ Organized with consolidated versions containing answers
 
 ---
 
 ## 🎯 Quick Overview
 
-| Technology | Questions | Document | Focus Areas | Priority |
-|------------|-----------|----------|-------------|----------|
-| ☕ **Java** | **540** | [JAVA-INTERVIEW-QUESTIONS-BANK.md](JAVA-INTERVIEW-QUESTIONS-BANK.md) | Core Java to Advanced | High |
-| 🌐 **Selenium** | **400** | [SELENIUM-INTERVIEW-QUESTIONS-BANK.md](SELENIUM-INTERVIEW-QUESTIONS-BANK.md) | WebDriver to Frameworks | High |
-| 🔌 **API Testing** | **350** | [API-TESTING-INTERVIEW-QUESTIONS-BANK.md](API-TESTING-INTERVIEW-QUESTIONS-BANK.md) | REST to Security | High |
-| 🎭 **Scenario/Behavioral** | **400** | [SCENARIO-BEHAVIORAL-INTERVIEW-QUESTIONS.md](SCENARIO-BEHAVIORAL-INTERVIEW-QUESTIONS.md) | Leadership & Management | Critical |
-| **TOTAL** | **1,690** | 4 Documents | Complete Coverage | Essential |
+| Technology | Questions | Document | Focus Areas | Priority | Status |
+|------------|-----------|----------|-------------|----------|---------|
+| ☕ **Java** | **540** | [comprehensive-banks/JAVA-INTERVIEW-QUESTIONS-BANK.md](comprehensive-banks/JAVA-INTERVIEW-QUESTIONS-BANK.md) | Core Java to Advanced | High | Questions Only |
+| 🌐 **Selenium** | **435** | [CONSOLIDATED-SELENIUM-QUESTIONS.md](CONSOLIDATED-SELENIUM-QUESTIONS.md) | WebDriver to Grid | High | ✅ With Answers |
+| 🔌 **API Testing** | **380** | [CONSOLIDATED-API-TESTING-QUESTIONS.md](CONSOLIDATED-API-TESTING-QUESTIONS.md) | REST to Security | High | ✅ With Answers |
+| 🎭 **Scenario/Behavioral** | **400** | [comprehensive-banks/SCENARIO-BEHAVIORAL-INTERVIEW-QUESTIONS.md](comprehensive-banks/SCENARIO-BEHAVIORAL-INTERVIEW-QUESTIONS.md) | Leadership & Management | Critical | Questions Only |
+| **TOTAL** | **1,755** | 4 Documents + 2 Consolidated | Complete Coverage | Essential | ✅ Organized |
 
 ---
 

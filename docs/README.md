@@ -13,33 +13,35 @@ Core learning materials for Java, Selenium, and API Testing:
 - [03-Selenium-Resources.md](learning-resources/03-Selenium-Resources.md) - Selenium WebDriver guides
 - [04-API-Testing-Resources.md](learning-resources/04-API-Testing-Resources.md) - API testing materials
 - [05-Additional-Skills.md](learning-resources/05-Additional-Skills.md) - TestNG, Maven, Git, etc.
-- [09-Resources-Links.md](learning-resources/09-Resources-Links.md) - External resources and links
-- [10-Senior-Advanced-Topics.md](learning-resources/10-Senior-Advanced-Topics.md) - Advanced topics for 8+ years experience
+- [06-Resources-Links.md](learning-resources/06-Resources-Links.md) - External resources and links
+- [07-Senior-Advanced-Topics.md](learning-resources/07-Senior-Advanced-Topics.md) - Advanced topics for 8+ years experience
+- [08-Large-Scale-Architecture-Guide.md](learning-resources/08-Large-Scale-Architecture-Guide.md) - Large-scale system architecture
+- [09-Monolithic-Architecture-Guide.md](learning-resources/09-Monolithic-Architecture-Guide.md) - Monolithic system patterns
 
 ### 📅 Study Plans
 **Path**: [`study-plans/`](study-plans/)
 
 Structured study schedules and progress tracking:
-- [4-WEEK-STUDY-PLAN.md](study-plans/4-WEEK-STUDY-PLAN.md) - Intensive 4-week plan
-- [06-Study-Schedule.md](study-plans/06-Study-Schedule.md) - Flexible study schedules
-- [PROGRESS-TRACKER.md](study-plans/PROGRESS-TRACKER.md) - Track your learning progress
+- [01-4-Week-Study-Plan.md](study-plans/01-4-Week-Study-Plan.md) - Intensive 4-week plan
+- [02-Study-Schedule.md](study-plans/02-Study-Schedule.md) - Flexible study schedules
+- [03-Progress-Tracker.md](study-plans/03-Progress-Tracker.md) - Track your learning progress
 
 ### ❓ Interview Preparation
 **Path**: [`interview-prep/`](interview-prep/)
 
 Interview questions and preparation strategies:
-- [07-Interview-Preparation.md](interview-prep/07-Interview-Preparation.md) - Interview tips and strategies
-- [INTERVIEW-QUESTIONS-GUIDE.md](interview-prep/INTERVIEW-QUESTIONS-GUIDE.md) - Comprehensive question bank
-- [EXPANDED-INTERVIEW-QUESTIONS.md](interview-prep/EXPANDED-INTERVIEW-QUESTIONS.md) - Extended questions with answers
+- [01-Interview-Preparation.md](interview-prep/01-Interview-Preparation.md) - Interview tips and strategies
+- [02-Interview-Questions-Guide.md](interview-prep/02-Interview-Questions-Guide.md) - Comprehensive question bank
+- [03-Expanded-Interview-Questions.md](interview-prep/03-Expanded-Interview-Questions.md) - Extended questions with answers
 
 ### 🏗️ Project Guides
 **Path**: [`project-guides/`](project-guides/)
 
 Implementation guides and architecture documentation:
-- [08-Hands-On-Projects.md](project-guides/08-Hands-On-Projects.md) - Practice projects to build
-- [ARCHITECTURE-IMPROVEMENT-GUIDE.md](project-guides/ARCHITECTURE-IMPROVEMENT-GUIDE.md) - Architecture best practices
-- [DASHBOARD-IMPLEMENTATION-GUIDE.md](project-guides/DASHBOARD-IMPLEMENTATION-GUIDE.md) - Dashboard feature guide
-- [ENHANCEMENT-SUMMARY.md](project-guides/ENHANCEMENT-SUMMARY.md) - Project enhancements overview
+- [01-Hands-On-Projects.md](project-guides/01-Hands-On-Projects.md) - Practice projects to build
+- [02-Architecture-Improvement-Guide.md](project-guides/02-Architecture-Improvement-Guide.md) - Architecture best practices
+- [03-Dashboard-Implementation-Guide.md](project-guides/03-Dashboard-Implementation-Guide.md) - Dashboard development guide
+- [04-Enhancement-Summary.md](project-guides/04-Enhancement-Summary.md) - Project enhancement summary
 
 ---
 
@@ -47,21 +49,21 @@ Implementation guides and architecture documentation:
 
 ### For Beginners (0-3 Years)
 1. Start with [Learning Roadmap](learning-resources/01-Learning-Roadmap.md)
-2. Follow [4-Week Study Plan](study-plans/4-WEEK-STUDY-PLAN.md)
-3. Practice with [Hands-On Projects](project-guides/08-Hands-On-Projects.md)
-4. Review [Interview Questions](interview-prep/INTERVIEW-QUESTIONS-GUIDE.md)
+2. Follow [4-Week Study Plan](study-plans/01-4-Week-Study-Plan.md)
+3. Practice with [Hands-On Projects](project-guides/01-Hands-On-Projects.md)
+4. Review [Interview Questions](interview-prep/02-Interview-Questions-Guide.md)
 
 ### For Mid-Level (4-7 Years)
 1. Review [Additional Skills](learning-resources/05-Additional-Skills.md)
-2. Follow [Study Schedule](study-plans/06-Study-Schedule.md)
-3. Build [Advanced Projects](project-guides/08-Hands-On-Projects.md)
-4. Master [Interview Preparation](interview-prep/07-Interview-Preparation.md)
+2. Follow [Study Schedule](study-plans/02-Study-Schedule.md)
+3. Build [Advanced Projects](project-guides/01-Hands-On-Projects.md)
+4. Master [Interview Preparation](interview-prep/01-Interview-Preparation.md)
 
 ### For Senior (8-12 Years)
-1. Focus on [Senior Advanced Topics](learning-resources/10-Senior-Advanced-Topics.md)
-2. Review [Architecture Guide](project-guides/ARCHITECTURE-IMPROVEMENT-GUIDE.md)
-3. Practice [Expanded Questions](interview-prep/EXPANDED-INTERVIEW-QUESTIONS.md)
-4. Track progress with [Progress Tracker](study-plans/PROGRESS-TRACKER.md)
+1. Focus on [Senior Advanced Topics](learning-resources/07-Senior-Advanced-Topics.md)
+2. Review [Architecture Guide](project-guides/02-Architecture-Improvement-Guide.md)
+3. Practice [Expanded Questions](interview-prep/03-Expanded-Interview-Questions.md)
+4. Track progress with [Progress Tracker](study-plans/03-Progress-Tracker.md)
 
 ---
 
