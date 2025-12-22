@@ -7,9 +7,10 @@ console.log('🔄 Starting Database-Integrated Server...');
 const express = require('express');
 const path = require('path');
 const cors = require('cors');
+const { PORTS, getAllowedOrigins, logPortConfiguration } = require('./config/ports');
 
 const app = express();
-const PORT = 3002;
+const PORT = PORTS.DATABASE_SERVER;
 
 console.log('✅ Express loaded');
 
@@ -17,13 +18,16 @@ console.log('✅ Express loaded');
 // MIDDLEWARE SETUP
 // ===================================
 
-// CORS configuration
+// CORS configuration using centralized port config
+const allowedOrigins = getAllowedOrigins();
 app.use(cors({
-    origin: ['http://localhost:8080', 'http://127.0.0.1:8080', 'http://localhost:3001'],
+    origin: allowedOrigins,
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
 }));
+
+console.log('✅ CORS configured with origins:', allowedOrigins.slice(0, 3), '... and', allowedOrigins.length - 3, 'more');
 
 // Body parsing middleware
 app.use(express.json({ limit: '10mb' }));
@@ -382,7 +386,13 @@ async function startServer() {
         const server = app.listen(PORT, () => {
             console.log('🚀 Database-Integrated Server Started');
             console.log('=====================================');
-            console.log(`📍 Server URL: http://localhost:${PORT}`);
+            
+            // Use centralized logging
+            logPortConfiguration('Database Server', PORT, {
+                apiEndpoint: `http://localhost:${PORT}/api/v2`,
+                allowedOrigins: getAllowedOrigins()
+            });
+            
             console.log(`🎯 Main App: http://localhost:${PORT}`);
             console.log(`⚙️ Admin Dashboard: http://localhost:${PORT}/admin`);
             console.log(`🔧 API Health: http://localhost:${PORT}/health`);
@@ -393,6 +403,11 @@ async function startServer() {
             if (dbInitialized) {
                 console.log('🎉 You can now execute real SQL commands in the admin dashboard!');
             }
+            
+            // Add connection validation logging
+            console.log('🔍 Connection Validation:');
+            console.log(`   Frontend should connect to: http://localhost:${PORT}/api/v2`);
+            console.log(`   Test health endpoint: curl http://localhost:${PORT}/health`);
         });
 
         // Graceful shutdown

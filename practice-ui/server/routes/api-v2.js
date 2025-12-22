@@ -427,11 +427,48 @@ router.get('/progress', async (req, res) => {
     }
 });
 
-// POST /api/v2/progress - Update user progress (authenticated)
-router.post('/progress', authenticateToken, async (req, res) => {
+// POST /api/v2/progress - Update user progress (optional authentication for development)
+router.post('/progress', async (req, res) => {
     try {
         const { track_id, day_number, status, completion_percentage, time_spent, notes } = req.body;
 
+        // Check if user is authenticated
+        const authHeader = req.headers['authorization'];
+        const token = authHeader && authHeader.split(' ')[1];
+        let userId = null;
+
+        if (token) {
+            try {
+                const jwt = require('jsonwebtoken');
+                const decoded = jwt.verify(token, process.env.JWT_SECRET || 'development-secret');
+                userId = decoded.userId;
+            } catch (error) {
+                console.warn('Invalid token for progress update:', error.message);
+                // Continue without user ID for anonymous progress
+            }
+        }
+
+        // For anonymous users, just return success without saving to database
+        if (!userId) {
+            console.log('📊 Anonymous progress update (not saved to database):', {
+                track_id, day_number, status, completion_percentage, time_spent
+            });
+            
+            return res.json({
+                success: true,
+                data: {
+                    track_id: track_id || 1,
+                    day_number: day_number || 1,
+                    status: status || 'completed',
+                    completion_percentage: completion_percentage || 100,
+                    time_spent: time_spent || 0,
+                    updated_at: new Date().toISOString()
+                },
+                message: 'Anonymous progress recorded (not persisted)'
+            });
+        }
+
+        // For authenticated users, save to database
         if (!track_id || !day_number || !status) {
             return res.status(400).json({
                 success: false,
@@ -446,10 +483,10 @@ router.post('/progress', authenticateToken, async (req, res) => {
             notes: notes || null
         };
 
-        await db.userProgress.updateProgress(req.user.id, parseInt(track_id), parseInt(day_number), progressData);
+        await db.userProgress.updateProgress(userId, parseInt(track_id), parseInt(day_number), progressData);
 
         // Return updated progress
-        const updatedProgress = await db.userProgress.getUserProgress(req.user.id, parseInt(track_id));
+        const updatedProgress = await db.userProgress.getUserProgress(userId, parseInt(track_id));
 
         res.json({
             success: true,

@@ -2161,6 +2161,10 @@ class PracticePortal {
             // Load questions using API v2 hybrid approach
             if (window.apiV2Client) {
                 console.log('🔍 DEBUG: Calling apiV2Client.getQuestionsHybrid()');
+                console.log('🔍 DEBUG: API client status check:');
+                console.log('  - baseUrl:', window.apiV2Client.baseUrl);
+                console.log('  - isAvailable:', await window.apiV2Client.isAvailable());
+                
                 const apiResult = await window.apiV2Client.getQuestionsHybrid(options);
 
                 console.log('🔍 DEBUG: API result:', {
@@ -2170,6 +2174,14 @@ class PracticePortal {
                     pagination: apiResult?.pagination,
                     error: apiResult?.error
                 });
+
+                // CRITICAL: Check if we're getting database data or embedded data
+                if (apiResult?.source === 'embedded') {
+                    console.error('❌ PROBLEM IDENTIFIED: Frontend is using embedded data (4 questions) instead of database!');
+                    console.error('❌ This means the API connection to database server is failing');
+                } else if (apiResult?.source === 'api' && apiResult?.data?.length < 100) {
+                    console.warn('⚠️ POTENTIAL ISSUE: API returned data but count seems low:', apiResult.data.length);
+                }
 
                 if (apiResult.success) {
                     // Update pagination state

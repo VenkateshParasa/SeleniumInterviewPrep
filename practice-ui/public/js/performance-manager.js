@@ -179,11 +179,14 @@ class PerformanceManager {
         console.log(`🌐 API call: ${url} - ${responseTime}ms`);
     }
 
-    wrapAPIFunction(apiFunction, name) {
+    wrapAPIFunction(apiFunction, name, originalContext = null) {
         return async (...args) => {
             const startTime = performance.now();
             try {
-                const result = await apiFunction.apply(this, args);
+                // Use the original context if provided, otherwise use the function's natural context
+                const result = originalContext
+                    ? await apiFunction.apply(originalContext, args)
+                    : await apiFunction(...args);
                 const endTime = performance.now();
                 this.trackAPICall(name, startTime, endTime, true);
                 return result;

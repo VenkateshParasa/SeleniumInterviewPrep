@@ -4,7 +4,10 @@
 
 class ApiV2Client {
     constructor() {
+        console.log('🔍 DEBUG: ApiV2Client constructor called');
         this.baseUrl = this.getBaseUrl();
+        console.log('🔍 DEBUG: Constructor - baseUrl set to:', this.baseUrl);
+        console.log('🔍 DEBUG: Constructor - baseUrl type:', typeof this.baseUrl);
         this.token = localStorage.getItem('auth_token');
         this.retryAttempts = 3;
         this.retryDelay = 1000; // 1 second
@@ -18,25 +21,62 @@ class ApiV2Client {
         };
 
         this.cacheTimeout = 5 * 60 * 1000; // 5 minutes
+
+        // CRITICAL FIX: Bind all methods to ensure proper context
+        this.getQuestions = this.getQuestions.bind(this);
+        this.getQuestionsHybrid = this.getQuestionsHybrid.bind(this);
+        this.getCategories = this.getCategories.bind(this);
+        this.getTracks = this.getTracks.bind(this);
+        this.getProgress = this.getProgress.bind(this);
+        this.updateProgress = this.updateProgress.bind(this);
+        this.getStats = this.getStats.bind(this);
+        this.isAvailable = this.isAvailable.bind(this);
+        this.request = this.request.bind(this);
+        
+        console.log('✅ All ApiV2Client methods bound to proper context');
     }
 
     getBaseUrl() {
-        // Database server approach - API on dedicated database server
+        // Use centralized port configuration
         console.log('🔍 API Client Debug - Current location:', {
             hostname: window.location.hostname,
             port: window.location.port,
             protocol: window.location.protocol
         });
         
-        // Use database server on port 3002 for API calls
-        const baseUrl = `${window.location.protocol}//${window.location.hostname}:3002/api/v2`;
+        // Database server port from centralized config (3003)
+        const DATABASE_SERVER_PORT = 3003; // This matches PORTS.DATABASE_SERVER from config/ports.js
+        const baseUrl = `${window.location.protocol}//${window.location.hostname}:${DATABASE_SERVER_PORT}/api/v2`;
         
-        console.log('✅ API Client: Using database server approach:', {
+        console.log('✅ API Client: Using centralized port configuration:', {
             baseUrl: baseUrl,
-            note: 'Database server on port 3002 - full database integration'
+            databaseServerPort: DATABASE_SERVER_PORT,
+            note: 'Port changed to 3003 from centralized config - database server integration'
         });
         
+        // Test if database server is reachable
+        this.testDatabaseConnection(baseUrl);
+        
         return baseUrl;
+    }
+    
+    async testDatabaseConnection(baseUrl) {
+        try {
+            console.log('🔍 DEBUG: Testing database server connection...');
+            const response = await fetch(`${baseUrl.replace('/api/v2', '')}/health`, {
+                method: 'GET',
+                timeout: 3000
+            });
+            
+            if (response.ok) {
+                console.log('✅ Database server is reachable at port 3003');
+            } else {
+                console.error('❌ Database server responded with error:', response.status);
+            }
+        } catch (error) {
+            console.error('❌ CRITICAL: Database server is NOT reachable at port 3003:', error.message);
+            console.error('❌ This will cause frontend to fall back to embedded data (4 questions)');
+        }
     }
 
     // Generic API request method with retry logic
@@ -191,10 +231,10 @@ class ApiV2Client {
     // ===================================
 
     async getCategories(useCache = true) {
-        // If API is disabled (baseUrl is null), return failure immediately
+        // Always attempt API call when baseUrl is available
         if (!this.baseUrl) {
-            console.log('🔄 API disabled, returning failure for embedded data fallback');
-            return { success: false, error: 'API disabled in development mode' };
+            console.warn('⚠️ API baseUrl not available for tracks, will fallback to local data');
+            return { success: false, error: 'API baseUrl not configured' };
         }
 
         if (useCache && this.cache.categories && this.isCacheValid('categories')) {
@@ -228,10 +268,10 @@ class ApiV2Client {
     // ===================================
 
     async getTracks(useCache = true) {
-        // If API is disabled (baseUrl is null), return failure immediately
+        // Always attempt API call when baseUrl is available
         if (!this.baseUrl) {
-            console.log('🔄 API disabled, returning failure for embedded data fallback');
-            return { success: false, error: 'API disabled in development mode' };
+            console.warn('⚠️ API baseUrl not available for categories, will fallback to local data');
+            return { success: false, error: 'API baseUrl not configured' };
         }
 
         if (useCache && this.cache.tracks && this.isCacheValid('tracks')) {
@@ -275,11 +315,46 @@ class ApiV2Client {
     // ===================================
 
     async getQuestions(options = {}) {
-        // If API is disabled (baseUrl is null), return failure immediately
-        if (!this.baseUrl) {
-            console.log('🔄 API disabled, returning failure for embedded data fallback');
-            return { success: false, error: 'API disabled in development mode' };
+        console.log('🔍 DEBUG: getQuestions called with options:', options);
+        console.log('🔍 DEBUG: Call stack trace:', new Error().stack);
+        console.log('🔍 DEBUG: this context in getQuestions:', {
+            hasThis: !!this,
+            thisConstructorName: this?.constructor?.name,
+            thisBaseUrl: this?.baseUrl,
+            thisType: typeof this,
+            thisKeys: this ? Object.keys(this).slice(0, 5) : 'no this',
+            isApiV2Client: this instanceof ApiV2Client
+        });
+        
+        // ENHANCED CRITICAL FIX: Better context validation and recovery
+        if (!this || !this.baseUrl || !(this instanceof ApiV2Client)) {
+            console.error('❌ CRITICAL: getQuestions called with wrong context!');
+            console.error('❌ Context details:', {
+                hasThis: !!this,
+                hasBaseUrl: !!this?.baseUrl,
+                constructorName: this?.constructor?.name,
+                isApiV2Client: this instanceof ApiV2Client,
+                windowApiV2Client: !!window.apiV2Client
+            });
+            console.error('❌ Attempting to find correct ApiV2Client instance...');
+            
+            if (window.apiV2Client && window.apiV2Client instanceof ApiV2Client && window.apiV2Client.baseUrl) {
+                console.log('✅ Found correct ApiV2Client instance, delegating call...');
+                return await window.apiV2Client.getQuestions.call(window.apiV2Client, options);
+            } else {
+                console.error('❌ No valid ApiV2Client instance found!');
+                console.error('❌ Available global objects:', Object.keys(window).filter(k => k.includes('api')));
+                return { success: false, error: 'API client context error - no valid instance found' };
+            }
         }
+        
+        // Always attempt API call when baseUrl is available
+        if (!this.baseUrl) {
+            console.warn('⚠️ API baseUrl not available, will fallback to local data');
+            return { success: false, error: 'API baseUrl not configured' };
+        }
+        
+        console.log('✅ API baseUrl available, attempting database API call');
 
         const {
             page = 1,
@@ -499,22 +574,67 @@ class ApiV2Client {
 
     // Hybrid fallback: try API v2, fallback to embedded data
     async getQuestionsHybrid(options = {}) {
+        console.log('🔍 DEBUG: getQuestionsHybrid called with options:', options);
+        console.log('🔍 DEBUG: Call stack trace:', new Error().stack);
+        console.log('🔍 DEBUG: this context in getQuestionsHybrid:', {
+            hasThis: !!this,
+            thisConstructorName: this?.constructor?.name,
+            thisBaseUrl: this?.baseUrl,
+            thisType: typeof this,
+            isApiV2Client: this instanceof ApiV2Client
+        });
+        
+        // ENHANCED CRITICAL FIX: Ensure proper context before calling getQuestions
+        if (!this || !this.baseUrl || !(this instanceof ApiV2Client)) {
+            console.error('❌ CRITICAL: getQuestionsHybrid called with wrong context!');
+            console.error('❌ Attempting to find correct ApiV2Client instance...');
+            
+            if (window.apiV2Client && window.apiV2Client instanceof ApiV2Client && window.apiV2Client.baseUrl) {
+                console.log('✅ Found correct ApiV2Client instance, delegating call...');
+                return await window.apiV2Client.getQuestionsHybrid.call(window.apiV2Client, options);
+            } else {
+                console.error('❌ No valid ApiV2Client instance found!');
+                return { success: false, error: 'API client context error in getQuestionsHybrid' };
+            }
+        }
+        
         try {
-            // Try API v2 first
-            const apiResult = await this.getQuestions(options);
+            // Try API v2 first with proper context
+            console.log('🔍 DEBUG: Attempting API v2 call...');
+            const apiResult = await this.getQuestions.call(this, options);
+            console.log('🔍 DEBUG: API v2 result:', {
+                success: apiResult.success,
+                dataLength: apiResult.data?.length,
+                error: apiResult.error,
+                pagination: apiResult.pagination
+            });
+            
             if (apiResult.success) {
+                console.log(`✅ Hybrid: Using API v2 data (${apiResult.data.length} questions from database)`);
+                console.log('🔍 DEBUG: Sample API data:', apiResult.data.slice(0, 2));
                 return {
                     source: 'api_v2',
                     ...apiResult
                 };
+            } else {
+                console.error('❌ API v2 call succeeded but returned failure:', apiResult.error);
+                console.error('❌ This means database server responded but with an error');
             }
         } catch (error) {
-            console.warn('API v2 failed, falling back to embedded data');
+            console.error('❌ API v2 failed completely, falling back to embedded data:', error.message);
+            console.error('❌ This usually means database server is not running or not reachable');
         }
 
         // Fallback to embedded data
+        console.error('📁 FALLBACK: Using embedded data (this will show only 4 questions instead of 1816)');
         if (window.QUESTIONS_DATA) {
             const embeddedData = this.filterEmbeddedQuestions(window.QUESTIONS_DATA, options);
+            console.log('🔍 DEBUG: Embedded data result:', {
+                success: true,
+                dataLength: embeddedData.questions?.length,
+                source: 'embedded',
+                total: embeddedData.total
+            });
             return {
                 source: 'embedded',
                 success: true,
@@ -530,6 +650,7 @@ class ApiV2Client {
             };
         }
 
+        console.error('❌ CRITICAL: No data source available - neither API nor embedded data');
         return { success: false, error: 'No data source available' };
     }
 
@@ -624,11 +745,18 @@ class ApiV2Client {
     }
 }
 
-// Create global instance with error handling
+// Create global instance with error handling and proper binding
 try {
     if (typeof window !== 'undefined') {
         window.apiV2Client = new ApiV2Client();
-        console.log('✅ API v2 Client initialized globally');
+        console.log('✅ API v2 Client initialized globally with proper method binding');
+        
+        // Additional safety: Ensure methods are still bound after global assignment
+        const client = window.apiV2Client;
+        if (client.getQuestions && typeof client.getQuestions === 'function') {
+            // Verify binding is working
+            console.log('✅ Method binding verification passed');
+        }
     }
 } catch (error) {
     console.error('❌ Failed to initialize API v2 Client:', error);
@@ -636,9 +764,11 @@ try {
     if (typeof window !== 'undefined') {
         window.apiV2Client = {
             getQuestions: () => Promise.resolve({ success: false, error: 'API client not available' }),
+            getQuestionsHybrid: () => Promise.resolve({ success: false, error: 'API client not available' }),
             getTracks: () => Promise.resolve({ success: false, error: 'API client not available' }),
             getCategories: () => Promise.resolve({ success: false, error: 'API client not available' }),
-            isAvailable: () => false
+            isAvailable: () => false,
+            baseUrl: null
         };
     }
 }

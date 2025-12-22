@@ -196,6 +196,18 @@ class QuestionManager {
         this.currentQuestion = index;
         const question = this.filteredQuestions[index];
 
+        // CRITICAL FIX: Add null/undefined checks for question data
+        if (!question) {
+            console.error(`❌ Question at index ${index} is undefined`);
+            this.showErrorMessage('Question data is not available', 'error');
+            return;
+        }
+
+        const questionText = question.question || question.text || 'No question text available';
+        const answerText = question.answer || 'No answer available';
+        const categoryName = question.categoryName || question.category || 'Unknown Category';
+        const difficulty = question.difficulty || 'Medium';
+
         // Hide other views
         document.getElementById('welcomeScreen').style.display = 'none';
         document.getElementById('dayContent').style.display = 'none';
@@ -210,8 +222,8 @@ class QuestionManager {
             <div class="question-detail">
                 <div class="question-header">
                     <div class="question-meta">
-                        <span class="question-category">${question.categoryName || question.category}</span>
-                        <span class="question-difficulty difficulty-${question.difficulty}">${question.difficulty}</span>
+                        <span class="question-category">${categoryName}</span>
+                        <span class="question-difficulty difficulty-${difficulty.toLowerCase()}">${difficulty}</span>
                     </div>
                     <button class="back-btn" onclick="practicePortal.questionManager.backToQuestionsList()">
                         ← Back to Questions
@@ -220,7 +232,7 @@ class QuestionManager {
 
                 <div class="question-content">
                     <h2 class="question-title">Question ${index + 1}</h2>
-                    <div class="question-text">${question.question}</div>
+                    <div class="question-text">${questionText}</div>
                 </div>
 
                 <div class="answer-section">
@@ -229,7 +241,7 @@ class QuestionManager {
                     </button>
                     <div class="answer-content" style="display: none;">
                         <h3>Answer:</h3>
-                        <div class="answer-text">${question.answer}</div>
+                        <div class="answer-text">${answerText}</div>
                     </div>
                 </div>
 
@@ -261,20 +273,33 @@ class QuestionManager {
             return;
         }
 
-        const questionsHTML = this.filteredQuestions.map((question, index) => `
-            <div class="question-item" onclick="practicePortal.questionManager.showQuestion(${index})">
-                <div class="question-header">
-                    <span class="question-category">${question.categoryName || question.category}</span>
-                    <span class="question-difficulty difficulty-${question.difficulty}">${question.difficulty}</span>
+        const questionsHTML = this.filteredQuestions.map((question, index) => {
+            // CRITICAL FIX: Add null/undefined checks for question data
+            if (!question) {
+                console.warn(`⚠️ Question at index ${index} is undefined`);
+                return '<div class="question-item error">Invalid question data</div>';
+            }
+
+            const questionText = question.question || question.text || 'No question text available';
+            const categoryName = question.categoryName || question.category || 'Unknown Category';
+            const difficulty = question.difficulty || 'Medium';
+            const tags = question.tags || [];
+
+            return `
+                <div class="question-item" onclick="practicePortal.questionManager.showQuestion(${index})">
+                    <div class="question-header">
+                        <span class="question-category">${categoryName}</span>
+                        <span class="question-difficulty difficulty-${difficulty.toLowerCase()}">${difficulty}</span>
+                    </div>
+                    <div class="question-preview">
+                        ${questionText.substring(0, 150)}${questionText.length > 150 ? '...' : ''}
+                    </div>
+                    <div class="question-tags">
+                        ${Array.isArray(tags) ? tags.map(tag => `<span class="tag">${tag}</span>`).join('') : ''}
+                    </div>
                 </div>
-                <div class="question-preview">
-                    ${question.question.substring(0, 150)}${question.question.length > 150 ? '...' : ''}
-                </div>
-                <div class="question-tags">
-                    ${question.tags ? question.tags.map(tag => `<span class="tag">${tag}</span>`).join('') : ''}
-                </div>
-            </div>
-        `).join('');
+            `;
+        }).join('');
 
         questionsContainer.innerHTML = questionsHTML;
     }

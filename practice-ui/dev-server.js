@@ -5,8 +5,10 @@
 
 const express = require('express');
 const path = require('path');
+const { PORTS, logPortConfiguration } = require('./config/ports');
+
 const app = express();
-const PORT = 8080;
+const PORT = PORTS.DEV_SERVER;
 
 // Enable CORS for all routes
 app.use((req, res, next) => {
@@ -32,9 +34,15 @@ app.get('*', (req, res) => {
 
 app.listen(PORT, '127.0.0.1', () => {
     console.log(`🚀 Interview Prep Platform Dev Server`);
-    console.log(`📍 Server running at: http://127.0.0.1:${PORT}`);
+    
+    // Use centralized logging
+    logPortConfiguration('Development Server', PORT, {
+        apiEndpoint: `http://127.0.0.1:${PORTS.DATABASE_SERVER}/api/v2`
+    });
+    
     console.log(`📂 Serving files from: ${path.join(__dirname, 'public')}`);
     console.log(`🌐 Open in browser: http://127.0.0.1:${PORT}`);
+    console.log(`🔗 API Server should be running on: http://127.0.0.1:${PORTS.DATABASE_SERVER}`);
     console.log(`⏹️  Press Ctrl+C to stop`);
 });
 

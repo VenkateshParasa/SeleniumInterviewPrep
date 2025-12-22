@@ -905,9 +905,8 @@ document.addEventListener('DOMContentLoaded', () => {
     if (typeof APIClient !== 'undefined') {
         window.apiClient = new APIClient();
     }
-    if (typeof ApiV2Client !== 'undefined') {
-        window.apiV2Client = new ApiV2Client();
-    }
+    // Note: ApiV2Client is already initialized globally in api-v2-client.js
+    // Don't create a second instance here as it would overwrite the properly configured one
 
     // Initialize main application
     new PracticePortal();

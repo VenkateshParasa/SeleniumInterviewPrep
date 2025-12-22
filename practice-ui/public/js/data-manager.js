@@ -228,9 +228,10 @@ class DataManager {
             throw new Error('Database API client not available');
         }
 
-        // Check if API is disabled in development mode
+        // Check if API is available - if not, will fallback to local data
         if (!window.apiV2Client.baseUrl) {
-            throw new Error('API disabled in development mode - using local data');
+            console.warn('⚠️ API baseUrl not available, will fallback to local data');
+            throw new Error('API baseUrl not configured - using local data');
         }
 
         console.log('🗄️ Loading questions from database...');
@@ -541,9 +542,15 @@ class DataManager {
 
     // Load paginated questions with filters and search
     async loadQuestionsPage(page = 1, limit = 20, filters = {}) {
-        console.log('🔍 DEBUG: loadQuestionsPage called with:', { page, limit, filters });
+        console.log('🔍 DEBUG: DataManager.loadQuestionsPage called with:', { page, limit, filters });
+        console.log('🔍 DEBUG: API client status:', {
+            hasApiV2Client: !!window.apiV2Client,
+            baseUrl: window.apiV2Client?.baseUrl,
+            isAvailable: window.apiV2Client ? await window.apiV2Client.isAvailable() : false
+        });
+        
         try {
-            // Try database first
+            // Try database first using the hybrid method
             if (window.apiV2Client && window.apiV2Client.baseUrl) {
                 const options = {
                     page: page,
@@ -562,18 +569,30 @@ class DataManager {
                     options.search = filters.search;
                 }
 
-                const apiResult = await window.apiV2Client.getQuestions(options);
+                console.log('🔍 DEBUG: Calling getQuestionsHybrid with options:', options);
+                const apiResult = await window.apiV2Client.getQuestionsHybrid(options);
+                console.log('🔍 DEBUG: getQuestionsHybrid result:', {
+                    success: apiResult?.success,
+                    source: apiResult?.source,
+                    dataLength: apiResult?.data?.length,
+                    error: apiResult?.error
+                });
 
                 if (apiResult && apiResult.success) {
                     // Convert to legacy format
                     const questions = this.convertDatabaseToLegacyFormat(apiResult.data);
 
+                    console.log(`✅ DataManager: Using ${apiResult.source} data (${apiResult.data.length} questions)`);
                     return {
                         questions: questions,
                         pagination: apiResult.pagination,
-                        source: 'database'
+                        source: apiResult.source === 'api_v2' ? 'database' : apiResult.source
                     };
+                } else {
+                    console.error('❌ DataManager: API call failed:', apiResult?.error);
                 }
+            } else {
+                console.error('❌ DataManager: API client not available or no baseUrl');
             }
 
             // Fallback to local data
