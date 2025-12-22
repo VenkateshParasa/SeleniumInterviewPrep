@@ -21,17 +21,32 @@ class ApiV2Client {
     }
 
     getBaseUrl() {
-        // Auto-detect API base URL based on environment
-        if (window.location.hostname === 'localhost') {
-            return 'http://localhost:3001/api/v2';
-        } else {
-            // Production or deployed environment
-            return '/api/v2';
-        }
+        // Database server approach - API on dedicated database server
+        console.log('🔍 API Client Debug - Current location:', {
+            hostname: window.location.hostname,
+            port: window.location.port,
+            protocol: window.location.protocol
+        });
+        
+        // Use database server on port 3002 for API calls
+        const baseUrl = `${window.location.protocol}//${window.location.hostname}:3002/api/v2`;
+        
+        console.log('✅ API Client: Using database server approach:', {
+            baseUrl: baseUrl,
+            note: 'Database server on port 3002 - full database integration'
+        });
+        
+        return baseUrl;
     }
 
     // Generic API request method with retry logic
     async request(endpoint, options = {}) {
+        // If baseUrl is null, API is disabled (development mode)
+        if (!this.baseUrl) {
+            console.error('❌ API Error: No base URL configured');
+            throw new Error('API base URL not configured');
+        }
+
         const url = `${this.baseUrl}${endpoint}`;
         const config = {
             headers: {
@@ -41,23 +56,87 @@ class ApiV2Client {
             ...options
         };
 
+        // DEBUG: Log authentication status
+        console.log('🔍 DEBUG: Authentication check:', {
+            hasToken: !!this.token,
+            tokenLength: this.token ? this.token.length : 0,
+            tokenPreview: this.token ? this.token.substring(0, 20) + '...' : 'null',
+            endpoint: endpoint,
+            baseUrl: this.baseUrl
+        });
+
         if (this.token) {
             config.headers['Authorization'] = `Bearer ${this.token}`;
+        } else {
+            console.warn('⚠️ No authentication token found - API calls may fail with 401');
         }
 
         for (let attempt = 1; attempt <= this.retryAttempts; attempt++) {
             try {
                 console.log(`🔄 API v2 Request: ${options.method || 'GET'} ${url} (attempt ${attempt})`);
+                console.log(`📍 Request details:`, {
+                    endpoint,
+                    baseUrl: this.baseUrl,
+                    fullUrl: url,
+                    method: options.method || 'GET',
+                    hasAuth: !!this.token
+                });
 
                 const response = await fetch(url, config);
 
+                console.log(`📡 Response received:`, {
+                    status: response.status,
+                    statusText: response.statusText,
+                    ok: response.ok,
+                    url: response.url
+                });
+
                 if (!response.ok) {
                     if (response.status === 401) {
+                        console.error('🔐 401 UNAUTHORIZED ERROR DETAILS:', {
+                            endpoint: endpoint,
+                            fullUrl: response.url,
+                            method: options.method || 'GET',
+                            hasAuthHeader: !!config.headers['Authorization'],
+                            authHeaderPreview: config.headers['Authorization'] ?
+                                config.headers['Authorization'].substring(0, 20) + '...' : 'none',
+                            requestHeaders: Object.keys(config.headers),
+                            timestamp: new Date().toISOString()
+                        });
+                        
+                        // For anonymous-friendly endpoints, provide better error context
+                        const anonymousFriendlyEndpoints = ['/progress', '/stats', '/health', '/categories', '/questions'];
+                        const isAnonymousFriendly = anonymousFriendlyEndpoints.some(ep => endpoint.startsWith(ep));
+                        
+                        if (isAnonymousFriendly && !this.token) {
+                            console.warn('⚠️ 401 on anonymous-friendly endpoint - this may indicate a server configuration issue');
+                            console.warn('💡 Suggestion: Check if server route is properly configured for anonymous access');
+                        }
+                        
                         // Clear invalid token
                         this.clearAuthToken();
+                        console.log('🔐 Cleared authentication token due to 401 error');
                     }
 
-                    throw new Error(`API Error ${response.status}: ${response.statusText}`);
+                    const errorMessage = `API Error ${response.status}: ${response.statusText}`;
+                    console.error(`❌ API Error:`, {
+                        status: response.status,
+                        statusText: response.statusText,
+                        url: response.url,
+                        endpoint,
+                        method: options.method || 'GET',
+                        hasToken: !!this.token,
+                        baseUrl: this.baseUrl,
+                        suggestion: response.status === 401 && !this.token ?
+                            'This endpoint may require authentication or have a server configuration issue' : null
+                    });
+                    throw new Error(errorMessage);
+                }
+
+                // Check if response is JSON before parsing
+                const contentType = response.headers.get('content-type');
+                if (!contentType || !contentType.includes('application/json')) {
+                    throw new Error(`Invalid response type: ${contentType || 'unknown'}`);
                 }
 
                 const data = await response.json();
@@ -112,6 +191,12 @@ class ApiV2Client {
     // ===================================
 
     async getCategories(useCache = true) {
+        // If API is disabled (baseUrl is null), return failure immediately
+        if (!this.baseUrl) {
+            console.log('🔄 API disabled, returning failure for embedded data fallback');
+            return { success: false, error: 'API disabled in development mode' };
+        }
+
         if (useCache && this.cache.categories && this.isCacheValid('categories')) {
             return { success: true, data: this.cache.categories };
         }
@@ -143,6 +228,12 @@ class ApiV2Client {
     // ===================================
 
     async getTracks(useCache = true) {
+        // If API is disabled (baseUrl is null), return failure immediately
+        if (!this.baseUrl) {
+            console.log('🔄 API disabled, returning failure for embedded data fallback');
+            return { success: false, error: 'API disabled in development mode' };
+        }
+
         if (useCache && this.cache.tracks && this.isCacheValid('tracks')) {
             return { success: true, data: this.cache.tracks };
         }
@@ -184,6 +275,12 @@ class ApiV2Client {
     // ===================================
 
     async getQuestions(options = {}) {
+        // If API is disabled (baseUrl is null), return failure immediately
+        if (!this.baseUrl) {
+            console.log('🔄 API disabled, returning failure for embedded data fallback');
+            return { success: false, error: 'API disabled in development mode' };
+        }
+
         const {
             page = 1,
             limit = 20,
@@ -280,10 +377,31 @@ class ApiV2Client {
 
     async getProgress(trackId = null) {
         try {
+            // Use the anonymous-friendly endpoint /progress (not /tracks/:slug/progress)
             const params = trackId ? `?track_id=${trackId}` : '';
-            const response = await this.request(`/progress${params}`);
+            const endpoint = `/progress${params}`;
+            
+            console.log('🔍 DEBUG: Getting progress with params:', {
+                trackId,
+                params,
+                endpoint: endpoint,
+                baseUrl: this.baseUrl,
+                hasToken: !!this.token,
+                note: 'Using anonymous-friendly /progress endpoint'
+            });
+            
+            const response = await this.request(endpoint);
             return response;
         } catch (error) {
+            const params = trackId ? `?track_id=${trackId}` : '';
+            console.error('❌ getProgress failed:', {
+                error: error.message,
+                trackId,
+                endpoint: `/progress${params}`,
+                hasToken: !!this.token,
+                suggestion: error.message.includes('401') ?
+                    'Check if server /progress endpoint is properly configured for anonymous access' : null
+            });
             return { success: false, error: error.message };
         }
     }
@@ -307,6 +425,23 @@ class ApiV2Client {
     async getStats() {
         try {
             const response = await this.request('/stats');
+            return response;
+        } catch (error) {
+            return { success: false, error: error.message };
+        }
+    }
+
+    async trackQuestionProgress(questionId, status = 'completed', timeSpent = 5) {
+        try {
+            const response = await this.request('/questions/progress', {
+                method: 'POST',
+                body: JSON.stringify({
+                    question_id: questionId,
+                    status: status,
+                    time_spent: timeSpent,
+                    studied_at: new Date().toISOString()
+                })
+            });
             return response;
         } catch (error) {
             return { success: false, error: error.message };
@@ -402,43 +537,85 @@ class ApiV2Client {
     filterEmbeddedQuestions(questionsData, options = {}) {
         const { category_id, difficulty, search, page = 1, limit = 20 } = options;
 
+        console.log('🔍 DEBUG: filterEmbeddedQuestions called with options:', options);
+        console.log('🔍 DEBUG: questionsData structure:', {
+            hasCategories: !!questionsData?.categories,
+            categoriesCount: questionsData?.categories?.length || 0
+        });
+
         let allQuestions = [];
 
-        // Flatten embedded questions structure
+        // Flatten embedded questions structure to match API v2 format
         questionsData.categories?.forEach(category => {
+            console.log('🔍 DEBUG: Processing category:', {
+                id: category.id,
+                name: category.name,
+                questionsCount: category.questions?.length || 0
+            });
+
             category.questions?.forEach(question => {
-                allQuestions.push({
-                    ...question,
+                // Transform embedded format to API v2 format
+                const transformedQuestion = {
+                    id: question.id,
+                    question: question.question,
+                    answer: question.answer,
+                    difficulty: question.difficulty,
+                    tags: question.tags?.join(',') || '',
                     category_id: category.id,
                     category_name: category.name,
-                    category_slug: category.id
-                });
+                    category_slug: category.id,
+                    // Add missing fields that frontend expects
+                    topic: category.name,
+                    companies: [],
+                    experience_levels: ['0-2', '3-5', '6-8'], // Default experience levels
+                    follow_up_questions: [],
+                    code_example: null
+                };
+
+                allQuestions.push(transformedQuestion);
             });
         });
+
+        console.log('🔍 DEBUG: Total questions after flattening:', allQuestions.length);
 
         // Apply filters
         let filtered = allQuestions;
 
-        if (category_id) {
+        if (category_id && category_id !== 'all') {
+            console.log('🔍 DEBUG: Filtering by category_id:', category_id);
             filtered = filtered.filter(q => q.category_id === category_id);
+            console.log('🔍 DEBUG: Questions after category filter:', filtered.length);
         }
 
-        if (difficulty) {
+        if (difficulty && difficulty !== 'all') {
+            console.log('🔍 DEBUG: Filtering by difficulty:', difficulty);
             filtered = filtered.filter(q => q.difficulty === difficulty);
+            console.log('🔍 DEBUG: Questions after difficulty filter:', filtered.length);
         }
 
         if (search) {
+            console.log('🔍 DEBUG: Filtering by search term:', search);
             const searchLower = search.toLowerCase();
             filtered = filtered.filter(q =>
                 q.question?.toLowerCase().includes(searchLower) ||
                 q.answer?.toLowerCase().includes(searchLower) ||
-                q.topic?.toLowerCase().includes(searchLower)
+                q.topic?.toLowerCase().includes(searchLower) ||
+                q.tags?.toLowerCase().includes(searchLower)
             );
+            console.log('🔍 DEBUG: Questions after search filter:', filtered.length);
         }
 
         // Apply pagination
         const startIndex = (page - 1) * limit;
         const paginatedQuestions = filtered.slice(startIndex, startIndex + limit);
+
+        console.log('🔍 DEBUG: Pagination applied:', {
+            page,
+            limit,
+            startIndex,
+            totalFiltered: filtered.length,
+            paginatedCount: paginatedQuestions.length
+        });
 
         return {
             questions: paginatedQuestions,
@@ -447,8 +624,24 @@ class ApiV2Client {
     }
 }
 
-// Create global instance
-window.apiV2Client = new ApiV2Client();
+// Create global instance with error handling
+try {
+    if (typeof window !== 'undefined') {
+        window.apiV2Client = new ApiV2Client();
+        console.log('✅ API v2 Client initialized globally');
+    }
+} catch (error) {
+    console.error('❌ Failed to initialize API v2 Client:', error);
+    // Create a fallback object to prevent undefined errors
+    if (typeof window !== 'undefined') {
+        window.apiV2Client = {
+            getQuestions: () => Promise.resolve({ success: false, error: 'API client not available' }),
+            getTracks: () => Promise.resolve({ success: false, error: 'API client not available' }),
+            getCategories: () => Promise.resolve({ success: false, error: 'API client not available' }),
+            isAvailable: () => false
+        };
+    }
+}
 
 // Export for module systems
 if (typeof module !== 'undefined' && module.exports) {

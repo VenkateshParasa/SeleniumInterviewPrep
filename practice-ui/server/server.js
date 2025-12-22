@@ -1,6 +1,9 @@
 // Interview Prep Platform - Backend Server
 // Node.js + Express API Server with JSON-based authentication
 
+// Load environment variables from .env file
+require('dotenv').config();
+
 const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');
@@ -59,21 +62,23 @@ const io = new Server(server, {
 // MIDDLEWARE SETUP
 // ===================================
 
-// Security middleware
+// Security middleware - Relaxed for local development
 app.use(helmet({
   contentSecurityPolicy: {
     directives: {
       defaultSrc: ["'self'"],
       styleSrc: ["'self'", "'unsafe-inline'"],
-      scriptSrc: ["'self'"],
-      imgSrc: ["'self'", "data:", "https:"],
-      connectSrc: ["'self'"],
-      fontSrc: ["'self'"],
+      scriptSrc: ["'self'", "'unsafe-inline'"],
+      imgSrc: ["'self'", "data:", "https:", "http:"],
+      connectSrc: ["'self'", "ws:", "wss:", "http:", "https:"],
+      fontSrc: ["'self'", "data:"],
       objectSrc: ["'none'"],
       mediaSrc: ["'self'"],
       frameSrc: ["'none'"],
+      upgradeInsecureRequests: null, // Disable upgrade insecure requests for local development
     },
   },
+  hsts: false, // Disable HSTS for local development
 }));
 
 // CORS configuration
@@ -145,6 +150,9 @@ app.use(compression());
 app.use(morgan('combined'));
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
+
+// Serve static files from public directory
+app.use(express.static(path.join(__dirname, '../public')));
 
 // ===================================
 // DATA ACCESS LAYER
@@ -299,6 +307,14 @@ const dataStore = new DataStore();
 // Mount new database-powered API v2 routes
 const apiV2Routes = require('./routes/api-v2');
 app.use('/api/v2', apiV2Routes);
+
+// Mount social learning API routes
+const socialApiRoutes = require('./routes/social-api');
+app.use('/api/social', socialApiRoutes);
+
+// Mount integrations API routes
+const integrationsApiRoutes = require('./routes/integrations-api');
+app.use('/api/integrations', integrationsApiRoutes);
 
 // Legacy API routes (kept for backwards compatibility)
 // Mount existing routes here...
@@ -903,40 +919,6 @@ app.get('/api/content/interview-questions', async (req, res) => {
     res.status(500).json({
       success: false,
       error: 'Failed to retrieve interview questions'
-    });
-  }
-});
-
-// ===================================
-// ANALYTICS ROUTES
-// ===================================
-
-// Get user analytics
-app.get('/api/analytics/stats', authenticateToken, async (req, res) => {
-  try {
-    const userData = await dataStore.getUserData(req.user.id);
-
-    // Calculate analytics
-    const analytics = {
-      totalDaysCompleted: Object.keys(userData.progress.completedDays).length,
-      currentStreak: userData.dashboardData.streak.current,
-      longestStreak: userData.dashboardData.streak.longest,
-      totalStudyTime: userData.dashboardData.studyTime.total,
-      questionsStudied: userData.dashboardData.questions.studied.length,
-      achievements: Object.values(userData.dashboardData.achievements).filter(Boolean).length,
-      lastActiveDate: userData.updatedAt,
-      joinDate: userData.createdAt
-    };
-
-    res.json({
-      success: true,
-      data: analytics
-    });
-  } catch (error) {
-    console.error('Get analytics error:', error);
-    res.status(500).json({
-      success: false,
-      error: 'Failed to retrieve analytics'
     });
   }
 });

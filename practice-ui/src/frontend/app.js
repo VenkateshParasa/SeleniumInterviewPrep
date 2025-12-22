@@ -79,9 +79,6 @@ class InterviewPrepApp {
         }
 
         // Analytics manager
-        if (window.AnalyticsManager && this.config.features.analytics) {
-            this.services.analytics = new window.AnalyticsManager();
-        }
 
         // Offline storage
         if (window.OfflineStorage) {

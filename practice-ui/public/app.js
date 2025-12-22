@@ -15,6 +15,9 @@ class PracticePortal {
         this.settings = this.loadSettings();
         this.keyboardListener = null;
 
+        // Initialize Question Intelligence System
+        this.questionIntelligence = null;
+
         // Expose instance globally
         window.practicePortal = this;
 
@@ -62,6 +65,9 @@ class PracticePortal {
 
             await this.loadPracticeData();
             await this.loadInterviewQuestions();
+
+            // Initialize Question Intelligence System after questions are loaded
+            this.initializeQuestionIntelligence();
 
             this.setupEventListeners();
             this.initializeTheme();
@@ -270,70 +276,13 @@ class PracticePortal {
         return weeks;
     }
 
-            // Try to parse JSON with better error handling
-            let data;
-            try {
-                data = JSON.parse(responseText);
-                console.log('✅ JSON parsed successfully');
-            } catch (parseError) {
-                console.error('JSON Parse Error:', parseError);
-                throw new Error(`Invalid JSON format in practice data file: ${parseError.message}`);
-            }
-
-            // Validate data structure - check for any valid track
-            console.log('🔍 Validating practice data...');
-            console.log('📊 Data received:', data);
-            console.log('📊 Data type:', typeof data);
-            console.log('📊 Data keys:', data ? Object.keys(data) : 'null/undefined');
-
-            // More robust validation - check if data exists and has any object with weeks array
-            let hasValidTrack = false;
-
-            if (data && typeof data === 'object') {
-                const dataKeys = Object.keys(data);
-                console.log('🔍 Found data keys:', dataKeys);
-
-                for (const key of dataKeys) {
-                    const trackData = data[key];
-                    console.log(`🔍 Checking track "${key}":`, trackData);
-
-                    if (trackData &&
-                        typeof trackData === 'object' &&
-                        trackData.weeks &&
-                        Array.isArray(trackData.weeks)) {
-                        console.log(`✅ Valid track found: "${key}" with ${trackData.weeks.length} weeks`);
-                        hasValidTrack = true;
-                        break;
-                    }
-                }
-            }
-
-            console.log('✅ Has valid track:', hasValidTrack);
-
-            if (!data || !hasValidTrack) {
-                console.warn('Available tracks in data:', Object.keys(data || {}));
-                console.warn('Expected: Any object with "weeks" array property');
-                throw new Error('Invalid practice data structure: missing valid track with weeks');
-            }
-
-            this.practiceData = data;
-            console.log(`✅ Successfully loaded practice data: ${dataFile}`);
-            console.log(`📊 Available tracks: ${Object.keys(data).join(', ')}`);
-
-        } catch (error) {
-            console.error('❌ Error loading practice data:', error);
-            this.showErrorMessage('Failed to load practice data. Using default content.', 'warning');
-
-            // Fallback to default data
-            this.practiceData = this.getDefaultData();
-        }
-    }
-
     async loadInterviewQuestions() {
         try {
             // Initialize pagination state
             this.currentQuestionPage = 1;
-            this.questionsPerPage = 20;
+            // Make questionsPerPage dynamic with default of 20
+            this.questionsPerPage = this.getQuestionsPerPageSetting() || 20;
+            console.log('🔍 DEBUG: questionsPerPage initialized to:', this.questionsPerPage);
             this.totalQuestions = 0;
             this.totalPages = 0;
             this.hasNextPage = false;
@@ -569,6 +518,53 @@ class PracticePortal {
         return allQuestions;
     }
 
+    // Helper method to get questions per page setting
+    getQuestionsPerPageSetting() {
+        try {
+            const saved = localStorage.getItem('questionsPerPageSetting');
+            if (saved) {
+                const value = parseInt(saved);
+                // Validate the range (20, 50, 100 are allowed values)
+                if ([20, 50, 100].includes(value)) {
+                    console.log('🔍 DEBUG: Loaded questionsPerPage from localStorage:', value);
+                    return value;
+                }
+            }
+        } catch (error) {
+            console.warn('⚠️ Error loading questionsPerPage setting:', error);
+        }
+        console.log('🔍 DEBUG: Using default questionsPerPage: 20');
+        return 20; // Default value
+    }
+
+    // Method to update questions per page setting
+    setQuestionsPerPageSetting(value) {
+        try {
+            // Validate the value
+            const numValue = parseInt(value);
+            if (![20, 50, 100].includes(numValue)) {
+                console.error('❌ Invalid questionsPerPage value:', value);
+                throw new Error(`Invalid page size: ${value}. Must be 20, 50, or 100.`);
+            }
+
+            console.log('🔍 DEBUG: Setting questionsPerPage to:', numValue);
+            this.questionsPerPage = numValue;
+            localStorage.setItem('questionsPerPageSetting', numValue.toString());
+            
+            // Reset to first page when changing page size
+            this.currentQuestionPage = 1;
+            
+            // Refresh the questions list
+            this.loadQuestionsPage();
+            
+            return true;
+        } catch (error) {
+            console.error('❌ Error setting questionsPerPage:', error);
+            this.showErrorMessage(`Failed to change page size: ${error.message}`, 'error');
+            return false;
+        }
+    }
+
     setupEventListeners() {
         // Experience Level Selector
         document.getElementById('experienceLevel').addEventListener('change', (e) => {
@@ -631,6 +627,15 @@ class PracticePortal {
         if (document.getElementById('nextPageBtn')) {
             document.getElementById('nextPageBtn').addEventListener('click', () => {
                 this.goToNextPage();
+            });
+        }
+
+        // Questions per page selector
+        const questionsPerPageSelect = document.getElementById('questionsPerPageSelect');
+        if (questionsPerPageSelect) {
+            questionsPerPageSelect.addEventListener('change', (e) => {
+                console.log('🔍 DEBUG: questionsPerPageSelect changed to:', e.target.value);
+                this.setQuestionsPerPageSetting(e.target.value);
             });
         }
 
@@ -1803,28 +1808,59 @@ class PracticePortal {
     }
 
     filterAndRenderQuestions() {
+        console.log('🔍 DEBUG: filterAndRenderQuestions() called');
+        
         // Reset to page 1 when filters change
         this.currentQuestionPage = 1;
 
+        // Get filter values for debugging
+        const category = document.getElementById('categoryFilter')?.value || 'all';
+        const difficulty = document.getElementById('difficultyFilter')?.value || 'all';
+        const searchTerm = document.getElementById('questionSearch')?.value?.toLowerCase().trim() || '';
+        
+        console.log('🔍 DEBUG: Filter values:', {
+            category,
+            difficulty,
+            searchTerm,
+            currentExperienceLevel: this.currentExperienceLevel
+        });
+
+        // Check API client availability
+        console.log('🔍 DEBUG: API client check:', {
+            hasApiV2Client: !!window.apiV2Client,
+            apiClientBaseUrl: window.apiV2Client?.getBaseUrl?.() || 'N/A'
+        });
+
         // If we have API v2 client, use paginated API calls with filters
         if (window.apiV2Client) {
+            console.log('🔍 DEBUG: Using API v2 client for filtering');
             this.loadQuestionsPage();
             return;
         }
 
-        // Fallback: client-side filtering for embedded data
-        const category = document.getElementById('categoryFilter').value;
-        const difficulty = document.getElementById('difficultyFilter').value;
-        const searchTerm = document.getElementById('questionSearch')?.value?.toLowerCase().trim() || '';
+        console.log('🔍 DEBUG: Using embedded data fallback for filtering');
 
-        this.filteredQuestions = this.getAllQuestions().filter(q => {
+        // Get all questions for debugging
+        const allQuestions = this.getAllQuestions();
+        console.log('🔍 DEBUG: Total questions available:', allQuestions.length);
+
+        this.filteredQuestions = allQuestions.filter(q => {
+            console.log('🔍 DEBUG: Filtering question:', {
+                id: q.id,
+                categoryId: q.categoryId,
+                difficulty: q.difficulty,
+                experienceLevel: q.experienceLevel
+            });
+
             // Filter by category
             if (category !== 'all' && q.categoryId !== category) {
+                console.log('🔍 DEBUG: Question filtered out by category');
                 return false;
             }
 
             // Filter by difficulty
             if (difficulty !== 'all' && q.difficulty !== difficulty) {
+                console.log('🔍 DEBUG: Question filtered out by difficulty');
                 return false;
             }
 
@@ -1838,6 +1874,7 @@ class PracticePortal {
             const hasRelevantExp = q.experienceLevel.some(exp => relevantExp.includes(exp));
 
             if (!hasRelevantExp) {
+                console.log('🔍 DEBUG: Question filtered out by experience level');
                 return false;
             }
 
@@ -1851,15 +1888,28 @@ class PracticePortal {
                     q.followUp?.join(' ') || ''
                 ].join(' ').toLowerCase();
 
-                return searchableText.includes(searchTerm);
+                const matches = searchableText.includes(searchTerm);
+                if (!matches) {
+                    console.log('🔍 DEBUG: Question filtered out by search term');
+                }
+                return matches;
             }
 
+            console.log('🔍 DEBUG: Question passed all filters');
             return true;
         });
+
+        console.log('🔍 DEBUG: Filtered questions count:', this.filteredQuestions.length);
 
         // Update pagination metadata for embedded data
         this.totalQuestions = this.filteredQuestions.length;
         this.totalPages = Math.ceil(this.totalQuestions / this.questionsPerPage);
+
+        console.log('🔍 DEBUG: Pagination metadata:', {
+            totalQuestions: this.totalQuestions,
+            totalPages: this.totalPages,
+            questionsPerPage: this.questionsPerPage
+        });
 
         // Simulate pagination with embedded data
         this.simulatePaginationWithEmbeddedData();
@@ -1881,8 +1931,147 @@ class PracticePortal {
         // Debounce search to avoid too many updates
         clearTimeout(this.searchTimeout);
         this.searchTimeout = setTimeout(() => {
-            this.filterAndRenderQuestions();
+            // Enhanced search with semantic capabilities
+            this.performEnhancedSearch(searchTerm.trim());
         }, 300);
+    }
+
+    performEnhancedSearch(searchTerm) {
+        if (!searchTerm) {
+            this.filterAndRenderQuestions();
+            return;
+        }
+
+        // Try semantic search first if intelligence system is available
+        let semanticResults = [];
+        if (this.questionIntelligence && searchTerm.length >= 3) {
+            try {
+                semanticResults = this.performSemanticSearch(searchTerm, {
+                    maxResults: 10,
+                    includeRelated: true
+                });
+
+                if (semanticResults.length > 0) {
+                    console.log(`🧠 Semantic search found ${semanticResults.length} intelligent results`);
+                }
+            } catch (error) {
+                console.warn('⚠️ Semantic search failed, falling back to traditional search:', error);
+            }
+        }
+
+        // Perform traditional text-based search as fallback or enhancement
+        const textResults = this.performTraditionalSearch(searchTerm);
+
+        // Combine and deduplicate results
+        const combinedResults = this.combineSearchResults(semanticResults, textResults, searchTerm);
+
+        // Update search stats
+        this.updateSearchStats(searchTerm, combinedResults, semanticResults.length > 0);
+
+        // Render combined results
+        this.renderSearchResults(combinedResults);
+    }
+
+    performTraditionalSearch(searchTerm) {
+        const searchTermLower = searchTerm.toLowerCase();
+        const results = [];
+
+        // Search through all categories
+        this.questionsData.categories.forEach(category => {
+            category.questions.forEach(question => {
+                const searchableText = [
+                    question.question,
+                    question.answer,
+                    question.topic,
+                    question.companies.join(' '),
+                    question.followUp?.join(' ') || ''
+                ].join(' ').toLowerCase();
+
+                if (searchableText.includes(searchTermLower)) {
+                    results.push({
+                        ...question,
+                        categoryName: category.name,
+                        categoryId: category.id,
+                        searchType: 'traditional',
+                        relevance: this.calculateTraditionalRelevance(searchTermLower, searchableText)
+                    });
+                }
+            });
+        });
+
+        return results.sort((a, b) => b.relevance - a.relevance);
+    }
+
+    calculateTraditionalRelevance(searchTerm, text) {
+        let score = 0;
+        const words = searchTerm.split(/\s+/);
+
+        words.forEach(word => {
+            const count = (text.match(new RegExp(word, 'gi')) || []).length;
+            score += count;
+        });
+
+        return score;
+    }
+
+    combineSearchResults(semanticResults, textResults, searchTerm) {
+        const combined = new Map();
+
+        // Add semantic results with higher priority
+        semanticResults.forEach((result, index) => {
+            combined.set(result.questionId, {
+                ...result,
+                priority: result.relevanceScore || (10 - index),
+                searchType: 'semantic'
+            });
+        });
+
+        // Add text results, avoiding duplicates
+        textResults.forEach(result => {
+            if (!combined.has(result.id)) {
+                combined.set(result.id, {
+                    ...result,
+                    priority: result.relevance || 5,
+                    searchType: 'traditional'
+                });
+            }
+        });
+
+        // Convert back to array and sort by priority
+        return Array.from(combined.values())
+            .sort((a, b) => b.priority - a.priority)
+            .slice(0, 20); // Limit to top 20 results
+    }
+
+    updateSearchStats(searchTerm, results, hasSemanticResults) {
+        const searchStats = document.getElementById('searchStats');
+        if (!searchStats) return;
+
+        const totalResults = results.length;
+        const semanticCount = results.filter(r => r.searchType === 'semantic').length;
+        const traditionalCount = results.filter(r => r.searchType === 'traditional').length;
+
+        let statsText = `Found ${totalResults} results for "${searchTerm}"`;
+
+        if (hasSemanticResults) {
+            statsText += ` (${semanticCount} AI-powered, ${traditionalCount} text-based)`;
+        }
+
+        searchStats.textContent = statsText;
+    }
+
+    renderSearchResults(results) {
+        // Store search results for rendering
+        this.filteredQuestions = results;
+        this.currentQuestionPage = 1; // Reset to first page
+
+        // Update total counts
+        this.totalQuestions = results.length;
+        this.totalPages = Math.ceil(this.totalQuestions / this.questionsPerPage);
+
+        // Render the results
+        this.renderQuestions();
+        this.updatePaginationControls();
     }
 
     clearSearch() {
@@ -1925,6 +2114,8 @@ class PracticePortal {
 
     async loadQuestionsPage() {
         try {
+            console.log('🔍 DEBUG: loadQuestionsPage() called');
+            
             // Show loading state for pagination
             this.showPaginationLoading(true);
 
@@ -1932,6 +2123,14 @@ class PracticePortal {
             const category = document.getElementById('categoryFilter')?.value || 'all';
             const difficulty = document.getElementById('difficultyFilter')?.value || 'all';
             const searchTerm = document.getElementById('questionSearch')?.value?.trim() || '';
+
+            console.log('🔍 DEBUG: loadQuestionsPage filter values:', {
+                category,
+                difficulty,
+                searchTerm,
+                currentPage: this.currentQuestionPage,
+                questionsPerPage: this.questionsPerPage
+            });
 
             // Build options for API call
             const options = {
@@ -1951,9 +2150,26 @@ class PracticePortal {
                 options.search = searchTerm;
             }
 
+            console.log('🔍 DEBUG: API call options:', options);
+
+            // Check API client availability
+            console.log('🔍 DEBUG: API client check:', {
+                hasApiV2Client: !!window.apiV2Client,
+                apiClientBaseUrl: window.apiV2Client?.getBaseUrl?.() || 'N/A'
+            });
+
             // Load questions using API v2 hybrid approach
             if (window.apiV2Client) {
+                console.log('🔍 DEBUG: Calling apiV2Client.getQuestionsHybrid()');
                 const apiResult = await window.apiV2Client.getQuestionsHybrid(options);
+
+                console.log('🔍 DEBUG: API result:', {
+                    success: apiResult?.success,
+                    dataLength: apiResult?.data?.length || 0,
+                    source: apiResult?.source,
+                    pagination: apiResult?.pagination,
+                    error: apiResult?.error
+                });
 
                 if (apiResult.success) {
                     // Update pagination state
@@ -1964,20 +2180,52 @@ class PracticePortal {
                         this.hasPrevPage = apiResult.pagination.hasPrev;
                     }
 
-                    // Convert and update questions
-                    this.interviewQuestions = this.convertApiV2ToLegacyFormat(apiResult.data);
+                    console.log('🔍 DEBUG: Updated pagination state:', {
+                        totalQuestions: this.totalQuestions,
+                        totalPages: this.totalPages,
+                        hasNextPage: this.hasNextPage,
+                        hasPrevPage: this.hasPrevPage
+                    });
+
+                    // Convert and update questions based on source
+                    console.log('🔍 DEBUG: Converting API data to legacy format, source:', apiResult.source);
+                    
+                    if (apiResult.source === 'embedded') {
+                        // For embedded data, the data is already in the correct API v2 format after filterEmbeddedQuestions
+                        console.log('🔍 DEBUG: Processing embedded data source');
+                        this.interviewQuestions = this.convertApiV2ToLegacyFormat(apiResult.data);
+                    } else {
+                        // For API data, convert normally
+                        console.log('🔍 DEBUG: Processing API data source');
+                        this.interviewQuestions = this.convertApiV2ToLegacyFormat(apiResult.data);
+                    }
+                    
                     this.filteredQuestions = this.getAllQuestions();
 
+                    console.log('🔍 DEBUG: After conversion:', {
+                        interviewQuestionsCategories: this.interviewQuestions?.categories?.length || 0,
+                        filteredQuestionsLength: this.filteredQuestions?.length || 0
+                    });
+
                     // Render the new page
+                    console.log('🔍 DEBUG: Rendering questions list');
                     this.renderQuestionsList();
                     this.updatePaginationControls();
                     this.updateSearchStats();
+                    
+                    // Ensure dropdowns are populated for embedded data
+                    if (apiResult.source === 'embedded') {
+                        console.log('🔍 DEBUG: Populating dropdowns for embedded data');
+                        this.populateFiltersFromEmbeddedData();
+                    }
 
                     console.log(`📄 Loaded page ${this.currentQuestionPage} of ${this.totalPages} (${apiResult.source})`);
                 } else {
-                    throw new Error('Failed to load questions page');
+                    console.log('🔍 DEBUG: API call failed, throwing error');
+                    throw new Error('Failed to load questions page: ' + (apiResult?.error || 'Unknown error'));
                 }
             } else {
+                console.log('🔍 DEBUG: No API client, using embedded data fallback');
                 // Fallback: simulate pagination with embedded data
                 this.simulatePaginationWithEmbeddedData();
             }
@@ -1991,13 +2239,26 @@ class PracticePortal {
     }
 
     simulatePaginationWithEmbeddedData() {
+        console.log('🔍 DEBUG: simulatePaginationWithEmbeddedData() called');
+        
         // When using embedded data, simulate pagination by slicing the full dataset
         const allQuestions = this.getAllQuestions();
+        console.log('🔍 DEBUG: All questions from getAllQuestions():', allQuestions.length);
+        
         const startIndex = (this.currentQuestionPage - 1) * this.questionsPerPage;
         const endIndex = startIndex + this.questionsPerPage;
 
+        console.log('🔍 DEBUG: Pagination slice:', {
+            currentPage: this.currentQuestionPage,
+            questionsPerPage: this.questionsPerPage,
+            startIndex,
+            endIndex,
+            totalAvailable: allQuestions.length
+        });
+
         // Create a mock paginated result
         const paginatedQuestions = allQuestions.slice(startIndex, endIndex);
+        console.log('🔍 DEBUG: Paginated questions:', paginatedQuestions.length);
 
         // Update pagination metadata
         this.totalQuestions = allQuestions.length;
@@ -2005,13 +2266,32 @@ class PracticePortal {
         this.hasNextPage = this.currentQuestionPage < this.totalPages;
         this.hasPrevPage = this.currentQuestionPage > 1;
 
+        console.log('🔍 DEBUG: Updated pagination metadata:', {
+            totalQuestions: this.totalQuestions,
+            totalPages: this.totalPages,
+            hasNextPage: this.hasNextPage,
+            hasPrevPage: this.hasPrevPage
+        });
+
         // Set filtered questions to the current page
         this.filteredQuestions = paginatedQuestions;
+        console.log('🔍 DEBUG: Set filteredQuestions to:', this.filteredQuestions.length);
 
         // Render and update controls
+        console.log('🔍 DEBUG: Rendering questions list and updating controls');
         this.renderQuestionsList();
         this.updatePaginationControls();
         this.updateSearchStats();
+    }
+
+    // Initialize the questions per page dropdown with current value
+    initializeQuestionsPerPageDropdown() {
+        const dropdown = document.getElementById('questionsPerPageSelect');
+        if (dropdown) {
+            // Set the dropdown to the current questionsPerPage value
+            dropdown.value = this.questionsPerPage.toString();
+            console.log('🔍 DEBUG: Initialized questionsPerPageSelect dropdown to:', this.questionsPerPage);
+        }
     }
 
     showPaginationLoading(show) {
@@ -2064,6 +2344,9 @@ class PracticePortal {
             if (paginationNumbers) {
                 this.renderPaginationNumbers(paginationNumbers);
             }
+
+            // Initialize the questions per page dropdown
+            this.initializeQuestionsPerPageDropdown();
 
         } else {
             paginationContainer.style.display = 'none';
@@ -2130,13 +2413,22 @@ class PracticePortal {
     }
 
     renderQuestionsList() {
+        console.log('🔍 DEBUG: renderQuestionsList() called');
+        
         const questionsList = document.getElementById('questionsList');
-        if (!questionsList) return;
+        if (!questionsList) {
+            console.log('🔍 DEBUG: questionsList element not found');
+            return;
+        }
+
+        console.log('🔍 DEBUG: filteredQuestions length:', this.filteredQuestions.length);
 
         if (this.filteredQuestions.length === 0) {
+            console.log('🔍 DEBUG: No filtered questions, showing empty state');
             const searchTerm = document.getElementById('questionSearch')?.value?.trim();
 
             if (searchTerm) {
+                console.log('🔍 DEBUG: Showing search-specific empty state for term:', searchTerm);
                 // Show search-specific empty state
                 questionsList.innerHTML = `
                     <div class="no-search-results">
@@ -2153,6 +2445,7 @@ class PracticePortal {
                     </div>
                 `;
             } else {
+                console.log('🔍 DEBUG: Showing filter-specific empty state');
                 // Show filter-specific empty state
                 questionsList.innerHTML = '<p class="no-results">No questions found for your current filters.</p>';
             }
@@ -2160,6 +2453,15 @@ class PracticePortal {
         }
 
         const searchTerm = document.getElementById('questionSearch')?.value?.trim();
+        console.log('🔍 DEBUG: Rendering', this.filteredQuestions.length, 'questions with search term:', searchTerm);
+
+        // Sample first few questions for debugging
+        console.log('🔍 DEBUG: Sample questions:', this.filteredQuestions.slice(0, 3).map(q => ({
+            id: q.id,
+            question: q.question?.substring(0, 50) + '...',
+            categoryName: q.categoryName,
+            difficulty: q.difficulty
+        })));
 
         questionsList.innerHTML = this.filteredQuestions.map((q, index) => {
             // Highlight search terms in question text
@@ -2190,6 +2492,8 @@ class PracticePortal {
             `;
         }).join('');
 
+        console.log('🔍 DEBUG: Questions HTML rendered, adding click events');
+
         // Add click event to question cards
         document.querySelectorAll('.question-card').forEach(card => {
             card.addEventListener('click', () => {
@@ -2198,14 +2502,133 @@ class PracticePortal {
             });
         });
 
+        console.log('🔍 DEBUG: Click events added, updating pagination controls');
+
         // Update pagination controls after rendering
         this.updatePaginationControls();
+        
+        console.log('🔍 DEBUG: renderQuestionsList() completed');
+    }
+
+    // Helper method to populate filter dropdowns from embedded data
+    populateFiltersFromEmbeddedData() {
+        try {
+            if (!window.QUESTIONS_DATA || !window.QUESTIONS_DATA.categories) {
+                console.log('🔍 DEBUG: No embedded data available for filter population');
+                return;
+            }
+
+            const categoryFilter = document.getElementById('categoryFilter');
+            const difficultyFilter = document.getElementById('difficultyFilter');
+
+            if (categoryFilter) {
+                // Clear existing options except "All"
+                const allOption = categoryFilter.querySelector('option[value="all"]');
+                categoryFilter.innerHTML = '';
+                if (allOption) {
+                    categoryFilter.appendChild(allOption);
+                } else {
+                    categoryFilter.innerHTML = '<option value="all">All Categories</option>';
+                }
+
+                // Add categories from embedded data
+                window.QUESTIONS_DATA.categories.forEach(category => {
+                    const option = document.createElement('option');
+                    option.value = category.id;
+                    option.textContent = category.name;
+                    categoryFilter.appendChild(option);
+                });
+
+                console.log('🔍 DEBUG: Category filter populated with', window.QUESTIONS_DATA.categories.length, 'categories');
+            }
+
+            if (difficultyFilter) {
+                // Ensure difficulty options are present
+                const difficulties = new Set();
+                window.QUESTIONS_DATA.categories.forEach(category => {
+                    category.questions.forEach(question => {
+                        if (question.difficulty) {
+                            difficulties.add(question.difficulty);
+                        }
+                    });
+                });
+
+                // Clear existing options except "All"
+                const allOption = difficultyFilter.querySelector('option[value="all"]');
+                difficultyFilter.innerHTML = '';
+                if (allOption) {
+                    difficultyFilter.appendChild(allOption);
+                } else {
+                    difficultyFilter.innerHTML = '<option value="all">All Difficulties</option>';
+                }
+
+                // Add difficulty options
+                Array.from(difficulties).sort().forEach(difficulty => {
+                    const option = document.createElement('option');
+                    option.value = difficulty;
+                    option.textContent = difficulty;
+                    difficultyFilter.appendChild(option);
+                });
+
+                console.log('🔍 DEBUG: Difficulty filter populated with', difficulties.size, 'difficulties');
+            }
+
+        } catch (error) {
+            console.error('❌ Error populating filters from embedded data:', error);
+        }
     }
 
     searchSuggestion(term) {
         const searchInput = document.getElementById('questionSearch');
         searchInput.value = term;
         this.handleSearchInput(term);
+    }
+
+    // Helper function to find question by text
+    findQuestionByText(questionText) {
+        const cleanText = questionText.trim().toLowerCase();
+
+        // Search through all categories
+        for (const category of this.questionsData.categories) {
+            for (const question of category.questions) {
+                if (question.question.toLowerCase().includes(cleanText) ||
+                    cleanText.includes(question.question.toLowerCase().slice(0, 30))) {
+                    return {
+                        question: question,
+                        categoryId: category.id,
+                        categoryName: category.name
+                    };
+                }
+            }
+        }
+        return null;
+    }
+
+    // Helper function to navigate to a specific question by ID
+    navigateToQuestion(questionId) {
+        // Find question in all categories
+        for (let categoryIndex = 0; categoryIndex < this.questionsData.categories.length; categoryIndex++) {
+            const category = this.questionsData.categories[categoryIndex];
+            const questionIndex = category.questions.findIndex(q => q.id === questionId);
+
+            if (questionIndex !== -1) {
+                // Update filters to show the correct category
+                document.getElementById('categoryFilter').value = category.id;
+
+                // Re-filter questions
+                this.filterAndRenderQuestions();
+
+                // Find the question in filtered results and show it
+                const filteredIndex = this.filteredQuestions.findIndex(q => q.id === questionId);
+                if (filteredIndex !== -1) {
+                    this.showQuestion(filteredIndex);
+                    return true;
+                }
+            }
+        }
+
+        // If exact ID not found, try searching by text
+        return false;
     }
 
     showQuestion(index) {
@@ -2247,14 +2670,86 @@ class PracticePortal {
             `<span class="company-tag">${company}</span>`
         ).join('');
 
-        // Follow-up questions
+        // Follow-up questions - INTELLIGENT HYBRID APPROACH
         const followUpSection = document.getElementById('followUpSection');
+        const followUpList = document.getElementById('followUpList');
+
+        // Get intelligent suggestions first
+        let intelligentSuggestions = [];
+        if (this.questionIntelligence) {
+            intelligentSuggestions = this.getIntelligentFollowUps(question.id);
+        }
+
+        // Combine original follow-ups with intelligent suggestions
+        let allFollowUps = [];
+
+        // Add original follow-ups if they exist
         if (question.followUp && question.followUp.length > 0) {
+            allFollowUps = question.followUp.map(followUpId => ({
+                type: 'original',
+                id: followUpId,
+                text: question._followUpCache ? question._followUpCache[followUpId] : followUpId,
+                reason: 'Original follow-up'
+            }));
+        }
+
+        // Add intelligent suggestions
+        if (intelligentSuggestions.length > 0) {
+            intelligentSuggestions.forEach(suggestion => {
+                // Avoid duplicates
+                if (!allFollowUps.find(f => f.id === suggestion.questionId)) {
+                    allFollowUps.push({
+                        type: 'intelligent',
+                        id: suggestion.questionId,
+                        text: suggestion.mainConcepts ? suggestion.mainConcepts.join(', ') : suggestion.questionId,
+                        reason: suggestion.description || suggestion.reason || 'Intelligent suggestion',
+                        priority: suggestion.priority
+                    });
+                }
+            });
+        }
+
+        if (allFollowUps.length > 0) {
             followUpSection.style.display = 'block';
-            const followUpList = document.getElementById('followUpList');
-            followUpList.innerHTML = question.followUp.map(q =>
-                `<li>${q}</li>`
-            ).join('');
+
+            // Sort by priority (intelligent suggestions first)
+            allFollowUps.sort((a, b) => {
+                if (a.type === 'intelligent' && b.type !== 'intelligent') return -1;
+                if (a.type !== 'intelligent' && b.type === 'intelligent') return 1;
+                return (b.priority || 5) - (a.priority || 5);
+            });
+
+            followUpList.innerHTML = allFollowUps.map(followUp => {
+                const icon = followUp.type === 'intelligent' ? '🧠' : '🔗';
+                const typeLabel = followUp.type === 'intelligent' ? 'AI Suggestion' : 'Direct Link';
+
+                return `<li>
+                    <a href="#" class="followup-link" data-question-id="${followUp.id}"
+                       title="Click to view: ${followUp.text}">
+                        ${icon} ${followUp.text}
+                    </a>
+                    <span class="followup-category">(${typeLabel})</span>
+                    <div class="followup-reason">${followUp.reason}</div>
+                </li>`;
+            }).join('');
+
+            // Add event listeners for navigation
+            followUpList.querySelectorAll('.followup-link').forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const questionId = e.target.dataset.questionId;
+                    if (questionId) {
+                        console.log(`🔗 Navigating to question via ID: ${questionId}`);
+                        const success = this.navigateToQuestion(questionId);
+                        if (!success) {
+                            console.warn('Could not navigate to question:', questionId);
+                            // Try searching for the text as fallback
+                            const followUpText = e.target.textContent.replace(/^[🧠🔗]\s*/, '').trim();
+                            this.searchSuggestion(followUpText);
+                        }
+                    }
+                });
+            });
         } else {
             followUpSection.style.display = 'none';
         }
@@ -2953,8 +3448,34 @@ class PracticePortal {
         }
     }
 
-    // Enhanced question study tracking
-    markQuestionAsStudied(questionId, timeSpent = 5) {
+    // Enhanced question study tracking with database integration
+    async markQuestionAsStudied(questionId, timeSpent = 5) {
+        try {
+            // Use progress manager if available
+            if (window.portal && window.portal.progressManager && typeof window.portal.progressManager.markQuestionStudied === 'function') {
+                const question = this.getAllQuestions().find(q => q.id === questionId);
+                const categoryId = question ? question.categoryId : null;
+
+                const success = await window.portal.progressManager.markQuestionStudied(questionId, categoryId, timeSpent);
+                if (success) {
+                    // Update local dashboard data as backup
+                    this.updateLocalDashboardData(questionId, timeSpent);
+                    return;
+                }
+            }
+
+            // Fallback to local-only tracking
+            this.updateLocalDashboardData(questionId, timeSpent);
+
+        } catch (error) {
+            console.error('Error tracking question progress:', error);
+            // Always update local data as fallback
+            this.updateLocalDashboardData(questionId, timeSpent);
+        }
+    }
+
+    // Helper method to update local dashboard data
+    updateLocalDashboardData(questionId, timeSpent) {
         if (!this.dashboardData.questions.studied.includes(questionId)) {
             this.dashboardData.questions.studied.push(questionId);
             this.dashboardData.questions.timeSpent.push(timeSpent);
@@ -3628,6 +4149,60 @@ class PracticePortal {
         }).catch(error => {
             console.warn('⚠️ Background sync error:', error);
         });
+    }
+
+    // ===================================
+    // QUESTION INTELLIGENCE SYSTEM INTEGRATION
+    // ===================================
+
+    initializeQuestionIntelligence() {
+        try {
+            // Initialize the QuestionIntelligence system if available
+            if (typeof QuestionIntelligence !== 'undefined') {
+                this.questionIntelligence = new QuestionIntelligence();
+                console.log('🧠 Question Intelligence System initialized successfully');
+            } else {
+                console.warn('⚠️ QuestionIntelligence class not available - loading without intelligent features');
+            }
+        } catch (error) {
+            console.error('❌ Error initializing Question Intelligence System:', error);
+        }
+    }
+
+    getIntelligentFollowUps(questionId) {
+        if (!this.questionIntelligence) {
+            return [];
+        }
+
+        try {
+            const suggestions = this.questionIntelligence.getSmartFollowUps(questionId, {
+                maxSuggestions: 5,
+                includeReview: true,
+                includeAdvanced: true
+            });
+
+            console.log(`🧠 Generated ${suggestions.length} intelligent follow-ups for question ${questionId}`);
+            return suggestions;
+        } catch (error) {
+            console.error('❌ Error getting intelligent follow-ups:', error);
+            return [];
+        }
+    }
+
+    performSemanticSearch(query, options = {}) {
+        if (!this.questionIntelligence) {
+            console.warn('⚠️ Semantic search unavailable - Question Intelligence not initialized');
+            return [];
+        }
+
+        try {
+            const results = this.questionIntelligence.semanticSearch(query, options);
+            console.log(`🔍 Semantic search for "${query}" returned ${results.length} results`);
+            return results;
+        } catch (error) {
+            console.error('❌ Error performing semantic search:', error);
+            return [];
+        }
     }
 }
 

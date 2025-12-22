@@ -373,6 +373,124 @@ class ProgressManager {
         };
     }
 
+    // ===================================
+    // QUESTION TRACKING METHODS
+    // ===================================
+
+    // Track a question as studied
+    async markQuestionStudied(questionId, categoryId = null, timeSpent = 5) {
+        if (!this.progress) {
+            console.warn('Progress not loaded');
+            return false;
+        }
+
+        try {
+            // Check if question is already studied
+            if (!this.progress.questionsStudied) {
+                this.progress.questionsStudied = [];
+            }
+
+            const alreadyStudied = this.progress.questionsStudied.find(q => q.id === questionId);
+            if (alreadyStudied) {
+                console.log(`Question ${questionId} already studied`);
+                return true;
+            }
+
+            // Add question to studied list
+            const studiedQuestion = {
+                id: questionId,
+                categoryId: categoryId,
+                timeSpent: timeSpent,
+                studiedAt: new Date().toISOString()
+            };
+
+            this.progress.questionsStudied.push(studiedQuestion);
+
+            // Update category counts
+            if (!this.progress.categoryProgress) {
+                this.progress.categoryProgress = {};
+            }
+            if (categoryId) {
+                this.progress.categoryProgress[categoryId] = (this.progress.categoryProgress[categoryId] || 0) + 1;
+            }
+
+            // Update statistics
+            this.recalculateProgress();
+
+            // Save to database if available
+            if (window.apiV2Client) {
+                try {
+                    console.log('📊 Saving question progress to database...');
+                    const result = await window.apiV2Client.trackQuestionProgress(questionId, 'completed', timeSpent);
+                    if (result?.success) {
+                        console.log('✅ Question progress saved to database');
+                    } else {
+                        console.warn('⚠️ Database save failed, using localStorage backup');
+                    }
+                } catch (error) {
+                    console.warn('❌ Failed to save question progress to database:', error);
+                }
+            }
+
+            // Save progress locally
+            await this.saveProgress();
+
+            // Update social learning manager if available
+            if (window.socialManager && typeof window.socialManager.updateProgress === 'function') {
+                const totalStudied = this.progress.questionsStudied ? this.progress.questionsStudied.length : 0;
+                const currentStreak = this.getStreak();
+                await window.socialManager.updateProgress(totalStudied, currentStreak);
+            }
+
+            console.log(`✅ Question ${questionId} marked as studied`);
+            return true;
+
+        } catch (error) {
+            console.error('❌ Error marking question as studied:', error);
+            return false;
+        }
+    }
+
+    // Check if a question has been studied
+    isQuestionStudied(questionId) {
+        if (!this.progress || !this.progress.questionsStudied) {
+            return false;
+        }
+        return this.progress.questionsStudied.some(q => q.id === questionId);
+    }
+
+    // Get questions studied count
+    getQuestionsStudiedCount() {
+        return this.progress?.questionsStudied?.length || 0;
+    }
+
+    // Get questions studied by category
+    getQuestionsStudiedByCategory(categoryId) {
+        if (!this.progress || !this.progress.questionsStudied) {
+            return [];
+        }
+        return this.progress.questionsStudied.filter(q => q.categoryId === categoryId);
+    }
+
+    // Get total time spent studying questions
+    getTotalStudyTime() {
+        if (!this.progress || !this.progress.questionsStudied) {
+            return 0;
+        }
+        return this.progress.questionsStudied.reduce((total, q) => total + (q.timeSpent || 0), 0);
+    }
+
+    // Get average time per question
+    getAverageTimePerQuestion() {
+        const totalTime = this.getTotalStudyTime();
+        const totalQuestions = this.getQuestionsStudiedCount();
+        return totalQuestions > 0 ? Math.round(totalTime / totalQuestions) : 0;
+    }
+
+    // ===================================
+    // END QUESTION TRACKING METHODS
+    // ===================================
+
     // Getters
     getProgress() {
         return this.progress;

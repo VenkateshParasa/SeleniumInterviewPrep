@@ -17,9 +17,9 @@
     <meta name="start_url" content="/">
 
     <!-- Apple Touch Icons -->
-    <link rel="apple-touch-icon" href="assets/icons/icon-192x192.png">
-    <link rel="apple-touch-icon" sizes="152x152" href="assets/icons/icon-152x152.png">
-    <link rel="apple-touch-icon" sizes="180x180" href="assets/icons/icon-180x180.png">
+    <link rel="apple-touch-icon" href="assets/icons/icon-192x192.svg">
+    <link rel="apple-touch-icon" sizes="152x152" href="assets/icons/icon-152x152.svg">
+    <link rel="apple-touch-icon" sizes="180x180" href="assets/icons/icon-180x180.svg">
 
     <!-- Apple PWA Status Bar -->
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -27,13 +27,13 @@
     <meta name="apple-mobile-web-app-title" content="Interview Prep">
 
     <!-- Microsoft Tiles -->
-    <meta name="msapplication-TileImage" content="assets/icons/icon-144x144.png">
+    <meta name="msapplication-TileImage" content="assets/icons/icon-144x144.svg">
     <meta name="msapplication-TileColor" content="#2563eb">
 
     <!-- Favicon -->
-    <link rel="icon" type="image/png" sizes="32x32" href="assets/icons/icon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="assets/icons/icon-16x16.png">
-    <link rel="shortcut icon" href="favicon.ico">
+    <link rel="icon" type="image/svg+xml" sizes="32x32" href="assets/icons/icon-32x32.svg">
+    <link rel="icon" type="image/svg+xml" sizes="16x16" href="assets/icons/icon-16x16.svg">
+    <link rel="shortcut icon" href="favicon.svg">
 </head>
 <body>
     <div class="container">
@@ -57,56 +57,25 @@
                 </div>
             </div>
 
-            <!-- Experience Level Selector -->
-            <div class="container">
-                <div class="card mb-6">
-                    <div class="card-body">
-                        <div class="form-group">
-                            <label class="form-label" for="experienceLevel">Your Experience Level:</label>
-                            <select id="experienceLevel" class="form-input form-select">
-                                <option value="junior">Junior (0-3 Years) - ₹3-8 LPA</option>
-                                <option value="mid">Mid-Level (4-7 Years) - ₹8-15 LPA</option>
-                                <option value="senior" selected>Senior (8-12 Years) - ₹15-40 LPA</option>
-                            </select>
-                            <span class="text-secondary" id="experienceInfo">Senior SDET, Test Architect, QA Lead</span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="card mb-6">
-                    <div class="card-body">
-                        <div class="grid grid-cols-2">
-                            <div class="text-center">
-                                <span class="text-secondary">Days Completed:</span>
-                                <div class="text-2xl font-bold text-primary" id="completedDays">0</div>
-                            </div>
-                            <div class="text-center">
-                                <span class="text-secondary">Total Progress:</span>
-                                <div class="text-2xl font-bold text-primary" id="totalProgress">0%</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+            <!-- Navigation Tabs - Moved to Header -->
+            <div class="nav-tabs" style="background: rgba(255, 255, 255, 0.1); border-bottom: 1px solid rgba(255, 255, 255, 0.2); margin-top: 1rem;">
+                <button class="nav-tab" data-tab="welcome" style="color: rgba(255, 255, 255, 0.8); border-bottom-color: transparent;">🏠 Welcome</button>
+                <button class="nav-tab" data-tab="dashboard" style="color: rgba(255, 255, 255, 0.8); border-bottom-color: transparent;">📊 Dashboard</button>
+                <button class="nav-tab active" data-tab="schedule" style="color: white; border-bottom-color: white; background: rgba(255, 255, 255, 0.15);">📅 Schedule</button>
+                <button class="nav-tab" data-tab="questions" style="color: rgba(255, 255, 255, 0.8); border-bottom-color: transparent;">❓ Interview Questions</button>
+                <button class="nav-tab" data-tab="practice" style="color: rgba(255, 255, 255, 0.8); border-bottom-color: transparent;">🎯 Selenium Practice</button>
+                <button class="nav-tab" data-tab="admin" style="display: none; color: rgba(255, 255, 255, 0.8);">🎛️ Admin Panel</button>
+                <button class="nav-tab" data-tab="social" style="color: rgba(255, 255, 255, 0.8); border-bottom-color: transparent;">👥 Social Learning</button>
+                <button class="nav-tab" data-tab="integrations" style="color: rgba(255, 255, 255, 0.8); border-bottom-color: transparent;">🔗 Integrations</button>
             </div>
         </header>
 
         <!-- Main Content -->
         <div class="main-content">
-            <!-- Sidebar - Week/Day Navigation -->
-            <aside class="sidebar">
-                <!-- Navigation Tabs -->
-                <div class="nav-tabs">
-                    <button class="nav-tab" data-tab="dashboard">📊 Dashboard</button>
-                    <button class="nav-tab active" data-tab="schedule">📅 Schedule</button>
-                    <button class="nav-tab" data-tab="questions">❓ Interview Questions</button>
-                    <button class="nav-tab" data-tab="practice">🎯 Selenium Practice</button>
-                    <button class="nav-tab" data-tab="admin" style="display: none;">🎛️ Admin Panel</button>
-                    <button class="nav-tab" data-tab="social">👥 Social Learning</button>
-                    <button class="nav-tab" data-tab="integrations">🔗 Integrations</button>
-                </div>
-
+            <!-- Content Area -->
+            <main class="content-area" style="grid-column: 1 / -1; max-width: 100%;">
                 <!-- Dashboard Tab Content -->
-                <div class="tab-content" id="dashboardTab">
+                <div class="tab-content" id="dashboardTab" style="display: none;">
                     <div class="dashboard-content">
                         <h3>📊 Your Progress Dashboard</h3>
 
@@ -350,17 +319,17 @@
                                 </div>
                             </div>
 
-                            <div class="grid grid-cols-2">
+                            <div class="grid grid-cols-3">
                                 <div class="form-group">
                                     <label class="form-label" for="categoryFilter">Category:</label>
                                     <select id="categoryFilter" class="form-input form-select">
                                         <option value="all">All Categories</option>
-                                        <option value="java">☕ Java</option>
-                                        <option value="selenium">🌐 Selenium</option>
-                                        <option value="api-testing">🔌 API Testing</option>
-                                        <option value="testng">🧪 TestNG</option>
-                                        <option value="framework">🏗️ Framework (Senior)</option>
-                                        <option value="leadership">👔 Leadership (Senior)</option>
+                                        <option value="java">☕ Java Programming</option>
+                                        <option value="selenium">🌐 Selenium WebDriver</option>
+                                        <option value="testng">🧪 TestNG Framework</option>
+                                        <option value="api-testing">🔌 API Testing (Coming Soon)</option>
+                                        <option value="framework">🏗️ Framework Design (Coming Soon)</option>
+                                        <option value="leadership">👔 Leadership (Coming Soon)</option>
                                     </select>
                                 </div>
 
@@ -368,9 +337,20 @@
                                     <label class="form-label" for="difficultyFilter">Difficulty:</label>
                                     <select id="difficultyFilter" class="form-input form-select">
                                         <option value="all">All Levels</option>
-                                        <option value="Basic">Basic</option>
+                                        <option value="Easy">Easy</option>
                                         <option value="Medium">Medium</option>
                                         <option value="Hard">Hard</option>
+                                    </select>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label" for="experienceFilter">Experience Level:</label>
+                                    <select id="experienceFilter" class="form-input form-select">
+                                        <option value="all">All Experience Levels</option>
+                                        <option value="0-2">0-2 Years (Junior)</option>
+                                        <option value="3-5">3-5 Years (Mid-Level)</option>
+                                        <option value="6-8">6-8 Years (Senior)</option>
+                                        <option value="9+">9+ Years (Lead/Architect)</option>
                                     </select>
                                 </div>
                             </div>
@@ -390,6 +370,18 @@
                             <div class="pagination-container" id="paginationContainer" style="display: none;">
                                 <div class="pagination-info mb-4">
                                     <span class="text-secondary" id="paginationInfo">Showing 1-20 of 536 questions</span>
+                                </div>
+                                
+                                <!-- Questions per page selector -->
+                                <div class="questions-per-page-container mb-4">
+                                    <label for="questionsPerPageSelect" class="form-label">
+                                        Questions per page:
+                                    </label>
+                                    <select id="questionsPerPageSelect" class="form-input form-select" style="width: auto; display: inline-block; margin-left: 0.5rem;">
+                                        <option value="20">20</option>
+                                        <option value="50">50</option>
+                                        <option value="100">100</option>
+                                    </select>
                                 </div>
                                 <div class="flex items-center justify-between">
                                     <button id="prevPageBtn" class="btn btn-secondary" disabled>
@@ -531,11 +523,9 @@
                         <button id="exportProgress" class="btn btn-secondary">Export Progress</button>
                     </div>
                 </div>
-            </aside>
-
-            <!-- Content Area -->
-            <main class="content-area">
-                <div id="welcomeScreen" class="welcome-screen">
+                <!-- Welcome Screen -->
+                <div class="tab-content" id="welcomeTab" style="display: none;">
+                    <div id="welcomeScreen" class="welcome-screen">
                     <div class="card">
                         <div class="card-header text-center">
                             <h2>👋 Welcome to Your Practice Portal!</h2>
@@ -585,8 +575,10 @@
                             </div>
                         </div>
                     </div>
+                    </div>
                 </div>
 
+                <!-- Day Content (used by schedule tab) -->
                 <div id="dayContent" class="day-content" style="display: none;">
                     <div class="card mb-6">
                         <div class="card-header flex items-center justify-between">
@@ -727,6 +719,384 @@
                     <div class="flex items-center justify-center gap-4">
                         <button id="markQuestionStudied" class="btn btn-primary btn-lg">Mark as Studied</button>
                         <button id="nextQuestionBtn" class="btn btn-secondary btn-lg">Next Question →</button>
+                    </div>
+                </div>
+
+                <!-- Social Learning Tab Content -->
+                <div class="tab-content" id="socialTab" style="display: none;">
+                    <div class="social-learning-content">
+                        <h3>👥 Social Learning Hub</h3>
+
+                        <!-- User Profile Summary -->
+                        <div class="card mb-6">
+                            <div class="card-header">
+                                <h4>👤 Your Learning Profile</h4>
+                            </div>
+                            <div class="card-body">
+                                <div class="grid grid-cols-3 gap-4 mb-4">
+                                    <div class="text-center">
+                                        <div class="text-2xl font-bold text-primary" id="socialQuestionsStudied">0</div>
+                                        <div class="text-sm text-secondary">Questions Studied</div>
+                                    </div>
+                                    <div class="text-center">
+                                        <div class="text-2xl font-bold text-secondary" id="socialCurrentStreak">0</div>
+                                        <div class="text-sm text-secondary">Day Streak</div>
+                                    </div>
+                                    <div class="text-center">
+                                        <div class="text-2xl font-bold text-warning" id="socialRank">-</div>
+                                        <div class="text-sm text-secondary">Global Rank</div>
+                                    </div>
+                                </div>
+                                <div class="flex gap-2 justify-center">
+                                    <button id="shareProgress" class="btn btn-primary">📤 Share Progress</button>
+                                    <button id="findStudyPartner" class="btn btn-secondary">👥 Find Study Partner</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Study Groups Section -->
+                        <div class="card mb-6">
+                            <div class="card-header">
+                                <h4>🏘️ Study Groups</h4>
+                                <button id="createGroup" class="btn btn-primary btn-sm">➕ Create Group</button>
+                            </div>
+                            <div class="card-body">
+                                <div id="studyGroupsList" class="study-groups-list">
+                                    <!-- Study groups will be populated by JavaScript -->
+                                    <div class="empty-state">
+                                        <div class="text-center py-8">
+                                            <div class="text-4xl mb-4">👥</div>
+                                            <h4 class="mb-2">No Study Groups Yet</h4>
+                                            <p class="text-secondary mb-4">Join or create study groups to collaborate with other learners!</p>
+                                            <button class="btn btn-primary" onclick="document.getElementById('createGroup').click()">Create Your First Group</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Leaderboard Section -->
+                        <div class="card mb-6">
+                            <div class="card-header">
+                                <h4>🏆 Leaderboard</h4>
+                                <div class="flex gap-2">
+                                    <button class="btn btn-sm btn-outline" data-leaderboard="weekly">Weekly</button>
+                                    <button class="btn btn-sm btn-primary" data-leaderboard="monthly">Monthly</button>
+                                    <button class="btn btn-sm btn-outline" data-leaderboard="alltime">All Time</button>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <div id="leaderboardList" class="leaderboard-list">
+                                    <!-- Leaderboard will be populated by JavaScript -->
+                                    <div class="loading-state">
+                                        <div class="text-center py-4">
+                                            <div class="loading-spinner"></div>
+                                            <p>Loading leaderboard...</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Recent Activity Feed -->
+                        <div class="card mb-6">
+                            <div class="card-header">
+                                <h4>📰 Activity Feed</h4>
+                            </div>
+                            <div class="card-body">
+                                <div id="activityFeed" class="activity-feed">
+                                    <!-- Activity feed will be populated by JavaScript -->
+                                    <div class="empty-state">
+                                        <div class="text-center py-4">
+                                            <div class="text-2xl mb-2">📰</div>
+                                            <p class="text-secondary">No recent activity. Start studying to see updates!</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Achievements Section -->
+                        <div class="card">
+                            <div class="card-header">
+                                <h4>🎖️ Achievements</h4>
+                            </div>
+                            <div class="card-body">
+                                <div id="achievementsList" class="achievements-grid">
+                                    <!-- Achievements will be populated by JavaScript -->
+                                    <div class="achievement-item locked">
+                                        <div class="achievement-icon">🔥</div>
+                                        <div class="achievement-info">
+                                            <h5>First Streak</h5>
+                                            <p>Study for 3 consecutive days</p>
+                                            <div class="progress">
+                                                <div class="progress-bar" style="width: 33%"></div>
+                                            </div>
+                                            <small>1/3 days</small>
+                                        </div>
+                                    </div>
+                                    <div class="achievement-item locked">
+                                        <div class="achievement-icon">🎯</div>
+                                        <div class="achievement-info">
+                                            <h5>Question Master</h5>
+                                            <p>Answer 50 questions correctly</p>
+                                            <div class="progress">
+                                                <div class="progress-bar" style="width: 0%"></div>
+                                            </div>
+                                            <small>0/50 questions</small>
+                                        </div>
+                                    </div>
+                                    <div class="achievement-item locked">
+                                        <div class="achievement-icon">👥</div>
+                                        <div class="achievement-info">
+                                            <h5>Social Learner</h5>
+                                            <p>Join your first study group</p>
+                                            <div class="progress">
+                                                <div class="progress-bar" style="width: 0%"></div>
+                                            </div>
+                                            <small>Not joined</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Integrations Tab Content -->
+                <div class="tab-content" id="integrationsTab" style="display: none;">
+                    <div class="integrations-content">
+                        <h3>🔗 Platform Integrations</h3>
+
+                        <!-- Integration Status Overview -->
+                        <div class="card mb-6">
+                            <div class="card-header">
+                                <h4>📊 Integration Status</h4>
+                            </div>
+                            <div class="card-body">
+                                <div class="grid grid-cols-4 gap-4 text-center">
+                                    <div>
+                                        <div class="text-lg font-bold text-primary" id="connectedPlatforms">0</div>
+                                        <div class="text-sm text-secondary">Connected</div>
+                                    </div>
+                                    <div>
+                                        <div class="text-lg font-bold text-secondary" id="lastSyncTime">Never</div>
+                                        <div class="text-sm text-secondary">Last Sync</div>
+                                    </div>
+                                    <div>
+                                        <div class="text-lg font-bold text-success" id="syncStatus">Idle</div>
+                                        <div class="text-sm text-secondary">Status</div>
+                                    </div>
+                                    <div>
+                                        <div class="text-lg font-bold text-warning" id="dataShared">0 MB</div>
+                                        <div class="text-sm text-secondary">Data Shared</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Available Integrations -->
+                        <div class="integrations-grid">
+                            <!-- LinkedIn Integration -->
+                            <div class="card integration-card">
+                                <div class="card-header">
+                                    <div class="flex items-center justify-between">
+                                        <div class="flex items-center gap-3">
+                                            <div class="platform-icon">💼</div>
+                                            <div>
+                                                <h4 class="mb-0">LinkedIn</h4>
+                                                <small class="text-secondary">Professional Network</small>
+                                            </div>
+                                        </div>
+                                        <span class="badge badge-error">Disconnected</span>
+                                    </div>
+                                </div>
+                                <div class="card-body">
+                                    <p class="text-sm text-secondary mb-4">Share your learning progress and achievements with your professional network.</p>
+                                    <div class="integration-features mb-4">
+                                        <div class="feature-item">✅ Share study milestones</div>
+                                        <div class="feature-item">✅ Post certifications</div>
+                                        <div class="feature-item">✅ Network recommendations</div>
+                                    </div>
+                                    <button class="btn btn-primary w-full" data-integration="linkedin">🔗 Connect LinkedIn</button>
+                                </div>
+                            </div>
+
+                            <!-- GitHub Integration -->
+                            <div class="card integration-card">
+                                <div class="card-header">
+                                    <div class="flex items-center justify-between">
+                                        <div class="flex items-center gap-3">
+                                            <div class="platform-icon">🐱</div>
+                                            <div>
+                                                <h4 class="mb-0">GitHub</h4>
+                                                <small class="text-secondary">Code Repository</small>
+                                            </div>
+                                        </div>
+                                        <span class="badge badge-error">Disconnected</span>
+                                    </div>
+                                </div>
+                                <div class="card-body">
+                                    <p class="text-sm text-secondary mb-4">Sync your coding practice and showcase your technical projects.</p>
+                                    <div class="integration-features mb-4">
+                                        <div class="feature-item">✅ Commit practice code</div>
+                                        <div class="feature-item">✅ Create project repos</div>
+                                        <div class="feature-item">✅ Track contributions</div>
+                                    </div>
+                                    <button class="btn btn-primary w-full" data-integration="github">🔗 Connect GitHub</button>
+                                </div>
+                            </div>
+
+                            <!-- LeetCode Integration -->
+                            <div class="card integration-card">
+                                <div class="card-header">
+                                    <div class="flex items-center justify-between">
+                                        <div class="flex items-center gap-3">
+                                            <div class="platform-icon">💻</div>
+                                            <div>
+                                                <h4 class="mb-0">LeetCode</h4>
+                                                <small class="text-secondary">Coding Practice</small>
+                                            </div>
+                                        </div>
+                                        <span class="badge badge-error">Disconnected</span>
+                                    </div>
+                                </div>
+                                <div class="card-body">
+                                    <p class="text-sm text-secondary mb-4">Import your solved problems and track coding progress across platforms.</p>
+                                    <div class="integration-features mb-4">
+                                        <div class="feature-item">✅ Import solved problems</div>
+                                        <div class="feature-item">✅ Track difficulty progression</div>
+                                        <div class="feature-item">✅ Sync contest ratings</div>
+                                    </div>
+                                    <button class="btn btn-primary w-full" data-integration="leetcode">🔗 Connect LeetCode</button>
+                                </div>
+                            </div>
+
+                            <!-- Calendly Integration -->
+                            <div class="card integration-card">
+                                <div class="card-header">
+                                    <div class="flex items-center justify-between">
+                                        <div class="flex items-center gap-3">
+                                            <div class="platform-icon">📅</div>
+                                            <div>
+                                                <h4 class="mb-0">Calendly</h4>
+                                                <small class="text-secondary">Scheduling</small>
+                                            </div>
+                                        </div>
+                                        <span class="badge badge-error">Disconnected</span>
+                                    </div>
+                                </div>
+                                <div class="card-body">
+                                    <p class="text-sm text-secondary mb-4">Schedule mock interviews and study sessions with mentors and peers.</p>
+                                    <div class="integration-features mb-4">
+                                        <div class="feature-item">✅ Schedule study sessions</div>
+                                        <div class="feature-item">✅ Book mock interviews</div>
+                                        <div class="feature-item">✅ Calendar sync</div>
+                                    </div>
+                                    <button class="btn btn-primary w-full" data-integration="calendly">🔗 Connect Calendly</button>
+                                </div>
+                            </div>
+
+                            <!-- Notion Integration -->
+                            <div class="card integration-card">
+                                <div class="card-header">
+                                    <div class="flex items-center justify-between">
+                                        <div class="flex items-center gap-3">
+                                            <div class="platform-icon">📝</div>
+                                            <div>
+                                                <h4 class="mb-0">Notion</h4>
+                                                <small class="text-secondary">Productivity</small>
+                                            </div>
+                                        </div>
+                                        <span class="badge badge-error">Disconnected</span>
+                                    </div>
+                                </div>
+                                <div class="card-body">
+                                    <p class="text-sm text-secondary mb-4">Export study notes and create comprehensive knowledge databases.</p>
+                                    <div class="integration-features mb-4">
+                                        <div class="feature-item">✅ Export study notes</div>
+                                        <div class="feature-item">✅ Create question databases</div>
+                                        <div class="feature-item">✅ Progress tracking</div>
+                                    </div>
+                                    <button class="btn btn-primary w-full" data-integration="notion">🔗 Connect Notion</button>
+                                </div>
+                            </div>
+
+                            <!-- Slack Integration -->
+                            <div class="card integration-card">
+                                <div class="card-header">
+                                    <div class="flex items-center justify-between">
+                                        <div class="flex items-center gap-3">
+                                            <div class="platform-icon">💬</div>
+                                            <div>
+                                                <h4 class="mb-0">Slack</h4>
+                                                <small class="text-secondary">Team Communication</small>
+                                            </div>
+                                        </div>
+                                        <span class="badge badge-error">Disconnected</span>
+                                    </div>
+                                </div>
+                                <div class="card-body">
+                                    <p class="text-sm text-secondary mb-4">Share progress with your team and get study reminders.</p>
+                                    <div class="integration-features mb-4">
+                                        <div class="feature-item">✅ Daily progress updates</div>
+                                        <div class="feature-item">✅ Study reminders</div>
+                                        <div class="feature-item">✅ Team discussions</div>
+                                    </div>
+                                    <button class="btn btn-primary w-full" data-integration="slack">🔗 Connect Slack</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Integration Settings -->
+                        <div class="card mt-6">
+                            <div class="card-header">
+                                <h4>⚙️ Integration Settings</h4>
+                            </div>
+                            <div class="card-body">
+                                <div class="settings-grid">
+                                    <div class="setting-item">
+                                        <label class="flex items-center gap-3">
+                                            <input type="checkbox" id="autoSync" checked>
+                                            <span>🔄 Enable automatic syncing</span>
+                                        </label>
+                                        <small class="text-secondary">Automatically sync data when changes occur</small>
+                                    </div>
+
+                                    <div class="setting-item">
+                                        <label class="flex items-center gap-3">
+                                            <input type="checkbox" id="syncNotifications">
+                                            <span>🔔 Sync notifications</span>
+                                        </label>
+                                        <small class="text-secondary">Get notified when syncing completes</small>
+                                    </div>
+
+                                    <div class="setting-item">
+                                        <label class="flex items-center gap-3">
+                                            <input type="checkbox" id="shareProgress" checked>
+                                            <span>📊 Share progress publicly</span>
+                                        </label>
+                                        <small class="text-secondary">Allow others to see your study progress</small>
+                                    </div>
+
+                                    <div class="setting-item">
+                                        <label for="syncFrequency">🕒 Sync Frequency:</label>
+                                        <select id="syncFrequency" class="select">
+                                            <option value="5">Every 5 minutes</option>
+                                            <option value="15" selected>Every 15 minutes</option>
+                                            <option value="60">Every hour</option>
+                                            <option value="1440">Daily</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="mt-4 flex gap-4">
+                                    <button id="syncAllNow" class="btn btn-primary">🔄 Sync All Now</button>
+                                    <button id="exportData" class="btn btn-secondary">📤 Export Data</button>
+                                    <button id="importData" class="btn btn-secondary">📥 Import Data</button>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </main>
@@ -1004,12 +1374,6 @@
                             <div class="card-body">
                                 <div class="form-group">
                                     <div class="checkbox-group flex items-center gap-2">
-                                        <input type="checkbox" id="analytics" checked>
-                                        <label for="analytics" class="form-label mb-0">Allow usage analytics</label>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <div class="checkbox-group flex items-center gap-2">
                                         <input type="checkbox" id="crashReporting" checked>
                                         <label for="crashReporting" class="form-label mb-0">Enable crash reporting</label>
                                     </div>
@@ -1049,7 +1413,6 @@
     <!-- Load performance and bundling modules first -->
     <script src="js/performance-manager.js"></script>
     <script src="js/module-bundler.js"></script>
-    <script src="js/analytics-manager.js"></script>
 
     <!-- Phase 7 - Content Management & Advanced Features -->
     <script src="js/content-management-system.js"></script>
@@ -1061,13 +1424,826 @@
     <script src="js/ui-utils.js"></script>
     <script src="js/api-client.js"></script>
     <script src="js/api-v2-client.js"></script>
+    <script src="js/social-integrations-api-client.js"></script>
     <script src="js/offline-storage.js"></script>
     <script src="js/conflict-resolver.js"></script>
     <script src="js/offline-progress-tracker.js"></script>
     <script src="js/data-manager.js"></script>
     <script src="js/question-manager.js"></script>
     <script src="js/progress-manager.js"></script>
-    <script src="app-modular.js"></script>
+
+    <!-- Question Intelligence System -->
+    <script src="js/question-intelligence.js"></script>
+
+    <!-- Social Learning & Integrations JavaScript -->
+    <script>
+        // ===================================
+        // SOCIAL LEARNING FUNCTIONALITY
+        // ===================================
+
+        class SocialLearningManager {
+            constructor() {
+                this.apiClient = window.socialApiClient;
+                this.userProfile = {
+                    questionsStudied: 0,
+                    currentStreak: 0,
+                    rank: '-',
+                    achievements: []
+                };
+
+                this.studyGroups = [];
+                this.leaderboard = [];
+                this.activityFeed = [];
+                this.achievements = [];
+
+                this.init();
+            }
+
+            async init() {
+                await this.loadUserProfile();
+                this.setupEventListeners();
+                await this.loadAllData();
+                console.log('👥 Social Learning Manager initialized with API integration');
+            }
+
+            async loadUserProfile() {
+                try {
+                    if (this.apiClient) {
+                        const response = await this.apiClient.getProfile();
+                        if (response.success) {
+                            this.userProfile = response.data;
+                            return;
+                        }
+                    }
+                } catch (error) {
+                    console.warn('Failed to load social profile from API:', error);
+                }
+
+                // Fallback to localStorage
+                this.loadUserProfileFromStorage();
+            }
+
+            loadUserProfileFromStorage() {
+                try {
+                    const saved = localStorage.getItem('social_profile');
+                    if (saved) {
+                        this.userProfile = { ...this.userProfile, ...JSON.parse(saved) };
+                    }
+                } catch (error) {
+                    console.warn('Failed to load social profile from storage:', error);
+                }
+            }
+
+            async saveUserProfile() {
+                try {
+                    if (this.apiClient) {
+                        await this.apiClient.updateProfile(this.userProfile);
+                        return;
+                    }
+                } catch (error) {
+                    console.warn('Failed to save social profile to API, using localStorage:', error);
+                }
+
+                // Fallback to localStorage
+                localStorage.setItem('social_profile', JSON.stringify(this.userProfile));
+            }
+
+            async loadAllData() {
+                try {
+                    if (!this.apiClient) {
+                        this.generateMockData();
+                        return;
+                    }
+
+                    // Load data from API with fallbacks
+                    const [groupsResponse, leaderboardResponse, activityResponse, achievementsResponse] = await Promise.allSettled([
+                        this.apiClient.getStudyGroups(),
+                        this.apiClient.getLeaderboard('monthly'),
+                        this.apiClient.getActivityFeed(20, 0),
+                        this.apiClient.getAchievements()
+                    ]);
+
+                    // Process study groups
+                    if (groupsResponse.status === 'fulfilled' && groupsResponse.value.success) {
+                        this.studyGroups = groupsResponse.value.data;
+                    } else {
+                        this.generateMockStudyGroups();
+                    }
+
+                    // Process leaderboard
+                    if (leaderboardResponse.status === 'fulfilled' && leaderboardResponse.value.success) {
+                        this.leaderboard = leaderboardResponse.value.data;
+                    } else {
+                        this.generateMockLeaderboard();
+                    }
+
+                    // Process activity feed
+                    if (activityResponse.status === 'fulfilled' && activityResponse.value.success) {
+                        this.activityFeed = activityResponse.value.data;
+                    } else {
+                        this.generateMockActivity();
+                    }
+
+                    // Process achievements
+                    if (achievementsResponse.status === 'fulfilled' && achievementsResponse.value.success) {
+                        this.achievements = achievementsResponse.value.data;
+                    } else {
+                        this.generateMockAchievements();
+                    }
+
+                } catch (error) {
+                    console.warn('Failed to load social data from API, using fallbacks:', error);
+                    this.generateMockData();
+                }
+            }
+
+            generateMockStudyGroups() {
+                this.studyGroups = [
+                    { id: 1, name: 'Java Masters', members: 24, category: 'Java', level: 'Advanced', activity: 'High' },
+                    { id: 2, name: 'Selenium Beginners', members: 12, category: 'Selenium', level: 'Beginner', activity: 'Medium' },
+                    { id: 3, name: 'API Testing Pro', members: 8, category: 'API Testing', level: 'Intermediate', activity: 'Low' }
+                ];
+            }
+
+            generateMockLeaderboard() {
+                this.leaderboard = [
+                    { rank: 1, name: 'Alex Chen', score: 2450, streak: 15, avatar: '👨‍💻' },
+                    { rank: 2, name: 'Sarah Kim', score: 2380, streak: 12, avatar: '👩‍💻' },
+                    { rank: 3, name: 'Mike Johnson', score: 2320, streak: 8, avatar: '👨‍🔬' },
+                    { rank: 4, name: 'Emily Davis', score: 2280, streak: 10, avatar: '👩‍🎓' },
+                    { rank: 5, name: 'You', score: 1850, streak: this.userProfile.currentStreak, avatar: '🧑‍🎓' }
+                ];
+            }
+
+            generateMockActivity() {
+                this.activityFeed = [
+                    { user: 'Alex Chen', action: 'completed Java Basics track', time: '2 hours ago', icon: '🎯' },
+                    { user: 'Sarah Kim', action: 'achieved 10-day study streak', time: '4 hours ago', icon: '🔥' },
+                    { user: 'Mike Johnson', action: 'joined Selenium Advanced group', time: '6 hours ago', icon: '👥' }
+                ];
+            }
+
+            generateMockAchievements() {
+                this.achievements = [
+                    { id: 'first_streak', name: 'First Streak', icon: '🔥', description: 'Study for 3 consecutive days', progress: 1, target: 3 },
+                    { id: 'question_master', name: 'Question Master', icon: '🎯', description: 'Answer 50 questions correctly', progress: 0, target: 50 },
+                    { id: 'social_learner', name: 'Social Learner', icon: '👥', description: 'Join your first study group', progress: 0, target: 1 }
+                ];
+            }
+
+            setupEventListeners() {
+                // Share Progress
+                const shareBtn = document.getElementById('shareProgress');
+                if (shareBtn) {
+                    shareBtn.addEventListener('click', () => this.shareProgress());
+                }
+
+                // Find Study Partner
+                const findPartnerBtn = document.getElementById('findStudyPartner');
+                if (findPartnerBtn) {
+                    findPartnerBtn.addEventListener('click', () => this.findStudyPartner());
+                }
+
+                // Create Group
+                const createGroupBtn = document.getElementById('createGroup');
+                if (createGroupBtn) {
+                    createGroupBtn.addEventListener('click', () => this.createStudyGroup());
+                }
+
+                // Leaderboard filters
+                document.querySelectorAll('[data-leaderboard]').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        document.querySelectorAll('[data-leaderboard]').forEach(b => b.classList.remove('btn-primary'));
+                        document.querySelectorAll('[data-leaderboard]').forEach(b => b.classList.add('btn-outline'));
+                        e.target.classList.remove('btn-outline');
+                        e.target.classList.add('btn-primary');
+                        this.loadLeaderboard(e.target.dataset.leaderboard);
+                    });
+                });
+            }
+
+            generateMockData() {
+                // Generate sample study groups
+                this.studyGroups = [
+                    { id: 1, name: 'Java Masters', members: 24, category: 'Java', level: 'Advanced', activity: 'High' },
+                    { id: 2, name: 'Selenium Beginners', members: 12, category: 'Selenium', level: 'Beginner', activity: 'Medium' },
+                    { id: 3, name: 'API Testing Pro', members: 8, category: 'API Testing', level: 'Intermediate', activity: 'Low' }
+                ];
+
+                // Generate leaderboard
+                this.leaderboard = [
+                    { rank: 1, name: 'Alex Chen', score: 2450, streak: 15, avatar: '👨‍💻' },
+                    { rank: 2, name: 'Sarah Kim', score: 2380, streak: 12, avatar: '👩‍💻' },
+                    { rank: 3, name: 'Mike Johnson', score: 2320, streak: 8, avatar: '👨‍🔬' },
+                    { rank: 4, name: 'Emily Davis', score: 2280, streak: 10, avatar: '👩‍🎓' },
+                    { rank: 5, name: 'You', score: 1850, streak: this.userProfile.currentStreak, avatar: '🧑‍🎓' }
+                ];
+
+                // Generate activity feed
+                this.activityFeed = [
+                    { user: 'Alex Chen', action: 'completed Java Basics track', time: '2 hours ago', icon: '🎯' },
+                    { user: 'Sarah Kim', action: 'achieved 10-day study streak', time: '4 hours ago', icon: '🔥' },
+                    { user: 'Mike Johnson', action: 'joined Selenium Advanced group', time: '6 hours ago', icon: '👥' }
+                ];
+            }
+
+            updateSocialDisplay() {
+                // Update profile stats
+                document.getElementById('socialQuestionsStudied').textContent = this.userProfile.questionsStudied;
+                document.getElementById('socialCurrentStreak').textContent = this.userProfile.currentStreak;
+                document.getElementById('socialRank').textContent = this.userProfile.rank;
+
+                // Update study groups
+                this.renderStudyGroups();
+
+                // Update leaderboard
+                this.renderLeaderboard();
+
+                // Update activity feed
+                this.renderActivityFeed();
+
+                // Update achievements
+                this.renderAchievements();
+            }
+
+            renderStudyGroups() {
+                const container = document.getElementById('studyGroupsList');
+                if (!container) return;
+
+                if (this.studyGroups.length === 0) {
+                    container.innerHTML = `
+                        <div class="empty-state">
+                            <div class="text-center py-8">
+                                <div class="text-4xl mb-4">👥</div>
+                                <h4 class="mb-2">No Study Groups Yet</h4>
+                                <p class="text-secondary mb-4">Join or create study groups to collaborate with other learners!</p>
+                                <button class="btn btn-primary" onclick="document.getElementById('createGroup').click()">Create Your First Group</button>
+                            </div>
+                        </div>
+                    `;
+                } else {
+                    container.innerHTML = this.studyGroups.map(group => `
+                        <div class="study-group-item">
+                            <div class="flex justify-between items-center p-4 border rounded-lg">
+                                <div>
+                                    <h5 class="font-semibold">${group.name}</h5>
+                                    <p class="text-sm text-secondary">${group.category} • ${group.level} • ${group.members} members</p>
+                                    <span class="badge ${group.activity === 'High' ? 'badge-success' : group.activity === 'Medium' ? 'badge-warning' : 'badge-secondary'}">${group.activity} Activity</span>
+                                </div>
+                                <button class="btn btn-primary btn-sm">Join Group</button>
+                            </div>
+                        </div>
+                    `).join('');
+                }
+            }
+
+            renderLeaderboard() {
+                const container = document.getElementById('leaderboardList');
+                if (!container) return;
+
+                container.innerHTML = this.leaderboard.map(user => `
+                    <div class="leaderboard-item">
+                        <div class="flex items-center justify-between p-3 border-b">
+                            <div class="flex items-center gap-3">
+                                <span class="rank-badge ${user.rank <= 3 ? 'top-rank' : ''}">#${user.rank}</span>
+                                <span class="text-2xl">${user.avatar}</span>
+                                <div>
+                                    <div class="font-semibold ${user.name === 'You' ? 'text-primary' : ''}">${user.name}</div>
+                                    <div class="text-sm text-secondary">${user.streak} day streak</div>
+                                </div>
+                            </div>
+                            <div class="text-lg font-bold text-primary">${user.score}</div>
+                        </div>
+                    </div>
+                `).join('');
+            }
+
+            renderActivityFeed() {
+                const container = document.getElementById('activityFeed');
+                if (!container) return;
+
+                if (this.activityFeed.length === 0) {
+                    container.innerHTML = `
+                        <div class="empty-state">
+                            <div class="text-center py-4">
+                                <div class="text-2xl mb-2">📰</div>
+                                <p class="text-secondary">No recent activity. Start studying to see updates!</p>
+                            </div>
+                        </div>
+                    `;
+                } else {
+                    container.innerHTML = this.activityFeed.map(item => `
+                        <div class="activity-item">
+                            <div class="flex items-center gap-3 p-3 border-b">
+                                <span class="text-xl">${item.icon}</span>
+                                <div class="flex-1">
+                                    <p><span class="font-semibold">${item.user}</span> ${item.action}</p>
+                                    <small class="text-secondary">${item.time}</small>
+                                </div>
+                            </div>
+                        </div>
+                    `).join('');
+                }
+            }
+
+            renderAchievements() {
+                const container = document.getElementById('achievementsList');
+                if (!container) return;
+
+                container.innerHTML = this.achievements.map(achievement => {
+                    const progress = Math.min(achievement.progress / achievement.target * 100, 100);
+                    const isUnlocked = achievement.progress >= achievement.target;
+
+                    return `
+                        <div class="achievement-item ${isUnlocked ? 'unlocked' : 'locked'}">
+                            <div class="achievement-icon">${achievement.icon}</div>
+                            <div class="achievement-info">
+                                <h5>${achievement.name}</h5>
+                                <p>${achievement.description}</p>
+                                <div class="progress">
+                                    <div class="progress-bar" style="width: ${progress}%"></div>
+                                </div>
+                                <small>${achievement.progress}/${achievement.target} ${achievement.id === 'social_learner' ? 'groups' : achievement.id === 'first_streak' ? 'days' : 'questions'}</small>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+            }
+
+            shareProgress() {
+                const message = `🎯 Just reached ${this.userProfile.questionsStudied} questions studied with a ${this.userProfile.currentStreak}-day streak! 💪 #InterviewPrep #Learning`;
+
+                if (navigator.share) {
+                    navigator.share({
+                        title: 'My Learning Progress',
+                        text: message,
+                        url: window.location.href
+                    });
+                } else {
+                    // Fallback for browsers that don't support Web Share API
+                    navigator.clipboard.writeText(message).then(() => {
+                        alert('Progress copied to clipboard! 📋');
+                    });
+                }
+            }
+
+            findStudyPartner() {
+                alert('🔍 Study partner matching is coming soon! We\'ll help you find study buddies with similar goals and schedules.');
+            }
+
+            async createStudyGroup() {
+                const groupName = prompt('📝 Enter a name for your study group:');
+                if (groupName) {
+                    const groupData = {
+                        name: groupName,
+                        category: 'General',
+                        level: 'Mixed'
+                    };
+
+                    try {
+                        if (this.apiClient) {
+                            const response = await this.apiClient.createStudyGroup(groupData);
+                            if (response.success) {
+                                // Refresh groups from API
+                                await this.loadAllData();
+                                this.renderStudyGroups();
+                                alert(`✅ Study group "${groupName}" created successfully!`);
+                                return;
+                            }
+                        }
+                    } catch (error) {
+                        console.warn('Failed to create study group via API:', error);
+                    }
+
+                    // Fallback to local creation
+                    const newGroup = {
+                        id: Date.now(),
+                        name: groupName,
+                        members: 1,
+                        category: 'General',
+                        level: 'Mixed',
+                        activity: 'New'
+                    };
+
+                    this.studyGroups.unshift(newGroup);
+                    this.renderStudyGroups();
+                    alert(`✅ Study group "${groupName}" created successfully!`);
+                }
+            }
+
+            async loadLeaderboard(period) {
+                console.log(`Loading ${period} leaderboard...`);
+
+                try {
+                    if (this.apiClient) {
+                        const response = await this.apiClient.getLeaderboard(period, false);
+                        if (response.success) {
+                            this.leaderboard = response.data;
+                            this.renderLeaderboard();
+                            return;
+                        }
+                    }
+                } catch (error) {
+                    console.warn('Failed to load leaderboard from API:', error);
+                }
+
+                // Fallback: Use existing cached data
+                this.renderLeaderboard();
+            }
+
+            async updateProgress(questionsStudied, currentStreak) {
+                this.userProfile.questionsStudied = questionsStudied;
+                this.userProfile.currentStreak = currentStreak;
+
+                // Update achievements
+                this.achievements.forEach(achievement => {
+                    if (achievement.id === 'first_streak') {
+                        achievement.progress = Math.min(currentStreak, 3);
+                    } else if (achievement.id === 'question_master') {
+                        achievement.progress = questionsStudied;
+                    }
+                });
+
+                // Save profile updates via API
+                await this.saveUserProfile();
+                this.updateSocialDisplay();
+            }
+        }
+
+        // ===================================
+        // INTEGRATIONS FUNCTIONALITY
+        // ===================================
+
+        class IntegrationsManager {
+            constructor() {
+                this.apiClient = window.integrationsApiClient;
+                this.connectedPlatforms = new Set();
+                this.integrations = new Map();
+                this.syncStatus = 'Idle';
+                this.lastSyncTime = 'Never';
+                this.dataShared = '0 MB';
+
+                this.init();
+            }
+
+            async init() {
+                await this.loadIntegrations();
+                this.setupEventListeners();
+                this.updateIntegrationsDisplay();
+                console.log('🔗 Integrations Manager initialized with API integration');
+            }
+
+            async loadIntegrations() {
+                try {
+                    if (this.apiClient) {
+                        // Load integration status from API
+                        const [statusResponse, platformsResponse] = await Promise.allSettled([
+                            this.apiClient.getStatus(),
+                            this.apiClient.getPlatforms()
+                        ]);
+
+                        if (statusResponse.status === 'fulfilled' && statusResponse.value.success) {
+                            const status = statusResponse.value.data;
+                            this.syncStatus = status.syncStatus || 'Idle';
+                            this.lastSyncTime = status.lastSyncTime || 'Never';
+                            this.dataShared = status.dataShared || '0 MB';
+                        }
+
+                        if (platformsResponse.status === 'fulfilled' && platformsResponse.value.success) {
+                            const platforms = platformsResponse.value.data;
+                            this.connectedPlatforms = new Set(platforms.filter(p => p.connected).map(p => p.id));
+
+                            // Store integration data
+                            platforms.forEach(platform => {
+                                if (platform.connected) {
+                                    this.integrations.set(platform.id, {
+                                        connectedAt: new Date().toISOString(),
+                                        enabled: true,
+                                        lastSync: platform.lastSync || null
+                                    });
+                                }
+                            });
+                            return;
+                        }
+                    }
+                } catch (error) {
+                    console.warn('Failed to load integrations from API:', error);
+                }
+
+                // Fallback to localStorage
+                this.loadIntegrationsFromStorage();
+            }
+
+            loadIntegrationsFromStorage() {
+                try {
+                    const saved = localStorage.getItem('integrations_data');
+                    if (saved) {
+                        const data = JSON.parse(saved);
+                        this.connectedPlatforms = new Set(data.connectedPlatforms || []);
+                        this.integrations = new Map(data.integrations || []);
+                    }
+                } catch (error) {
+                    console.warn('Failed to load integrations from storage:', error);
+                }
+            }
+
+            saveIntegrations() {
+                try {
+                    const data = {
+                        connectedPlatforms: Array.from(this.connectedPlatforms),
+                        integrations: Array.from(this.integrations.entries())
+                    };
+                    localStorage.setItem('integrations_data', JSON.stringify(data));
+                } catch (error) {
+                    console.warn('Failed to save integrations:', error);
+                }
+            }
+
+            setupEventListeners() {
+                // Integration buttons
+                document.querySelectorAll('[data-integration]').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        const platform = e.target.dataset.integration;
+                        this.connectPlatform(platform);
+                    });
+                });
+
+                // Settings checkboxes
+                const autoSync = document.getElementById('autoSync');
+                if (autoSync) {
+                    autoSync.addEventListener('change', () => this.updateSettings());
+                }
+
+                // Action buttons
+                const syncAllBtn = document.getElementById('syncAllNow');
+                if (syncAllBtn) {
+                    syncAllBtn.addEventListener('click', () => this.syncAllPlatforms());
+                }
+
+                const exportBtn = document.getElementById('exportData');
+                if (exportBtn) {
+                    exportBtn.addEventListener('click', () => this.exportData());
+                }
+
+                const importBtn = document.getElementById('importData');
+                if (importBtn) {
+                    importBtn.addEventListener('click', () => this.importData());
+                }
+            }
+
+            updateIntegrationsDisplay() {
+                // Update status overview
+                document.getElementById('connectedPlatforms').textContent = this.connectedPlatforms.size;
+                document.getElementById('lastSyncTime').textContent = this.lastSyncTime;
+                document.getElementById('syncStatus').textContent = this.syncStatus;
+                document.getElementById('dataShared').textContent = this.dataShared;
+
+                // Update integration cards
+                document.querySelectorAll('.integration-card').forEach(card => {
+                    const btn = card.querySelector('[data-integration]');
+                    if (btn) {
+                        const platform = btn.dataset.integration;
+                        const badge = card.querySelector('.badge');
+
+                        if (this.connectedPlatforms.has(platform)) {
+                            badge.textContent = 'Connected';
+                            badge.className = 'badge badge-success';
+                            btn.textContent = '⚙️ Configure';
+                            btn.className = 'btn btn-secondary w-full';
+                        } else {
+                            badge.textContent = 'Disconnected';
+                            badge.className = 'badge badge-error';
+                            btn.textContent = `🔗 Connect ${platform.charAt(0).toUpperCase() + platform.slice(1)}`;
+                            btn.className = 'btn btn-primary w-full';
+                        }
+                    }
+                });
+            }
+
+            async connectPlatform(platform) {
+                if (this.connectedPlatforms.has(platform)) {
+                    this.configurePlatform(platform);
+                } else {
+                    // Update status to show connecting
+                    this.syncStatus = 'Connecting...';
+                    this.updateIntegrationsDisplay();
+
+                    try {
+                        if (this.apiClient) {
+                            const response = await this.apiClient.connectPlatform(platform);
+                            if (response.success) {
+                                // Reload integrations from API
+                                await this.loadIntegrations();
+                                this.updateIntegrationsDisplay();
+                                alert(`✅ Successfully connected to ${platform.charAt(0).toUpperCase() + platform.slice(1)}!`);
+                                return;
+                            }
+                        }
+                    } catch (error) {
+                        console.warn('Failed to connect platform via API:', error);
+                    }
+
+                    // Fallback: Simulate connection process
+                    setTimeout(() => {
+                        this.connectedPlatforms.add(platform);
+                        this.integrations.set(platform, {
+                            connectedAt: new Date().toISOString(),
+                            enabled: true,
+                            lastSync: null
+                        });
+
+                        this.syncStatus = 'Connected';
+                        this.updateIntegrationsDisplay();
+                        this.saveIntegrations();
+
+                        alert(`✅ Successfully connected to ${platform.charAt(0).toUpperCase() + platform.slice(1)}!`);
+                    }, 2000);
+                }
+            }
+
+            configurePlatform(platform) {
+                const config = this.integrations.get(platform);
+                const enabled = config?.enabled ? 'enabled' : 'disabled';
+
+                const action = confirm(`Platform: ${platform.charAt(0).toUpperCase() + platform.slice(1)}\\nStatus: ${enabled}\\n\\nDo you want to disconnect this platform?`);
+
+                if (action) {
+                    this.disconnectPlatform(platform);
+                }
+            }
+
+            async disconnectPlatform(platform) {
+                try {
+                    if (this.apiClient) {
+                        const response = await this.apiClient.disconnectPlatform(platform);
+                        if (response.success) {
+                            // Reload integrations from API
+                            await this.loadIntegrations();
+                            this.updateIntegrationsDisplay();
+                            alert(`❌ Disconnected from ${platform.charAt(0).toUpperCase() + platform.slice(1)}`);
+                            return;
+                        }
+                    }
+                } catch (error) {
+                    console.warn('Failed to disconnect platform via API:', error);
+                }
+
+                // Fallback: Local disconnect
+                this.connectedPlatforms.delete(platform);
+                this.integrations.delete(platform);
+                this.updateIntegrationsDisplay();
+                this.saveIntegrations();
+                alert(`❌ Disconnected from ${platform.charAt(0).toUpperCase() + platform.slice(1)}`);
+            }
+
+            async syncAllPlatforms() {
+                if (this.connectedPlatforms.size === 0) {
+                    alert('❌ No platforms connected. Connect some platforms first!');
+                    return;
+                }
+
+                this.syncStatus = 'Syncing...';
+                this.updateIntegrationsDisplay();
+
+                try {
+                    if (this.apiClient) {
+                        const response = await this.apiClient.syncAll();
+                        if (response.success) {
+                            // Reload status from API
+                            await this.loadIntegrations();
+                            this.updateIntegrationsDisplay();
+
+                            setTimeout(() => {
+                                this.syncStatus = 'Idle';
+                                this.updateIntegrationsDisplay();
+                            }, 3000);
+
+                            alert(`✅ Sync completed! Updated ${this.connectedPlatforms.size} platform(s).`);
+                            return;
+                        }
+                    }
+                } catch (error) {
+                    console.warn('Failed to sync via API:', error);
+                }
+
+                // Fallback: Simulate sync process
+                setTimeout(() => {
+                    this.lastSyncTime = new Date().toLocaleTimeString();
+                    this.syncStatus = 'Completed';
+                    this.dataShared = `${(Math.random() * 5 + 1).toFixed(1)} MB`;
+
+                    // Update integration timestamps
+                    this.connectedPlatforms.forEach(platform => {
+                        const integration = this.integrations.get(platform);
+                        if (integration) {
+                            integration.lastSync = new Date().toISOString();
+                        }
+                    });
+
+                    this.updateIntegrationsDisplay();
+                    this.saveIntegrations();
+
+                    setTimeout(() => {
+                        this.syncStatus = 'Idle';
+                        this.updateIntegrationsDisplay();
+                    }, 3000);
+
+                    alert(`✅ Sync completed! Updated ${this.connectedPlatforms.size} platform(s).`);
+                }, 3000);
+            }
+
+            exportData() {
+                const data = {
+                    timestamp: new Date().toISOString(),
+                    connectedPlatforms: Array.from(this.connectedPlatforms),
+                    settings: {
+                        autoSync: document.getElementById('autoSync')?.checked,
+                        syncNotifications: document.getElementById('syncNotifications')?.checked,
+                        shareProgress: document.getElementById('shareProgress')?.checked
+                    }
+                };
+
+                const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `interview-prep-integrations-${new Date().toISOString().split('T')[0]}.json`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+
+                alert('📤 Integration settings exported successfully!');
+            }
+
+            importData() {
+                const input = document.createElement('input');
+                input.type = 'file';
+                input.accept = '.json';
+                input.onchange = (e) => {
+                    const file = e.target.files[0];
+                    if (file) {
+                        const reader = new FileReader();
+                        reader.onload = (e) => {
+                            try {
+                                const data = JSON.parse(e.target.result);
+
+                                // Validate and import data
+                                if (data.connectedPlatforms) {
+                                    this.connectedPlatforms = new Set(data.connectedPlatforms);
+                                }
+
+                                if (data.settings) {
+                                    Object.keys(data.settings).forEach(key => {
+                                        const element = document.getElementById(key);
+                                        if (element && typeof data.settings[key] === 'boolean') {
+                                            element.checked = data.settings[key];
+                                        }
+                                    });
+                                }
+
+                                this.updateIntegrationsDisplay();
+                                this.saveIntegrations();
+                                alert('📥 Integration settings imported successfully!');
+                            } catch (error) {
+                                alert('❌ Failed to import data. Please check the file format.');
+                            }
+                        };
+                        reader.readAsText(file);
+                    }
+                };
+                input.click();
+            }
+
+            updateSettings() {
+                // Settings are automatically saved when changed
+                this.saveIntegrations();
+                console.log('⚙️ Integration settings updated');
+            }
+        }
+
+        // Initialize managers when document is ready
+        let socialManager, integrationsManager;
+
+        document.addEventListener('DOMContentLoaded', () => {
+            socialManager = new SocialLearningManager();
+            integrationsManager = new IntegrationsManager();
+
+            // Connect with existing progress tracking
+            if (window.portal && window.portal.progressManager) {
+                const progress = window.portal.progressManager.getOverallProgress();
+                socialManager.updateProgress(progress.questionsStudied || 0, progress.currentStreak || 0);
+            }
+        });
+
+        // Export for use in other modules
+        if (typeof window !== 'undefined') {
+            window.SocialLearningManager = SocialLearningManager;
+            window.IntegrationsManager = IntegrationsManager;
+        }
+    </script>
+
+    <script src="js/app-modular.js"></script>
 
     <!-- PWA Service Worker Registration -->
     <script>
@@ -1080,18 +2256,21 @@
         let installButton;
         let dismissButton;
 
-        // Register service worker (only for HTTP/HTTPS)
-        if ('serviceWorker' in navigator && window.location.protocol !== 'file:') {
+        // Register service worker (only for HTTP/HTTPS, disabled for localhost to prevent HTTPS issues)
+        if ('serviceWorker' in navigator &&
+            window.location.protocol !== 'file:' &&
+            window.location.hostname !== 'localhost' &&
+            window.location.hostname !== '127.0.0.1') {
             window.addEventListener('load', async () => {
                 try {
                     // Try enhanced service worker first, fallback to basic
                     let registration;
                     try {
-                        registration = await navigator.serviceWorker.register('/sw-enhanced.js');
+                        registration = await navigator.serviceWorker.register('./sw-enhanced.js');
                         console.log('✅ Enhanced Service Worker registered:', registration);
                     } catch (enhancedError) {
                         console.warn('⚠️ Enhanced Service Worker failed, using basic SW:', enhancedError);
-                        registration = await navigator.serviceWorker.register('/sw.js');
+                        registration = await navigator.serviceWorker.register('./sw.js');
                         console.log('✅ Basic Service Worker registered:', registration);
                     }
 
@@ -1440,23 +2619,6 @@
                     window.performanceManager.setupInteractionTracking();
                     window.performanceManager.optimizeImages();
                     console.log('⚡ Performance Manager initialized');
-                }
-
-                // Initialize Analytics Manager
-                if (typeof AnalyticsManager !== 'undefined') {
-                    window.analyticsManager = new AnalyticsManager();
-                    console.log('📊 Analytics Manager initialized');
-
-                    // Example A/B test
-                    const buttonVariant = window.analyticsManager.initializeABTest(
-                        'button_color_test',
-                        ['blue', 'green', 'red'],
-                        { trafficAllocation: 0.5 }
-                    );
-
-                    if (buttonVariant) {
-                        console.log(`🧪 A/B Test: Button variant ${buttonVariant}`);
-                    }
                 }
 
                 // Setup performance monitoring

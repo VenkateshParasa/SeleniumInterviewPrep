@@ -6,6 +6,7 @@ const express = require('express');
 const { db } = require('../../database/models');
 const { v4: uuidv4 } = require('uuid');
 const { authenticateToken } = require('../middleware/auth');
+const jwt = require('jsonwebtoken');
 
 const router = express.Router();
 
@@ -203,6 +204,34 @@ router.get('/questions/:id', async (req, res) => {
             });
         }
 
+        // HYBRID APPROACH: Generate follow-up cache automatically
+        if (question.followUp && Array.isArray(question.followUp) && question.followUp.length > 0) {
+            try {
+                question._followUpCache = {};
+
+                // Build cache for each follow-up ID
+                for (const followUpId of question.followUp) {
+                    if (typeof followUpId === 'string' && followUpId.includes('-')) {
+                        // It's a question ID, fetch the question text
+                        const followUpQuestion = await db.questions.findByStringId(followUpId);
+                        if (followUpQuestion) {
+                            question._followUpCache[followUpId] = followUpQuestion.question;
+                        } else {
+                            question._followUpCache[followUpId] = `Question ${followUpId} not found`;
+                        }
+                    } else {
+                        // It's still text format - preserve for backwards compatibility
+                        question._followUpCache[`text_${Date.now()}_${Math.random()}`] = followUpId;
+                    }
+                }
+
+                console.log(`✅ Generated follow-up cache for question ${question.id}: ${Object.keys(question._followUpCache).length} items`);
+            } catch (cacheError) {
+                console.warn(`⚠️ Failed to generate follow-up cache for question ${question.id}:`, cacheError.message);
+                // Continue without cache - graceful degradation
+            }
+        }
+
         res.json({
             success: true,
             data: question
@@ -301,13 +330,87 @@ router.post('/questions', authenticateToken, async (req, res) => {
     }
 });
 
+// POST /api/v2/questions/progress - Track question progress (optional authentication)
+router.post('/questions/progress', async (req, res) => {
+    try {
+        const { question_id, status, time_spent, studied_at } = req.body;
+
+        if (!question_id) {
+            return res.status(400).json({
+                success: false,
+                error: 'Question ID is required'
+            });
+        }
+
+        // Check if user is authenticated for personalized tracking
+        const authHeader = req.headers['authorization'];
+        const token = authHeader && authHeader.split(' ')[1];
+        let userId = null;
+
+        if (token) {
+            try {
+                const decoded = jwt.verify(token, process.env.JWT_SECRET || 'development-secret');
+                userId = decoded.userId;
+            } catch (error) {
+                console.warn('Invalid token for question progress tracking:', error.message);
+                // Continue without user ID for anonymous tracking
+            }
+        }
+
+        const progressData = {
+            question_id: parseInt(question_id),
+            user_id: userId, // Can be null for anonymous users
+            status: status || 'completed',
+            time_spent: parseInt(time_spent) || 5,
+            studied_at: studied_at || new Date().toISOString(),
+            created_at: new Date().toISOString()
+        };
+
+        // Create question progress entry
+        const progressEntry = await db.questionProgress.create(progressData);
+
+        console.log(`📊 Question progress tracked: Q${question_id}, Status: ${status}, User: ${userId || 'anonymous'}`);
+
+        res.status(201).json({
+            success: true,
+            data: progressEntry,
+            message: 'Question progress tracked successfully'
+        });
+    } catch (error) {
+        console.error('Track question progress error:', error);
+        res.status(500).json({
+            success: false,
+            error: 'Failed to track question progress'
+        });
+    }
+});
+
 // ===================================
 // USER PROGRESS API
 // ===================================
 
-// GET /api/v2/progress - Get all user progress (authenticated)
-router.get('/progress', authenticateToken, async (req, res) => {
+// GET /api/v2/progress - Get all user progress (optional authentication)
+router.get('/progress', async (req, res) => {
     try {
+        // Check if user is authenticated
+        const authHeader = req.headers['authorization'];
+        const token = authHeader && authHeader.split(' ')[1];
+        
+        if (!token) {
+            // Return empty progress for anonymous users
+            return res.json({
+                success: true,
+                data: {
+                    days: [],
+                    completedDays: 0,
+                    totalDays: 0,
+                    completionPercentage: 0
+                },
+                message: 'No authentication - returning empty progress'
+            });
+        }
+
+        // If authenticated, get actual progress
         const trackId = req.query.track_id ? parseInt(req.query.track_id) : null;
         const progress = await db.userProgress.getUserProgress(req.user.id, trackId);
 
@@ -362,9 +465,32 @@ router.post('/progress', authenticateToken, async (req, res) => {
     }
 });
 
-// GET /api/v2/stats - Get user statistics (authenticated)
-router.get('/stats', authenticateToken, async (req, res) => {
+// GET /api/v2/stats - Get user statistics (optional authentication)
+router.get('/stats', async (req, res) => {
     try {
+        // Check if user is authenticated
+        const authHeader = req.headers['authorization'];
+        const token = authHeader && authHeader.split(' ')[1];
+        
+        if (!token) {
+            // Return default stats for anonymous users
+            return res.json({
+                success: true,
+                data: {
+                    totalDaysCompleted: 0,
+                    currentStreak: 0,
+                    longestStreak: 0,
+                    totalStudyTime: 0,
+                    questionsStudied: 0,
+                    achievements: 0,
+                    lastActiveDate: new Date().toISOString(),
+                    joinDate: new Date().toISOString()
+                },
+                message: 'No authentication - returning default stats'
+            });
+        }
+
+        // If authenticated, get actual stats
         const stats = await db.userProgress.getUserStats(req.user.id);
 
         res.json({

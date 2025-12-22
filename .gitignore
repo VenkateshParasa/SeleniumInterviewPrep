@@ -60,3 +60,7 @@ Thumbs.db
 .pnpm-store/
 .yarn/
 .npm/
+
+# Files marked for removal (temporary folder)
+practice-ui/to_remove/
+to_remove/

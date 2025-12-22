@@ -38,6 +38,12 @@ class QuestionManager {
             });
         }
 
+        if (document.getElementById('experienceFilter')) {
+            document.getElementById('experienceFilter').addEventListener('change', () => {
+                this.filterAndRenderQuestions();
+            });
+        }
+
         // Search functionality
         if (document.getElementById('questionSearch')) {
             const searchInput = document.getElementById('questionSearch');
@@ -125,12 +131,14 @@ class QuestionManager {
             // Get current filter values
             const category = document.getElementById('categoryFilter')?.value || 'all';
             const difficulty = document.getElementById('difficultyFilter')?.value || 'all';
+            const experience = document.getElementById('experienceFilter')?.value || 'all';
             const searchTerm = document.getElementById('questionSearch')?.value?.trim() || '';
 
             // Build filters object
             const filters = {};
             if (category !== 'all') filters.category = category;
             if (difficulty !== 'all') filters.difficulty = difficulty;
+            if (experience !== 'all') filters.experience = experience;
             if (searchTerm) filters.search = searchTerm;
 
             // Load questions using DataManager

@@ -3,9 +3,8 @@
 // Created: December 15, 2025
 
 class ContentManagementSystem {
-    constructor(apiClient, analyticsManager) {
+    constructor(apiClient) {
         this.apiClient = apiClient;
-        this.analyticsManager = analyticsManager;
         this.currentUser = null;
         this.permissions = new Set();
         this.contentTypes = {
@@ -494,14 +493,6 @@ class ContentManagementSystem {
                 console.log(`✅ Question created with status: ${status}`);
             }
 
-            // Track analytics
-            if (this.analyticsManager) {
-                this.analyticsManager.trackEvent('cms_question_saved', {
-                    questionId: formData.id,
-                    status,
-                    action: questionId ? 'update' : 'create'
-                });
-            }
 
             // Close modal and refresh
             document.querySelector('#cmsModal').style.display = 'none';
@@ -728,14 +719,7 @@ class ContentManagementSystem {
 
             this.showNotification('Questions exported successfully', 'success');
 
-            // Track analytics
-            if (this.analyticsManager) {
-                this.analyticsManager.trackEvent('cms_bulk_export', {
-                    totalQuestions: questions.length,
-                    format: 'json'
-                });
-            }
-
+            
         } catch (error) {
             console.error('❌ Failed to export questions:', error);
             this.showNotification('Failed to export questions', 'error');

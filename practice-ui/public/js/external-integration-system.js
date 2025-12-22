@@ -4,9 +4,8 @@
 // Created: December 15, 2025
 
 class ExternalIntegrationSystem {
-    constructor(apiClient, analyticsManager) {
+    constructor(apiClient) {
         this.apiClient = apiClient;
-        this.analyticsManager = analyticsManager;
         this.integrations = new Map();
         this.authTokens = new Map();
         this.syncStatus = new Map();
@@ -417,15 +416,6 @@ class ExternalIntegrationSystem {
 
             // Save state
             await this.saveIntegrationsState();
-
-            // Track analytics
-            if (this.analyticsManager) {
-                this.analyticsManager.trackEvent('platform_sync_completed', {
-                    platform: platformId,
-                    itemsProcessed: syncResult.itemsProcessed,
-                    success: true
-                });
-            }
 
             this.showNotification(`${platform.getName()} synced successfully! (${syncResult.itemsProcessed} items)`, 'success');
 

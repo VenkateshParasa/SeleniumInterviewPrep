@@ -4,9 +4,8 @@
 // Created: December 15, 2025
 
 class SocialFeaturesSystem {
-    constructor(apiClient, analyticsManager) {
+    constructor(apiClient) {
         this.apiClient = apiClient;
-        this.analyticsManager = analyticsManager;
         this.currentUser = null;
         this.userGroups = [];
         this.socialConnections = new Map();
@@ -531,15 +530,6 @@ Just hit ${progressData.questionsStudied} questions studied! 🎯 Loving this le
             // Execute sharing based on targets
             for (const target of shareTargets) {
                 await this.shareToTarget(target, shareData);
-            }
-
-            // Track analytics
-            if (this.analyticsManager) {
-                this.analyticsManager.trackEvent('social_progress_shared', {
-                    targets: shareTargets,
-                    privacy: sharePrivacy,
-                    messageLength: shareMessage.length
-                });
             }
 
             this.showNotification('Progress shared successfully! 🎉', 'success');

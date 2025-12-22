@@ -1,0 +1,672 @@
+
+{
+  "version": "3.0.0",
+  "lastUpdated": "2024-12-19",
+  "totalQuestions": 63,
+  "description": "Comprehensive Interview questions database for QA Automation Engineers - Enhanced with TestNG and Framework Design",
+  "note": "Complete question bank covering Java, Selenium, TestNG Framework, and Test Framework Design for all experience levels.",
+  "categories": [
+    {
+      "id": "java",
+      "name": "Java Programming",
+      "icon": "☕",
+      "totalQuestions": 5,
+      "questions": [
+        {
+          "id": "java-001",
+          "question": "Explain the difference between == and .equals() in Java",
+          "difficulty": "Medium",
+          "experienceLevel": ["0-2", "3-5"],
+          "answer": "== compares references (memory addresses) while .equals() compares object content. For primitives, == compares values. String literals with same value may share memory (interning), but new String() creates new objects.",
+          "companies": ["All Java applications", "Banking", "E-commerce"],
+          "topic": "Java Fundamentals",
+          "followUp": ["What is String interning?", "When should you override equals()?"]
+        },
+        {
+          "id": "java-002",
+          "question": "What is the difference between String, StringBuilder, and StringBuffer?",
+          "difficulty": "Medium",
+          "experienceLevel": ["0-2", "3-5"],
+          "answer": "String is immutable - creates new objects on modification. StringBuilder is mutable and not thread-safe, best for single-threaded string building. StringBuffer is mutable and thread-safe but slower due to synchronization.",
+          "companies": ["Performance-critical applications", "Banking", "Real-time systems"],
+          "topic": "Java Fundamentals",
+          "followUp": ["When would you use each type?", "What is string immutability?"]
+        },
+        {
+          "id": "java-003",
+          "question": "Explain Java exception handling and the difference between checked and unchecked exceptions",
+          "difficulty": "Medium",
+          "experienceLevel": ["0-2", "3-5"],
+          "answer": "Exception handling manages runtime errors using try-catch-finally blocks. Checked exceptions (compile-time) must be caught or declared (IOException, SQLException). Unchecked exceptions (runtime) don't require explicit handling (NullPointerException, ArrayIndexOutOfBoundsException).",
+          "companies": ["All Java applications", "Banking", "Healthcare", "E-commerce"],
+          "topic": "Exception Handling",
+          "followUp": ["What is try-with-resources?", "When should you create custom exceptions?"]
+        },
+        {
+          "id": "java-004",
+          "question": "What are Java Collections and explain the difference between List, Set, and Map",
+          "difficulty": "Medium",
+          "experienceLevel": ["3-5", "6-8"],
+          "answer": "Collections framework provides data structures. List allows duplicates and maintains order (ArrayList, LinkedList). Set doesn't allow duplicates (HashSet, TreeSet). Map stores key-value pairs (HashMap, TreeMap). Choose based on use case: ArrayList for random access, LinkedList for frequent insertions, HashMap for key lookups.",
+          "companies": ["All Java applications", "Data processing", "Enterprise applications"],
+          "topic": "Collections",
+          "followUp": ["What's the difference between ArrayList and LinkedList?", "When to use HashMap vs TreeMap?"]
+        },
+        {
+          "id": "java-005",
+          "question": "Explain Java multithreading and synchronization",
+          "difficulty": "Hard",
+          "experienceLevel": ["3-5", "6-8"],
+          "answer": "Multithreading allows concurrent execution. Create threads by extending Thread or implementing Runnable. Synchronization prevents race conditions using synchronized keyword, locks, or concurrent collections. Thread states: NEW, RUNNABLE, BLOCKED, WAITING, TIMED_WAITING, TERMINATED.",
+          "companies": ["High-performance applications", "Real-time systems", "Banking"],
+          "topic": "Multithreading",
+          "followUp": ["What is deadlock and how to prevent it?", "Explain volatile keyword"]
+        }
+      ]
+    },
+    {
+      "id": "selenium",
+      "name": "Selenium WebDriver",
+      "icon": "🌐",
+      "totalQuestions": 3,
+      "questions": [
+        {
+          "id": "selenium-001",
+          "question": "What is Selenium WebDriver and how does it work?",
+          "difficulty": "Easy",
+          "experienceLevel": ["0-2", "3-5"],
+          "answer": "Selenium WebDriver is a web automation tool that controls browsers programmatically. It sends HTTP requests to browser drivers (ChromeDriver, GeckoDriver) which translate commands to browser-specific actions. Supports multiple languages and browsers.",
+          "companies": ["QA teams", "Automation companies", "E-commerce"],
+          "topic": "Selenium Basics",
+          "followUp": ["What are the different Selenium components?", "How do you handle different browsers?"]
+        },
+        {
+          "id": "selenium-002",
+          "question": "Explain different types of waits in Selenium",
+          "difficulty": "Medium",
+          "experienceLevel": ["0-2", "3-5"],
+          "answer": "Implicit Wait: Global timeout for element location. Explicit Wait: Wait for specific conditions using WebDriverWait and ExpectedConditions. Fluent Wait: Configurable polling interval and exceptions to ignore. Avoid Thread.sleep() as it's not dynamic.",
+          "companies": ["Automation testing", "Web applications", "E-commerce"],
+          "topic": "Selenium Waits",
+          "followUp": ["When would you use each type of wait?", "How do you handle dynamic elements?"]
+        },
+        {
+          "id": "selenium-003",
+          "question": "How do you handle dynamic elements and synchronization issues?",
+          "difficulty": "Medium",
+          "experienceLevel": ["3-5", "6-8"],
+          "answer": "Use explicit waits with expected conditions, implement custom wait conditions, use fluent waits for complex scenarios. Handle AJAX with WebDriverWait. For SPAs, wait for specific elements or JavaScript completion. Implement retry mechanisms and proper exception handling.",
+          "companies": ["Modern web applications", "SPA testing", "Complex UI testing"],
+          "topic": "Advanced Selenium",
+          "followUp": ["How do you test single-page applications?", "What are Page Object Models?"]
+        }
+      ]
+    },
+    {
+      "id": "testng",
+      "name": "TestNG Framework",
+      "icon": "🧪",
+      "totalQuestions": 30,
+      "questions": [
+        {
+          "id": "testng-001",
+          "question": "What is TestNG and what are its key advantages over JUnit?",
+          "difficulty": "Easy",
+          "experienceLevel": ["0-2", "3-5"],
+          "answer": "TestNG (Test Next Generation) is a testing framework inspired by JUnit and NUnit, designed to cover all categories of tests: unit, functional, end-to-end, integration, etc. Key advantages: 1) Annotations for better test configuration (@BeforeSuite, @BeforeTest, @BeforeClass, @BeforeMethod), 2) Parallel execution support, 3) Data-driven testing with @DataProvider, 4) Test dependencies with dependsOnMethods, 5) Grouping tests, 6) Built-in reporting, 7) Flexible test configuration with XML files, 8) Support for parameters and multiple test instances.",
+          "companies": ["All automation companies", "TCS", "Infosys", "Wipro", "Accenture"],
+          "topic": "TestNG Basics",
+          "followUp": ["What are TestNG annotations hierarchy?", "How does TestNG XML configuration work?"]
+        },
+        {
+          "id": "testng-002",
+          "question": "Explain the hierarchy and execution order of TestNG annotations",
+          "difficulty": "Medium",
+          "experienceLevel": ["0-2", "3-5"],
+          "answer": "TestNG annotations execute in this order: @BeforeSuite → @BeforeTest → @BeforeClass → @BeforeMethod → @Test → @AfterMethod → @AfterClass → @AfterTest → @AfterSuite. Suite level runs once per suite, Test level runs once per <test> tag, Class level runs once per test class, Method level runs before/after each test method. This hierarchy ensures proper setup and teardown at different levels of test execution.",
+          "companies": ["Automation frameworks", "Banking", "E-commerce", "Healthcare"],
+          "topic": "TestNG Annotations",
+          "followUp": ["What happens if multiple classes have @BeforeClass?", "How to handle exceptions in setup methods?"]
+        },
+        {
+          "id": "testng-003",
+          "question": "How do you implement data-driven testing using @DataProvider in TestNG?",
+          "difficulty": "Medium",
+          "experienceLevel": ["3-5", "6-8"],
+          "answer": "@DataProvider supplies data to test methods. Example: @DataProvider(name=\"loginData\") public Object[][] getData() { return new Object[][]{{\"user1\",\"pass1\"},{\"user2\",\"pass2\"}}; } @Test(dataProvider=\"loginData\") public void testLogin(String user, String pass) { //test logic }. DataProvider can read from Excel, CSV, database, or return arrays/iterators. Supports parallel execution with parallel=true parameter. Can be in same class or external class using dataProviderClass attribute.",
+          "companies": ["Data-heavy applications", "Banking", "Insurance", "E-commerce"],
+          "topic": "Data-Driven Testing",
+          "followUp": ["How to read data from Excel files?", "How to handle large datasets efficiently?"]
+        },
+        {
+          "id": "testng-004",
+          "question": "How do you configure parallel execution in TestNG and what are the different levels?",
+          "difficulty": "Medium",
+          "experienceLevel": ["3-5", "6-8"],
+          "answer": "TestNG supports parallel execution at multiple levels: 1) parallel=\"tests\" - different <test> tags run in parallel, 2) parallel=\"classes\" - test classes run in parallel, 3) parallel=\"methods\" - test methods run in parallel, 4) parallel=\"instances\" - instances of same test class run in parallel. Configure in testng.xml: <suite parallel=\"methods\" thread-count=\"5\">. Use ThreadLocal for WebDriver to ensure thread safety. Set data-provider-thread-count for DataProvider parallelization.",
+          "companies": ["Performance testing", "Large test suites", "CI/CD pipelines"],
+          "topic": "Parallel Execution",
+          "followUp": ["How to handle shared resources in parallel execution?", "What is ThreadLocal and why is it important?"]
+        },
+        {
+          "id": "testng-005",
+          "question": "Explain test dependencies in TestNG using dependsOnMethods and dependsOnGroups",
+          "difficulty": "Medium",
+          "experienceLevel": ["3-5", "6-8"],
+          "answer": "Test dependencies ensure tests run in specific order. dependsOnMethods: @Test(dependsOnMethods=\"loginTest\") - current test runs only if loginTest passes. dependsOnGroups: @Test(dependsOnGroups=\"smoke\") - runs after all tests in 'smoke' group complete. If dependency fails, dependent tests are skipped. Use alwaysRun=true to run dependent tests even if dependencies fail. Hard dependencies (default) vs soft dependencies with ignoreMissingDependencies=true.",
+          "companies": ["Integration testing", "End-to-end testing", "Workflow testing"],
+          "topic": "Test Dependencies",
+          "followUp": ["What happens when a dependency test fails?", "How to handle circular dependencies?"]
+        },
+        {
+          "id": "testng-006",
+          "question": "How do you group tests in TestNG and run specific groups?",
+          "difficulty": "Easy",
+          "experienceLevel": ["0-2", "3-5"],
+          "answer": "Group tests using @Test(groups={\"smoke\", \"regression\"}). Run specific groups in testng.xml: <groups><run><include name=\"smoke\"/></run></groups>. Groups can be nested and inherited. Use @BeforeGroups/@AfterGroups for group-level setup/teardown. Command line: mvn test -Dgroups=\"smoke,regression\". Groups help organize tests by functionality, priority, or execution environment (smoke, regression, sanity, etc.).",
+          "companies": ["Test organization", "CI/CD", "Release testing"],
+          "topic": "Test Grouping",
+          "followUp": ["How to exclude certain groups?", "Can a test belong to multiple groups?"]
+        },
+        {
+          "id": "testng-007",
+          "question": "What are TestNG listeners and how do you implement custom listeners?",
+          "difficulty": "Hard",
+          "experienceLevel": ["6-8", "9-12"],
+          "answer": "TestNG listeners respond to events during test execution. Types: ITestListener (test events), ISuiteListener (suite events), IReporter (custom reporting), IAnnotationTransformer (modify annotations at runtime). Implement: public class CustomListener implements ITestListener { public void onTestStart(ITestResult result) { //logic } }. Register via @Listeners({CustomListener.class}) or testng.xml <listeners><listener class-name=\"CustomListener\"/></listeners>. Use for screenshots on failure, custom reporting, test retry logic.",
+          "companies": ["Advanced frameworks", "Custom reporting", "Test monitoring"],
+          "topic": "TestNG Listeners",
+          "followUp": ["How to take screenshots on test failure?", "What is IRetryAnalyzer?"]
+        },
+        {
+          "id": "testng-008",
+          "question": "How do you implement test retry mechanism using IRetryAnalyzer in TestNG?",
+          "difficulty": "Hard",
+          "experienceLevel": ["6-8", "9-12"],
+          "answer": "IRetryAnalyzer retries failed tests. Implement: public class RetryAnalyzer implements IRetryAnalyzer { private int count = 0; private int maxTry = 2; public boolean retry(ITestResult result) { if(count < maxTry) { count++; return true; } return false; } }. Use: @Test(retryAnalyzer = RetryAnalyzer.class). For all tests, use IAnnotationTransformer to set retry analyzer globally. Helps handle flaky tests but should be used judiciously.",
+          "companies": ["Flaky test handling", "Stable automation", "Production frameworks"],
+          "topic": "Test Retry",
+          "followUp": ["When should you use retry mechanism?", "How to implement global retry for all tests?"]
+        },
+        {
+          "id": "testng-009",
+          "question": "Explain TestNG XML configuration and its key elements",
+          "difficulty": "Medium",
+          "experienceLevel": ["3-5", "6-8"],
+          "answer": "TestNG XML configures test execution. Key elements: <suite> (top level, defines parallel execution), <test> (logical grouping), <classes>/<methods> (specify what to run), <groups> (include/exclude groups), <parameter> (pass parameters). Example: <suite name=\"TestSuite\" parallel=\"methods\" thread-count=\"3\"><test name=\"SmokeTest\"><classes><class name=\"LoginTest\"/></classes></test></suite>. Supports multiple test tags, package inclusion, method selection, and parameter passing.",
+          "companies": ["Test configuration", "CI/CD", "Multiple environments"],
+          "topic": "TestNG XML",
+          "followUp": ["How to pass parameters from XML to tests?", "How to run different XML files for different environments?"]
+        },
+        {
+          "id": "testng-010",
+          "question": "How do you pass parameters to TestNG tests using @Parameters annotation?",
+          "difficulty": "Medium",
+          "experienceLevel": ["3-5", "6-8"],
+          "answer": "Use @Parameters to pass values from testng.xml to test methods. XML: <parameter name=\"browser\" value=\"chrome\"/>. Test: @Parameters({\"browser\"}) @Test public void testLogin(String browser) { //use browser }. Parameters can be defined at suite, test, or class level. For optional parameters, provide default values. Combine with @DataProvider for complex data scenarios. Useful for environment-specific configurations, browser selection, URLs, etc.",
+          "companies": ["Multi-environment testing", "Cross-browser testing", "Configuration management"],
+          "topic": "Test Parameters",
+          "followUp": ["How to handle optional parameters?", "Can parameters be passed to @DataProvider methods?"]
+        },
+        {
+          "id": "testng-011",
+          "question": "What are soft assertions in TestNG and when should you use them?",
+          "difficulty": "Medium",
+          "experienceLevel": ["3-5", "6-8"],
+          "answer": "Soft assertions don't stop test execution on failure, collecting all failures and reporting at end. Use SoftAssert class: SoftAssert softAssert = new SoftAssert(); softAssert.assertEquals(actual, expected, \"message\"); softAssert.assertAll(); // Must call to report failures. Unlike hard assertions (Assert.assertEquals), soft assertions continue execution. Useful for validating multiple elements on a page, form validation, or when you want to see all failures in one run.",
+          "companies": ["UI testing", "Form validation", "Comprehensive testing"],
+          "topic": "Assertions",
+          "followUp": ["What happens if you forget to call assertAll()?", "How to get all failure messages?"]
+        },
+        {
+          "id": "testng-012",
+          "question": "How do you handle expected exceptions in TestNG tests?",
+          "difficulty": "Medium",
+          "experienceLevel": ["3-5", "6-8"],
+          "answer": "Handle expected exceptions using @Test(expectedExceptions = {ExceptionClass.class}). For specific exception messages: @Test(expectedExceptions = IllegalArgumentException.class, expectedExceptionsMessageRegExp = \"Invalid.*\"). For multiple exceptions: @Test(expectedExceptions = {IOException.class, SQLException.class}). Test passes only if specified exception is thrown. Use for negative testing scenarios like invalid inputs, unauthorized access, etc.",
+          "companies": ["Negative testing", "Error handling", "Robust applications"],
+          "topic": "Exception Handling",
+          "followUp": ["How to test exception messages?", "What if no exception is thrown when expected?"]
+        },
+        {
+          "id": "testng-013",
+          "question": "Explain the difference between @Test attributes: priority, enabled, and invocationCount",
+          "difficulty": "Easy",
+          "experienceLevel": ["0-2", "3-5"],
+          "answer": "priority: Controls execution order (lower numbers run first). @Test(priority = 1). enabled: Controls whether test runs. @Test(enabled = false) skips test. invocationCount: Number of times test runs. @Test(invocationCount = 3) runs test 3 times. Additional attributes: timeOut for maximum execution time, threadPoolSize for parallel invocations, description for test documentation. These attributes provide fine-grained control over test execution behavior.",
+          "companies": ["Test control", "Performance testing", "Test organization"],
+          "topic": "Test Attributes",
+          "followUp": ["How does priority work with dependencies?", "What is threadPoolSize used for?"]
+        },
+        {
+          "id": "testng-014",
+          "question": "How do you generate and customize TestNG reports?",
+          "difficulty": "Medium",
+          "experienceLevel": ["3-5", "6-8"],
+          "answer": "TestNG generates default HTML reports in test-output folder. Customize using IReporter interface: public class CustomReporter implements IReporter { public void generateReport(List<XmlSuite> xmlSuites, List<ISuite> suites, String outputDirectory) { //custom logic } }. Register in testng.xml or @Listeners. For advanced reporting, integrate ExtentReports, Allure, or ReportNG. Reports include test results, execution time, failure details, and can be enhanced with screenshots and logs.",
+          "companies": ["Reporting", "Test documentation", "Stakeholder communication"],
+          "topic": "Reporting",
+          "followUp": ["How to add screenshots to reports?", "How to integrate with ExtentReports?"]
+        },
+        {
+          "id": "testng-015",
+          "question": "What is TestNG Factory and when would you use it?",
+          "difficulty": "Hard",
+          "experienceLevel": ["6-8", "9-12"],
+          "answer": "@Factory creates multiple instances of test class with different parameters. Example: @Factory public Object[] createInstances() { return new Object[] { new TestClass(\"data1\"), new TestClass(\"data2\") }; }. Each instance runs as separate test. Useful for running same test logic with different datasets, browsers, or environments. Different from @DataProvider as Factory creates class instances while DataProvider provides method parameters. Factory enables true parallel test class execution.",
+          "companies": ["Multi-browser testing", "Data-driven frameworks", "Scalable testing"],
+          "topic": "TestNG Factory",
+          "followUp": ["How does Factory differ from DataProvider?", "Can Factory and DataProvider be used together?"]
+        },
+        {
+          "id": "testng-016",
+          "question": "How do you implement TestNG with Selenium WebDriver for cross-browser testing?",
+          "difficulty": "Medium",
+          "experienceLevel": ["3-5", "6-8"],
+          "answer": "Use @Parameters to pass browser type from testng.xml. Create WebDriver factory: public WebDriver getDriver(String browser) { switch(browser) { case \"chrome\": return new ChromeDriver(); case \"firefox\": return new FirefoxDriver(); } }. Use ThreadLocal<WebDriver> for parallel execution: private ThreadLocal<WebDriver> driver = new ThreadLocal<>();. Configure testng.xml with different <test> tags for each browser. Implement @BeforeMethod for driver initialization and @AfterMethod for cleanup.",
+          "companies": ["Cross-browser testing", "Selenium automation", "Web applications"],
+          "topic": "Selenium Integration",
+          "followUp": ["How to handle browser-specific capabilities?", "How to run tests on Selenium Grid?"]
+        },
+        {
+          "id": "testng-017",
+          "question": "Explain TestNG's @BeforeGroups and @AfterGroups annotations with examples",
+          "difficulty": "Medium",
+          "experienceLevel": ["3-5", "6-8"],
+          "answer": "@BeforeGroups runs before any test method in specified groups. @AfterGroups runs after all test methods in groups complete. Example: @BeforeGroups(\"database\") public void setupDB() { //DB setup }. @AfterGroups(\"database\") public void cleanupDB() { //DB cleanup }. These methods run once per group, not per test. Useful for expensive setup/teardown operations like database connections, server startup, or environment preparation that's shared across multiple tests in a group.",
+          "companies": ["Database testing", "Integration testing", "Resource management"],
+          "topic": "Group Annotations",
+          "followUp": ["What if a test belongs to multiple groups?", "How to handle group setup failures?"]
+        },
+        {
+          "id": "testng-018",
+          "question": "How do you handle test timeouts in TestNG and why are they important?",
+          "difficulty": "Medium",
+          "experienceLevel": ["3-5", "6-8"],
+          "answer": "Set timeouts using @Test(timeOut = 5000) for 5-second limit. Test fails if execution exceeds timeout. Important for: 1) Preventing infinite loops, 2) Catching performance issues, 3) Ensuring CI/CD pipeline efficiency, 4) Identifying slow tests. Can be set at suite level in testng.xml: <suite time-out=\"10000\">. For dynamic timeouts, use TestNG listeners to modify timeout values. Combine with proper wait strategies in Selenium to avoid false failures.",
+          "companies": ["Performance testing", "CI/CD", "Stable automation"],
+          "topic": "Test Timeouts",
+          "followUp": ["How to set different timeouts for different test types?", "What happens when a test times out?"]
+        },
+        {
+          "id": "testng-019",
+          "question": "What is the difference between TestNG's @Test and JUnit's @Test annotation?",
+          "difficulty": "Easy",
+          "experienceLevel": ["0-2", "3-5"],
+          "answer": "TestNG @Test is more feature-rich: supports groups, dependencies, priority, timeOut, invocationCount, expectedExceptions, dataProvider, enabled attributes. JUnit @Test is simpler with fewer attributes. TestNG allows method-level configuration while JUnit relies more on separate setup methods. TestNG has better parallel execution support and more flexible test organization. TestNG @Test can be applied to classes (all public methods become tests) while JUnit requires method-level annotation.",
+          "companies": ["Framework comparison", "Migration projects", "Tool selection"],
+          "topic": "Framework Comparison",
+          "followUp": ["When would you choose TestNG over JUnit?", "How to migrate from JUnit to TestNG?"]
+        },
+        {
+          "id": "testng-020",
+          "question": "How do you implement custom TestNG annotations and transformers?",
+          "difficulty": "Hard",
+          "experienceLevel": ["6-8", "9-12"],
+          "answer": "Create custom annotations: @Retention(RetentionPolicy.RUNTIME) @Target(ElementType.METHOD) public @interface CustomTest { String author() default \"\"; }. Implement IAnnotationTransformer: public class CustomTransformer implements IAnnotationTransformer { public void transform(ITestAnnotation annotation, Class testClass, Constructor testConstructor, Method testMethod) { annotation.setRetryAnalyzer(RetryAnalyzer.class); } }. Register transformer in testng.xml or programmatically. Use for adding metadata, modifying test behavior, or implementing custom test attributes.",
+          "companies": ["Advanced frameworks", "Custom test attributes", "Framework development"],
+          "topic": "Custom Annotations",
+          "followUp": ["How to access custom annotation values in listeners?", "What other transformers are available?"]
+        },
+        {
+          "id": "testng-021",
+          "question": "Explain TestNG's support for multi-threaded testing and thread safety considerations",
+          "difficulty": "Hard",
+          "experienceLevel": ["6-8", "9-12"],
+          "answer": "TestNG supports multi-threading via parallel attribute and thread-count. Thread safety considerations: 1) Use ThreadLocal for WebDriver instances, 2) Avoid static variables for test data, 3) Synchronize access to shared resources, 4) Use thread-safe collections, 5) Be careful with @BeforeClass/@AfterClass in parallel execution. Example: ThreadLocal<WebDriver> driver = new ThreadLocal<>(); public WebDriver getDriver() { return driver.get(); } public void setDriver(WebDriver driver) { this.driver.set(driver); }",
+          "companies": ["High-performance testing", "Parallel execution", "Scalable frameworks"],
+          "topic": "Thread Safety",
+          "followUp": ["How to debug thread safety issues?", "What are common thread safety pitfalls?"]
+        },
+        {
+          "id": "testng-022",
+          "question": "How do you integrate TestNG with Maven and configure different test suites?",
+          "difficulty": "Medium",
+          "experienceLevel": ["3-5", "6-8"],
+          "answer": "Add TestNG dependency in pom.xml. Configure maven-surefire-plugin: <plugin><groupId>org.apache.maven.plugins</groupId><artifactId>maven-surefire-plugin</artifactId><configuration><suiteXmlFiles><suiteXmlFile>testng.xml</suiteXmlFile></suiteXmlFiles></configuration></plugin>. Create multiple XML files for different suites (smoke.xml, regression.xml). Run specific suite: mvn test -DsuiteXmlFile=smoke.xml. Use Maven profiles for environment-specific configurations.",
+          "companies": ["Build automation", "CI/CD", "Maven projects"],
+          "topic": "Maven Integration",
+          "followUp": ["How to run tests without XML file?", "How to pass Maven properties to TestNG?"]
+        },
+        {
+          "id": "testng-023",
+          "question": "What are TestNG's data provider features for complex data scenarios?",
+          "difficulty": "Medium",
+          "experienceLevel": ["3-5", "6-8"],
+          "answer": "DataProvider advanced features: 1) Return Iterator<Object[]> for large datasets to save memory, 2) Use parallel=true for parallel data execution, 3) Access test method info: @DataProvider public Object[][] getData(Method method) { //method-specific data }, 4) External data providers in different classes using dataProviderClass, 5) Lazy loading with Iterator, 6) Method-specific data based on method name or annotations. Supports reading from Excel, databases, JSON, XML files.",
+          "companies": ["Data-driven testing", "Large datasets", "Performance optimization"],
+          "topic": "Advanced DataProvider",
+          "followUp": ["How to handle memory issues with large datasets?", "How to create method-specific data providers?"]
+        },
+        {
+          "id": "testng-024",
+          "question": "How do you implement TestNG with Page Object Model and dependency injection?",
+          "difficulty": "Hard",
+          "experienceLevel": ["6-8", "9-12"],
+          "answer": "Integrate TestNG with POM using dependency injection frameworks like Google Guice or Spring. Example with Guice: @Guice(modules = TestModule.class) public class BaseTest { @Inject LoginPage loginPage; }. Create module: public class TestModule extends AbstractModule { protected void configure() { bind(WebDriver.class).toProvider(WebDriverProvider.class); } }. Use @BeforeMethod to initialize pages, @AfterMethod for cleanup. This approach provides better separation of concerns and easier test maintenance.",
+          "companies": ["Enterprise frameworks", "Maintainable automation", "Advanced architecture"],
+          "topic": "Dependency Injection",
+          "followUp": ["What are benefits of dependency injection in testing?", "How to handle different page implementations?"]
+        },
+        {
+          "id": "testng-025",
+          "question": "Explain TestNG's support for test configuration and environment management",
+          "difficulty": "Medium",
+          "experienceLevel": ["3-5", "6-8"],
+          "answer": "TestNG supports configuration through: 1) testng.xml parameters, 2) System properties, 3) Property files, 4) Environment variables. Create environment-specific XML files (dev-testng.xml, qa-testng.xml). Use @Parameters for environment URLs, credentials. Implement configuration classes: public class Config { public static String getURL() { return System.getProperty(\"app.url\", \"default-url\"); } }. Use Maven profiles to switch configurations: mvn test -Pqa.",
+          "companies": ["Multi-environment testing", "Configuration management", "DevOps"],
+          "topic": "Configuration Management",
+          "followUp": ["How to handle sensitive data like passwords?", "How to validate configuration before tests?"]
+        },
+        {
+          "id": "testng-026",
+          "question": "How do you handle test data management and cleanup in TestNG?",
+          "difficulty": "Medium",
+          "experienceLevel": ["3-5", "6-8"],
+          "answer": "Test data management strategies: 1) Use @BeforeMethod/@AfterMethod for test-level data setup/cleanup, 2) @BeforeClass/@AfterClass for class-level shared data, 3) @BeforeSuite/@AfterSuite for global test data, 4) Implement data builders/factories for complex objects, 5) Use database transactions with rollback for data isolation, 6) Create utility classes for data generation and cleanup. Always ensure data independence between tests to avoid flaky tests.",
+          "companies": ["Database testing", "Data integrity", "Reliable automation"],
+          "topic": "Data Management",
+          "followUp": ["How to ensure test data independence?", "How to handle shared test data conflicts?"]
+        },
+        {
+          "id": "testng-027",
+          "question": "What are TestNG's debugging and troubleshooting capabilities?",
+          "difficulty": "Medium",
+          "experienceLevel": ["3-5", "6-8"],
+          "answer": "TestNG debugging features: 1) Verbose logging with -verbose flag, 2) Custom listeners for detailed execution tracking, 3) Test result objects (ITestResult) for failure analysis, 4) Suite and test context for runtime information, 5) JVM debugging support, 6) Integration with IDEs for breakpoint debugging. Use System.out.println() or logging frameworks for custom debug output. TestNG reports provide execution timeline and failure details.",
+          "companies": ["Test debugging", "Framework maintenance", "Issue resolution"],
+          "topic": "Debugging",
+          "followUp": ["How to debug parallel execution issues?", "How to capture execution context for failures?"]
+        },
+        {
+          "id": "testng-028",
+          "question": "How do you implement TestNG with continuous integration pipelines?",
+          "difficulty": "Medium",
+          "experienceLevel": ["3-5", "6-8"],
+          "answer": "CI integration steps: 1) Configure Maven/Gradle with TestNG plugin, 2) Create different test suites for CI stages (smoke, regression), 3) Use TestNG XML for environment-specific configurations, 4) Generate XML reports for CI tools, 5) Implement retry mechanisms for flaky tests, 6) Use parallel execution for faster feedback, 7) Configure email notifications via TestNG listeners. Example Jenkins pipeline: mvn clean test -DsuiteXmlFile=smoke.xml, publish TestNG results, send notifications.",
+          "companies": ["DevOps", "CI/CD", "Automated pipelines"],
+          "topic": "CI Integration",
+          "followUp": ["How to handle test failures in CI?", "How to optimize test execution time in CI?"]
+        },
+        {
+          "id": "testng-029",
+          "question": "Explain TestNG's advanced reporting and integration with third-party tools",
+          "difficulty": "Hard",
+          "experienceLevel": ["6-8", "9-12"],
+          "answer": "Advanced reporting options: 1) ExtentReports integration for rich HTML reports with screenshots, 2) Allure framework for interactive reports with history, 3) ReportNG for customized HTML reports, 4) Custom IReporter implementations for specific formats, 5) Integration with test management tools (TestRail, Zephyr), 6) Real-time reporting with WebSocket dashboards, 7) Database reporting for analytics. Implement listeners to capture screenshots, logs, and test metadata for comprehensive reporting.",
+          "companies": ["Enterprise reporting", "Test analytics", "Stakeholder communication"],
+          "topic": "Advanced Reporting",
+          "followUp": ["How to implement real-time test dashboards?", "How to integrate with test management tools?"]
+        },
+        {
+          "id": "testng-030",
+          "question": "What are TestNG best practices for large-scale automation frameworks?",
+          "difficulty": "Hard",
+          "experienceLevel": ["6-8", "9-12"],
+          "answer": "Best practices: 1) Use Page Object Model with dependency injection, 2) Implement proper test data management and isolation, 3) Use ThreadLocal for thread safety in parallel execution, 4) Create reusable utility classes and base test classes, 5) Implement comprehensive logging and reporting, 6) Use groups for test organization and selective execution, 7) Implement retry mechanisms judiciously, 8) Follow naming conventions for tests and methods, 9) Use configuration files for environment management, 10) Implement proper exception handling and cleanup, 11) Regular code reviews and refactoring.",
+          "companies": ["Enterprise frameworks", "Large teams", "Scalable automation"],
+          "topic": "Best Practices",
+          "followUp": ["How to maintain test framework over time?", "How to onboard new team members to framework?"]
+        }
+      ]
+    },
+    {
+      "id": "framework-design",
+      "name": "Test Framework Design",
+      "icon": "🏗️",
+      "totalQuestions": 25,
+      "questions": [
+        {
+          "id": "framework-001",
+          "question": "What are the key components of a robust test automation framework architecture?",
+          "difficulty": "Hard",
+          "experienceLevel": ["6-8", "9-12"],
+          "answer": "Key components: 1) Driver Management Layer (WebDriver factory, browser configuration), 2) Page Object Layer (page classes, element repositories), 3) Test Data Layer (Excel, JSON, database readers), 4) Utility Layer (common functions, helpers), 5) Configuration Layer (environment settings, properties), 6) Reporting Layer (test results, screenshots, logs), 7) Test Layer (actual test classes), 8) Base Classes (common setup/teardown), 9) Exception Handling Layer, 10) Logging Framework. Architecture should follow SOLID principles and design patterns like Factory, Singleton, Builder.",
+          "companies": ["Framework architects", "Senior automation engineers", "Tech leads"],
+          "topic": "Framework Architecture",
+          "followUp": ["How do you ensure framework scalability?", "What design patterns are most useful in automation frameworks?"]
+        },
+        {
+          "id": "framework-002",
+          "question": "How do you design a framework to support multiple browsers, environments, and platforms?",
+          "difficulty": "Hard",
+          "experienceLevel": ["6-8", "9-12"],
+          "answer": "Multi-platform design: 1) Browser Factory pattern with WebDriverManager for automatic driver management, 2) Configuration files (properties/JSON) for environment-specific settings, 3) Maven profiles or TestNG parameters for runtime configuration, 4) Abstract base classes for common functionality, 5) Strategy pattern for platform-specific implementations, 6) Docker containers for consistent environments, 7) Selenium Grid for distributed execution, 8) CI/CD pipeline integration with environment variables. Use dependency injection for loose coupling and easy configuration switching.",
+          "companies": ["Cross-platform testing", "Enterprise applications", "Global teams"],
+          "topic": "Multi-Platform Design",
+          "followUp": ["How to handle platform-specific test data?", "How to manage different browser capabilities?"]
+        },
+        {
+          "id": "framework-003",
+          "question": "Explain the implementation of Page Object Model with Page Factory and its advantages",
+          "difficulty": "Medium",
+          "experienceLevel": ["3-5", "6-8"],
+          "answer": "POM with Page Factory implementation: Use @FindBy annotations for element declaration, PageFactory.initElements() for lazy initialization, separate page classes for each application page. Advantages: 1) Lazy element initialization (elements found when accessed), 2) Cleaner code with annotations, 3) Automatic element caching with @CacheLookup, 4) Better maintainability, 5) Reduced code duplication. Example: @FindBy(id=\"username\") WebElement usernameField; Constructor: PageFactory.initElements(driver, this). Supports dynamic locators with @FindBy(how=How.XPATH, using=\"//div[@id='%s']\").",
+          "companies": ["UI automation", "Maintainable frameworks", "Page-heavy applications"],
+          "topic": "Page Object Model",
+          "followUp": ["How to handle dynamic elements in POM?", "What are alternatives to Page Factory?"]
+        },
+        {
+          "id": "framework-004",
+          "question": "How do you implement data-driven testing framework with multiple data sources?",
+          "difficulty": "Hard",
+          "experienceLevel": ["6-8", "9-12"],
+          "answer": "Data-driven framework implementation: 1) Create data reader interfaces (ExcelReader, JSONReader, DatabaseReader), 2) Implement factory pattern for data source selection, 3) Use TestNG @DataProvider with external data sources, 4) Create data models/POJOs for structured data, 5) Implement data validation and error handling, 6) Support parameterized test execution, 7) Enable data filtering and selection. Example: @DataProvider public Object[][] getData() { return DataFactory.getTestData(\"login\", \"excel\"); }. Supports Excel, CSV, JSON, XML, databases.",
+          "companies": ["Data-heavy applications", "Enterprise testing", "Comprehensive validation"],
+          "topic": "Data-Driven Framework",
+          "followUp": ["How to handle large datasets efficiently?", "How to implement data dependencies between tests?"]
+        },
+        {
+          "id": "framework-005",
+          "question": "What are the best practices for implementing logging and reporting in automation frameworks?",
+          "difficulty": "Medium",
+          "experienceLevel": ["3-5", "6-8"],
+          "answer": "Logging and reporting best practices: 1) Use logging frameworks (Log4j, SLF4J) with proper log levels, 2) Implement structured logging with correlation IDs, 3) Capture screenshots on failures automatically, 4) Create detailed test execution reports with ExtentReports/Allure, 5) Log test steps and assertions clearly, 6) Implement real-time reporting dashboards, 7) Store logs and reports in centralized location, 8) Include environment and configuration details in reports, 9) Implement log rotation and cleanup, 10) Provide filtering and search capabilities in reports.",
+          "companies": ["Enterprise frameworks", "Debugging", "Stakeholder reporting"],
+          "topic": "Logging and Reporting",
+          "followUp": ["How to implement centralized logging?", "How to create real-time test dashboards?"]
+        },
+        {
+          "id": "framework-006",
+          "question": "How do you design a framework for API and UI testing integration?",
+          "difficulty": "Hard",
+          "experienceLevel": ["6-8", "9-12"],
+          "answer": "Hybrid framework design: 1) Separate API and UI test layers with common base classes, 2) Shared test data and configuration management, 3) Common reporting and logging infrastructure, 4) API tests for backend validation, UI tests for user workflows, 5) Use API tests for test data setup/cleanup, 6) Implement service layer abstraction, 7) Common utility classes for both API and UI, 8) Integrated test execution with TestNG suites, 9) Cross-layer test dependencies and data flow, 10) Unified CI/CD pipeline execution.",
+          "companies": ["Full-stack testing", "Microservices", "End-to-end validation"],
+          "topic": "Hybrid Framework",
+          "followUp": ["How to share test data between API and UI tests?", "How to handle authentication across layers?"]
+        },
+        {
+          "id": "framework-007",
+          "question": "Explain the implementation of parallel execution framework with thread safety",
+          "difficulty": "Hard",
+          "experienceLevel": ["6-8", "9-12"],
+          "answer": "Parallel execution implementation: 1) Use ThreadLocal for WebDriver instances, 2) Thread-safe data structures (ConcurrentHashMap), 3) Separate test data per thread, 4) Synchronized access to shared resources, 5) TestNG parallel configuration (methods, classes, tests), 6) Docker containers for isolated execution environments, 7) Selenium Grid for distributed execution, 8) Thread-safe reporting mechanisms, 9) Proper resource cleanup per thread, 10) Load balancing and resource management. Example: ThreadLocal<WebDriver> driver = new ThreadLocal<>();",
+          "companies": ["High-performance testing", "Large test suites", "CI/CD optimization"],
+          "topic": "Parallel Execution",
+          "followUp": ["How to debug thread safety issues?", "How to optimize resource utilization in parallel execution?"]
+        },
+        {
+          "id": "framework-008",
+          "question": "How do you implement configuration management for multiple environments?",
+          "difficulty": "Medium",
+          "experienceLevel": ["3-5", "6-8"],
+          "answer": "Configuration management strategies: 1) Environment-specific property files (dev.properties, qa.properties), 2) Maven profiles for build-time configuration, 3) Environment variables for runtime configuration, 4) Configuration classes with singleton pattern, 5) JSON/YAML configuration files, 6) Encrypted configuration for sensitive data, 7) Configuration validation at startup, 8) Default fallback values, 9) Dynamic configuration reloading, 10) Configuration versioning and change tracking. Use factory pattern for environment-specific implementations.",
+          "companies": ["Multi-environment testing", "DevOps", "Enterprise applications"],
+          "topic": "Configuration Management",
+          "followUp": ["How to handle sensitive configuration data?", "How to validate configuration before test execution?"]
+        },
+        {
+          "id": "framework-009",
+          "question": "What are the key considerations for framework scalability and maintainability?",
+          "difficulty": "Hard",
+          "experienceLevel": ["6-8", "9-12"],
+          "answer": "Scalability and maintainability considerations: 1) Modular architecture with clear separation of concerns, 2) SOLID principles implementation, 3) Design patterns (Factory, Builder, Strategy), 4) Dependency injection for loose coupling, 5) Comprehensive documentation and coding standards, 6) Automated code quality checks (SonarQube), 7) Regular refactoring and technical debt management, 8) Version control and branching strategies, 9) Continuous integration and automated testing of framework, 10) Performance monitoring and optimization, 11) Team training and knowledge sharing.",
+          "companies": ["Large teams", "Enterprise frameworks", "Long-term projects"],
+          "topic": "Scalability",
+          "followUp": ["How to measure framework performance?", "How to handle framework evolution over time?"]
+        },
+        {
+          "id": "framework-010",
+          "question": "How do you implement error handling and recovery mechanisms in automation frameworks?",
+          "difficulty": "Medium",
+          "experienceLevel": ["3-5", "6-8"],
+          "answer": "Error handling strategies: 1) Custom exception hierarchy for different error types, 2) Try-catch blocks with specific exception handling, 3) Retry mechanisms for transient failures, 4) Graceful degradation for non-critical failures, 5) Automatic screenshot capture on failures, 6) Detailed error logging with context, 7) Test recovery and continuation strategies, 8) Timeout handling for long-running operations, 9) Resource cleanup in finally blocks, 10) Error notification and alerting systems. Implement IRetryAnalyzer for automatic retry of flaky tests.",
+          "companies": ["Robust automation", "Production frameworks", "Reliable testing"],
+          "topic": "Error Handling",
+          "followUp": ["How to distinguish between test failures and framework failures?", "How to implement smart retry mechanisms?"]
+        },
+        {
+          "id": "framework-011",
+          "question": "Explain the implementation of test data management and test isolation strategies",
+          "difficulty": "Hard",
+          "experienceLevel": ["6-8", "9-12"],
+          "answer": "Test data management strategies: 1) Test data builders and factories for object creation, 2) Database transactions with rollback for data isolation, 3) Unique test data generation per test execution, 4) Test data cleanup strategies (automatic/manual), 5) Shared vs isolated test data approaches, 6) Test data versioning and migration, 7) Mock data services for external dependencies, 8) Data masking for sensitive information, 9) Test data refresh and synchronization, 10) Data dependency management between tests. Implement data pools and reservation systems for parallel execution.",
+          "companies": ["Database testing", "Data integrity", "Enterprise applications"],
+          "topic": "Test Data Management",
+          "followUp": ["How to handle test data conflicts in parallel execution?", "How to implement test data as code?"]
+        },
+        {
+          "id": "framework-012",
+          "question": "How do you design frameworks for microservices and distributed system testing?",
+          "difficulty": "Hard",
+          "experienceLevel": ["6-8", "9-12"],
+          "answer": "Microservices testing framework: 1) Service-level test isolation and independence, 2) Contract testing with Pact or similar tools, 3) Service virtualization for external dependencies, 4) Distributed tracing and correlation IDs, 5) Circuit breaker patterns for resilience testing, 6) API gateway testing strategies, 7) Event-driven testing for async communication, 8) Container-based test environments, 9) Service mesh testing considerations, 10) End-to-end workflow testing across services. Implement service registries and discovery mechanisms for dynamic environments.",
+          "companies": ["Microservices architecture", "Cloud-native applications", "Distributed systems"],
+          "topic": "Microservices Testing",
+          "followUp": ["How to test service-to-service communication?", "How to handle eventual consistency in testing?"]
+        },
+        {
+          "id": "framework-013",
+          "question": "What are the security considerations when designing automation frameworks?",
+          "difficulty": "Medium",
+          "experienceLevel": ["3-5", "6-8"],
+          "answer": "Security considerations: 1) Secure credential management (encrypted storage, key vaults), 2) Network security (VPN, firewall rules), 3) Test data privacy and masking, 4) Secure communication protocols (HTTPS, TLS), 5) Access control and authentication, 6) Audit logging and compliance, 7) Secure CI/CD pipeline configuration, 8) Container security scanning, 9) Dependency vulnerability scanning, 10) Regular security assessments and penetration testing. Never hardcode credentials, use environment variables or secure vaults.",
+          "companies": ["Security-conscious organizations", "Financial services", "Healthcare"],
+          "topic": "Security",
+          "followUp": ["How to implement secure credential rotation?", "How to test security features without compromising security?"]
+        },
+        {
+          "id": "framework-014",
+          "question": "How do you implement continuous testing integration with CI/CD pipelines?",
+          "difficulty": "Medium",
+          "experienceLevel": ["3-5", "6-8"],
+          "answer": "CI/CD integration strategies: 1) Pipeline stages (build, unit tests, integration tests, UI tests), 2) Test execution triggers (commit, PR, scheduled), 3) Parallel test execution for faster feedback, 4) Test result reporting and notifications, 5) Artifact management and versioning, 6) Environment provisioning and cleanup, 7) Test data management in pipelines, 8) Failure analysis and auto-retry mechanisms, 9) Quality gates and deployment decisions, 10) Monitoring and alerting integration. Use Docker containers for consistent test environments.",
+          "companies": ["DevOps", "Continuous delivery", "Agile teams"],
+          "topic": "CI/CD Integration",
+          "followUp": ["How to optimize test execution time in CI?", "How to handle test environment dependencies?"]
+        },
+        {
+          "id": "framework-015",
+          "question": "Explain the implementation of visual testing and screenshot comparison frameworks",
+          "difficulty": "Hard",
+          "experienceLevel": ["6-8", "9-12"],
+          "answer": "Visual testing implementation: 1) Baseline image capture and management, 2) Image comparison algorithms (pixel-by-pixel, perceptual), 3) Threshold configuration for acceptable differences, 4) Cross-browser and cross-platform considerations, 5) Dynamic content handling (timestamps, ads), 6) Responsive design testing across viewports, 7) Integration with existing test frameworks, 8) Visual regression detection and reporting, 9) Approval workflows for visual changes, 10) Performance optimization for large image sets. Tools: Applitools, Percy, BackstopJS, or custom implementations.",
+          "companies": ["UI-heavy applications", "Design systems", "E-commerce"],
+          "topic": "Visual Testing",
+          "followUp": ["How to handle dynamic content in visual tests?", "How to optimize visual test execution performance?"]
+        },
+        {
+          "id": "framework-016",
+          "question": "How do you design frameworks for mobile application testing (native, hybrid, web)?",
+          "difficulty": "Hard",
+          "experienceLevel": ["6-8", "9-12"],
+          "answer": "Mobile testing framework design: 1) Appium integration for native and hybrid apps, 2) Device farm integration (AWS Device Farm, BrowserStack), 3) Platform-specific implementations (iOS/Android), 4) Mobile web testing with responsive design, 5) Gesture and touch interaction handling, 6) Device capability management, 7) App installation and uninstallation automation, 8) Performance testing integration, 9) Network condition simulation, 10) Real device vs emulator strategies. Support both local and cloud-based device execution.",
+          "companies": ["Mobile applications", "Cross-platform development", "Device testing"],
+          "topic": "Mobile Testing",
+          "followUp": ["How to handle different screen sizes and orientations?", "How to test mobile app performance?"]
+        },
+        {
+          "id": "framework-017",
+          "question": "What are the performance testing considerations in automation framework design?",
+          "difficulty": "Medium",
+          "experienceLevel": ["3-5", "6-8"],
+          "answer": "Performance considerations: 1) Framework execution performance optimization, 2) Resource utilization monitoring (CPU, memory), 3) Test execution time tracking and optimization, 4) Parallel execution efficiency, 5) Database connection pooling, 6) Caching strategies for repeated operations, 7) Network latency handling, 8) Large dataset processing optimization, 9) Memory leak detection and prevention, 10) Performance regression testing. Implement performance benchmarks and monitoring dashboards.",
+          "companies": ["Performance-critical applications", "Large-scale testing", "Enterprise frameworks"],
+          "topic": "Performance Testing",
+          "followUp": ["How to identify performance bottlenecks in frameworks?", "How to implement performance regression detection?"]
+        },
+        {
+          "id": "framework-018",
+          "question": "How do you implement accessibility testing integration in automation frameworks?",
+          "difficulty": "Medium",
+          "experienceLevel": ["3-5", "6-8"],
+          "answer": "Accessibility testing integration: 1) Automated accessibility scanning (axe-core, Pa11y), 2) WCAG compliance validation, 3) Screen reader simulation, 4) Keyboard navigation testing, 5) Color contrast validation, 6) Focus management testing, 7) ARIA attributes validation, 8) Alternative text verification, 9) Accessibility reporting and tracking, 10) Integration with existing test suites. Implement accessibility checks as part of regular test execution.",
+          "companies": ["Inclusive design", "Government applications", "Public-facing websites"],
+          "topic": "Accessibility Testing",
+          "followUp": ["How to prioritize accessibility issues?", "How to test with actual assistive technologies?"]
+        },
+        {
+          "id": "framework-019",
+          "question": "Explain the implementation of test analytics and metrics collection in frameworks",
+          "difficulty": "Hard",
+          "experienceLevel": ["6-8", "9-12"],
+          "answer": "Test analytics implementation: 1) Test execution metrics collection (duration, pass/fail rates), 2) Framework performance metrics, 3) Test coverage analysis, 4) Flaky test identification and tracking, 5) Trend analysis and historical data, 6) Real-time dashboards and visualization, 7) Predictive analytics for test optimization, 8) Resource utilization analytics, 9) Quality metrics and KPIs, 10) Integration with business intelligence tools. Use databases for metrics storage and visualization tools for reporting.",
+          "companies": ["Data-driven testing", "Continuous improvement", "Enterprise analytics"],
+          "topic": "Test Analytics",
+          "followUp": ["How to implement predictive test analytics?", "How to correlate test metrics with business outcomes?"]
+        },
+        {
+          "id": "framework-020",
+          "question": "How do you design frameworks for cloud-native and containerized applications?",
+          "difficulty": "Hard",
+          "experienceLevel": ["6-8", "9-12"],
+          "answer": "Cloud-native framework design: 1) Container-based test execution (Docker, Kubernetes), 2) Cloud service integration (AWS, Azure, GCP), 3) Serverless function testing, 4) Auto-scaling test infrastructure, 5) Cloud storage for test artifacts, 6) Service mesh testing, 7) Infrastructure as code for test environments, 8) Cloud security testing, 9) Multi-region testing strategies, 10) Cost optimization for cloud resources. Implement elastic test execution based on demand.",
+          "companies": ["Cloud-native applications", "DevOps", "Scalable infrastructure"],
+          "topic": "Cloud-Native Testing",
+          "followUp": ["How to optimize cloud testing costs?", "How to handle cloud service dependencies in tests?"]
+        },
+        {
+          "id": "framework-021",
+          "question": "What are the considerations for implementing AI/ML testing in automation frameworks?",
+          "difficulty": "Hard",
+          "experienceLevel": ["6-8", "9-12"],
+          "answer": "AI/ML testing considerations: 1) Model validation and accuracy testing, 2) Data quality and bias testing, 3) Performance testing for ML models, 4) A/B testing for model comparison, 5) Automated test case generation using AI, 6) Intelligent test selection and prioritization, 7) Self-healing test automation, 8) Anomaly detection in test results, 9) Natural language test case creation, 10) Predictive test failure analysis. Integrate ML libraries and cloud AI services for enhanced testing capabilities.",
+          "companies": ["AI/ML applications", "Intelligent testing", "Advanced automation"],
+          "topic": "AI/ML Testing",
+          "followUp": ["How to test AI model fairness and bias?", "How to implement self-healing test automation?"]
+        },
+        {
+          "id": "framework-022",
+          "question": "How do you implement cross-browser and cross-platform testing frameworks?",
+          "difficulty": "Medium",
+          "experienceLevel": ["3-5", "6-8"],
+          "answer": "Cross-browser/platform implementation: 1) Browser factory pattern with capability management, 2) Selenium Grid for distributed execution, 3) Cloud testing platforms (BrowserStack, Sauce Labs), 4) Browser-specific configuration and handling, 5) Responsive design testing across devices, 6) Platform-specific test data and expectations, 7) Parallel execution across browsers, 8) Browser compatibility matrix management, 9) Visual testing across platforms, 10) Performance comparison across browsers. Use TestNG parameters or Maven profiles for browser selection.",
+          "companies": ["Web applications", "Cross-platform compatibility", "Browser testing"],
+          "topic": "Cross-Browser Testing",
+          "followUp": ["How to handle browser-specific bugs in automation?", "How to optimize cross-browser test execution?"]
+        },
+        {
+          "id": "framework-023",
+          "question": "Explain the implementation of database testing integration in automation frameworks",
+          "difficulty": "Medium",
+          "experienceLevel": ["3-5", "6-8"],
+          "answer": "Database testing integration: 1) JDBC connection management and pooling, 2) Database-specific drivers and configurations, 3) SQL query execution and result validation, 4) Database state setup and cleanup, 5) Transaction management and rollback strategies, 6) Data integrity and consistency testing, 7) Performance testing for database operations, 8) Database migration testing, 9) Stored procedure and function testing, 10) NoSQL database testing support. Implement database utilities and helper classes for common operations.",
+          "companies": ["Data-driven applications", "Enterprise systems", "Database-heavy applications"],
+          "topic": "Database Testing",
+          "followUp": ["How to handle database transactions in parallel tests?", "How to test database performance and optimization?"]
+        },
+        {
+          "id": "framework-024",
+          "question": "How do you design frameworks for API contract testing and service virtualization?",
+          "difficulty": "Hard",
+          "experienceLevel": ["6-8", "9-12"],
+          "answer": "Contract testing and virtualization: 1) Consumer-driven contract testing with Pact, 2) API schema validation (OpenAPI, JSON Schema), 3) Service virtualization for external dependencies, 4) Mock service creation and management, 5) Contract versioning and compatibility testing, 6) Provider verification testing, 7) Stub and mock data management, 8) Service behavior simulation, 9) Contract testing in CI/CD pipelines, 10) Integration with service registries. Implement contract-first development approach.",
+          "companies": ["Microservices", "API-first development", "Service-oriented architecture"],
+          "topic": "Contract Testing",
+          "followUp": ["How to handle contract evolution and versioning?", "How to implement consumer-driven contract testing?"]
+        },
+        {
+          "id": "framework-025",
+          "question": "What are the best practices for framework documentation, training, and team adoption?",
+          "difficulty": "Medium",
+          "experienceLevel": ["3-5", "6-8"],
+          "answer": "Framework adoption best practices: 1) Comprehensive documentation with examples, 2) Interactive tutorials and getting-started guides, 3) Code templates and scaffolding tools, 4) Regular training sessions and workshops, 5) Community of practice and knowledge sharing, 6) Gradual migration strategies, 7) Feedback collection and continuous improvement, 8) Mentoring and pair programming, 9) Framework evangelism and success stories, 10) Tool integration and IDE support. Create framework champions within teams for better adoption.",
+          "companies": ["Large teams", "Framework adoption", "Knowledge management"],
+          "topic": "Framework Adoption",
+          "followUp": ["How to measure framework adoption success?", "How to handle resistance to framework changes?"]
+        }
+      ]
+    }
+  ]
+}

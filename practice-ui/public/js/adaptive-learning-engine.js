@@ -4,9 +4,8 @@
 // Created: December 15, 2025
 
 class AdaptiveLearningEngine {
-    constructor(progressTracker, analyticsManager) {
+    constructor(progressTracker) {
         this.progressTracker = progressTracker;
-        this.analyticsManager = analyticsManager;
         this.userProfile = null;
         this.learningModel = null;
         this.recommendations = [];
@@ -47,17 +46,16 @@ class AdaptiveLearningEngine {
     async buildUserProfile() {
         try {
             const progressData = await this.progressTracker.getCurrentProgress();
-            const analyticsData = this.analyticsManager?.getAnalyticsReport();
 
             this.userProfile = {
                 userId: progressData?.userId || 'anonymous',
                 experienceLevel: this.detectExperienceLevel(progressData),
-                learningStyle: this.detectLearningStyle(analyticsData),
+                learningStyle: this.detectLearningStyle(progressData),
                 strengths: this.analyzeStrengths(progressData),
                 weaknesses: this.analyzeWeaknesses(progressData),
-                studyPatterns: this.analyzeStudyPatterns(analyticsData),
+                studyPatterns: this.analyzeStudyPatterns(progressData),
                 goals: this.extractGoals(progressData),
-                preferences: this.analyzePreferences(progressData, analyticsData)
+                preferences: this.analyzePreferences(progressData)
             };
 
             console.log('👤 User profile built:', this.userProfile);
@@ -466,15 +464,10 @@ class AdaptiveLearningEngine {
         return 'advanced';
     }
 
-    detectLearningStyle(analyticsData) {
-        if (!analyticsData) return 'mixed';
+    detectLearningStyle(progressData) {
+        if (!progressData) return 'mixed';
 
-        const interactions = analyticsData.behavior?.interactions || [];
-        const codeInteractions = interactions.filter(i => i.type === 'code_interaction').length;
-        const visualInteractions = interactions.filter(i => i.type === 'visual_interaction').length;
-
-        if (codeInteractions > visualInteractions * 2) return 'practical';
-        if (visualInteractions > codeInteractions * 2) return 'visual';
+        // Simplified learning style detection based on progress patterns
         return 'mixed';
     }
 
@@ -546,14 +539,6 @@ class AdaptiveLearningEngine {
         const recommendation = this.recommendations.find(rec => rec.id === recommendationId);
         if (!recommendation) return;
 
-        // Track recommendation execution
-        if (this.analyticsManager) {
-            this.analyticsManager.trackEvent('recommendation_executed', {
-                recommendationId,
-                type: recommendation.type,
-                subtype: recommendation.subtype
-            });
-        }
 
         // Execute the recommendation action
         this.executeRecommendationAction(recommendation.action);

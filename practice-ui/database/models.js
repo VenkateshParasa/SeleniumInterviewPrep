@@ -336,6 +336,38 @@ class QuestionModel {
         `, [id]);
     }
 
+    // HYBRID APPROACH: Find question by string ID (e.g., "java-006")
+    async findByStringId(stringId) {
+        // For JSON-based questions, we need to search through the data
+        // Since we're using file-based storage, we'll load from JSON
+        const fs = require('fs');
+        const path = require('path');
+
+        try {
+            const questionsPath = path.join(__dirname, '../public/data/questions/interview-questions-fixed.json');
+            const questionsData = JSON.parse(fs.readFileSync(questionsPath, 'utf8'));
+
+            // Search through all categories for the question ID
+            for (const category of questionsData.categories) {
+                const question = category.questions.find(q => q.id === stringId);
+                if (question) {
+                    // Return question with category info for consistency
+                    return {
+                        ...question,
+                        category_name: category.name,
+                        category_slug: category.id,
+                        category_id: category.id
+                    };
+                }
+            }
+
+            return null;
+        } catch (error) {
+            console.error('Error finding question by string ID:', error);
+            return null;
+        }
+    }
+
     async findByCategory(categorySlug, options = {}) {
         const { limit = 20, offset = 0 } = options;
 
@@ -576,32 +608,36 @@ class SessionModel {
 // ===============================
 // PASSWORD RESET MODEL
 // ===============================
-class PasswordResetModel extends BaseModel {
+class PasswordResetModel {
     constructor(db) {
-        super(db, 'password_reset_tokens');
+        this.db = db;
     }
 
     async createToken(userId, email, token, expiresInMinutes = 30) {
         const expiresAt = new Date(Date.now() + expiresInMinutes * 60 * 1000).toISOString();
 
         // Invalidate any existing tokens for this user
-        await this.query(`
+        await this.db.run(`
             UPDATE password_reset_tokens
             SET used_at = CURRENT_TIMESTAMP
             WHERE user_id = ? AND used_at IS NULL
         `, [userId]);
 
         // Create new token
-        return this.create({
-            user_id: userId,
-            token: token,
-            email: email,
-            expires_at: expiresAt
-        });
+        const result = await this.db.run(`
+            INSERT INTO password_reset_tokens (user_id, token, email, expires_at)
+            VALUES (?, ?, ?, ?)
+        `, [userId, token, email, expiresAt]);
+
+        return this.findById(result.id);
+    }
+
+    async findById(id) {
+        return await this.db.get('SELECT * FROM password_reset_tokens WHERE id = ?', [id]);
     }
 
     async findValidToken(token) {
-        return this.query(`
+        return await this.db.get(`
             SELECT prt.*, u.email as current_email, u.username
             FROM password_reset_tokens prt
             JOIN users u ON prt.user_id = u.id
@@ -612,7 +648,7 @@ class PasswordResetModel extends BaseModel {
     }
 
     async markTokenUsed(token) {
-        return this.query(`
+        return await this.db.run(`
             UPDATE password_reset_tokens
             SET used_at = CURRENT_TIMESTAMP
             WHERE token = ?
@@ -620,7 +656,7 @@ class PasswordResetModel extends BaseModel {
     }
 
     async cleanupExpiredTokens() {
-        return this.query(`
+        return await this.db.run(`
             DELETE FROM password_reset_tokens
             WHERE expires_at < CURRENT_TIMESTAMP OR used_at IS NOT NULL
         `);
@@ -630,32 +666,36 @@ class PasswordResetModel extends BaseModel {
 // ===============================
 // EMAIL VERIFICATION MODEL
 // ===============================
-class EmailVerificationModel extends BaseModel {
+class EmailVerificationModel {
     constructor(db) {
-        super(db, 'email_verification_tokens');
+        this.db = db;
     }
 
     async createToken(userId, email, token, expiresInHours = 24) {
         const expiresAt = new Date(Date.now() + expiresInHours * 60 * 60 * 1000).toISOString();
 
         // Invalidate any existing tokens for this user
-        await this.query(`
+        await this.db.run(`
             UPDATE email_verification_tokens
             SET verified_at = CURRENT_TIMESTAMP
             WHERE user_id = ? AND verified_at IS NULL
         `, [userId]);
 
         // Create new token
-        return this.create({
-            user_id: userId,
-            token: token,
-            email: email,
-            expires_at: expiresAt
-        });
+        const result = await this.db.run(`
+            INSERT INTO email_verification_tokens (user_id, token, email, expires_at)
+            VALUES (?, ?, ?, ?)
+        `, [userId, token, email, expiresAt]);
+
+        return this.findById(result.id);
+    }
+
+    async findById(id) {
+        return await this.db.get('SELECT * FROM email_verification_tokens WHERE id = ?', [id]);
     }
 
     async findValidToken(token) {
-        return this.query(`
+        return await this.db.get(`
             SELECT evt.*, u.username, u.email_verified
             FROM email_verification_tokens evt
             JOIN users u ON evt.user_id = u.id
@@ -666,7 +706,7 @@ class EmailVerificationModel extends BaseModel {
     }
 
     async markTokenVerified(token) {
-        return this.query(`
+        return await this.db.run(`
             UPDATE email_verification_tokens
             SET verified_at = CURRENT_TIMESTAMP
             WHERE token = ?
@@ -674,10 +714,427 @@ class EmailVerificationModel extends BaseModel {
     }
 
     async cleanupExpiredTokens() {
-        return this.query(`
+        return await this.db.run(`
             DELETE FROM email_verification_tokens
             WHERE expires_at < CURRENT_TIMESTAMP OR verified_at IS NOT NULL
         `);
+    }
+}
+
+// Question Progress Model
+class QuestionProgressModel {
+    constructor(db) {
+        this.db = db;
+    }
+
+    async create(progressData) {
+        const { question_id, user_id, status, time_spent, studied_at } = progressData;
+
+        const result = await this.db.run(`
+            INSERT INTO question_progress (question_id, user_id, status, time_spent, studied_at, created_at)
+            VALUES (?, ?, ?, ?, ?, datetime('now'))
+        `, [question_id, user_id, status, time_spent, studied_at]);
+
+        return this.findById(result.id);
+    }
+
+    async findById(id) {
+        return await this.db.get('SELECT * FROM question_progress WHERE id = ?', [id]);
+    }
+
+    async findByUser(userId) {
+        return await this.db.query(`
+            SELECT qp.*, q.question_text, c.name as category_name
+            FROM question_progress qp
+            LEFT JOIN questions q ON qp.question_id = q.id
+            LEFT JOIN categories c ON q.category_id = c.id
+            WHERE qp.user_id = ?
+            ORDER BY qp.created_at DESC
+        `, [userId]);
+    }
+
+    async findByQuestion(questionId) {
+        return await this.db.query(`
+            SELECT qp.*, u.username
+            FROM question_progress qp
+            LEFT JOIN users u ON qp.user_id = u.id
+            WHERE qp.question_id = ?
+            ORDER BY qp.created_at DESC
+        `, [questionId]);
+    }
+
+    async getUserStats(userId) {
+        return await this.db.get(`
+            SELECT
+                COUNT(*) as total_questions_studied,
+                AVG(time_spent) as avg_time_per_question,
+                SUM(time_spent) as total_study_time,
+                COUNT(CASE WHEN status = 'completed' THEN 1 END) as completed_questions,
+                COUNT(CASE WHEN created_at > datetime('now', '-7 days') THEN 1 END) as questions_this_week
+            FROM question_progress
+            WHERE user_id = ?
+        `, [userId]);
+    }
+
+    async getGlobalStats() {
+        return await this.db.get(`
+            SELECT
+                COUNT(*) as total_progress_entries,
+                COUNT(DISTINCT user_id) as unique_users,
+                COUNT(DISTINCT question_id) as unique_questions,
+                AVG(time_spent) as global_avg_time,
+                COUNT(CASE WHEN created_at > datetime('now', '-1 day') THEN 1 END) as progress_today
+            FROM question_progress
+        `);
+    }
+}
+
+// Practice Exercise Model
+class PracticeExerciseModel {
+    constructor(db) {
+        this.db = db;
+    }
+
+    async create(exerciseData) {
+        const { track_day_id, title, description, exercise_type, difficulty_level, estimated_time, instructions, starter_code, solution_code, test_cases, resources, sort_order } = exerciseData;
+
+        const result = await this.db.run(`
+            INSERT INTO practice_exercises (track_day_id, title, description, exercise_type, difficulty_level, estimated_time, instructions, starter_code, solution_code, test_cases, resources, sort_order)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        `, [track_day_id, title, description, exercise_type || 'coding', difficulty_level || 3, estimated_time || 30, instructions, starter_code, solution_code, JSON.stringify(test_cases || []), JSON.stringify(resources || []), sort_order || 0]);
+
+        return this.findById(result.id);
+    }
+
+    async findById(id) {
+        return await this.db.get('SELECT * FROM practice_exercises WHERE id = ? AND is_active = TRUE', [id]);
+    }
+
+    async findByTrackDay(trackDayId) {
+        return await this.db.all(`
+            SELECT * FROM practice_exercises
+            WHERE track_day_id = ? AND is_active = TRUE
+            ORDER BY sort_order, title
+        `, [trackDayId]);
+    }
+
+    async findAll(options = {}) {
+        const { limit = 20, offset = 0, exercise_type, difficulty } = options;
+
+        let sql = `
+            SELECT pe.*, td.title as track_day_title, t.name as track_name
+            FROM practice_exercises pe
+            JOIN track_days td ON pe.track_day_id = td.id
+            JOIN tracks t ON td.track_id = t.id
+            WHERE pe.is_active = TRUE
+        `;
+
+        const params = [];
+
+        if (exercise_type) {
+            sql += ' AND pe.exercise_type = ?';
+            params.push(exercise_type);
+        }
+
+        if (difficulty) {
+            sql += ' AND pe.difficulty_level = ?';
+            params.push(difficulty);
+        }
+
+        sql += ' ORDER BY pe.created_at DESC LIMIT ? OFFSET ?';
+        params.push(limit, offset);
+
+        return await this.db.all(sql, params);
+    }
+
+    async update(id, updates) {
+        const fields = Object.keys(updates).map(key => `${key} = ?`).join(', ');
+        const values = [...Object.values(updates), id];
+
+        await this.db.run(`UPDATE practice_exercises SET ${fields} WHERE id = ?`, values);
+        return this.findById(id);
+    }
+
+    async delete(id) {
+        return await this.db.run('UPDATE practice_exercises SET is_active = FALSE WHERE id = ?', [id]);
+    }
+}
+
+// Resource Model
+class ResourceModel {
+    constructor(db) {
+        this.db = db;
+    }
+
+    async create(resourceData) {
+        const { track_day_id, category_id, title, description, resource_type, url, content, author, duration, difficulty_level, tags, is_external, sort_order } = resourceData;
+
+        const result = await this.db.run(`
+            INSERT INTO resources (track_day_id, category_id, title, description, resource_type, url, content, author, duration, difficulty_level, tags, is_external, sort_order)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        `, [track_day_id, category_id, title, description, resource_type, url, content, author, duration, difficulty_level || 3, JSON.stringify(tags || []), is_external !== false, sort_order || 0]);
+
+        return this.findById(result.id);
+    }
+
+    async findById(id) {
+        return await this.db.get('SELECT * FROM resources WHERE id = ? AND is_active = TRUE', [id]);
+    }
+
+    async findByTrackDay(trackDayId) {
+        return await this.db.all(`
+            SELECT * FROM resources
+            WHERE track_day_id = ? AND is_active = TRUE
+            ORDER BY sort_order, title
+        `, [trackDayId]);
+    }
+
+    async findByCategory(categoryId) {
+        return await this.db.all(`
+            SELECT * FROM resources
+            WHERE category_id = ? AND is_active = TRUE
+            ORDER BY sort_order, title
+        `, [categoryId]);
+    }
+
+    async findAll(options = {}) {
+        const { limit = 20, offset = 0, resource_type, difficulty, category_id } = options;
+
+        let sql = `
+            SELECT r.*, c.name as category_name, td.title as track_day_title
+            FROM resources r
+            LEFT JOIN categories c ON r.category_id = c.id
+            LEFT JOIN track_days td ON r.track_day_id = td.id
+            WHERE r.is_active = TRUE
+        `;
+
+        const params = [];
+
+        if (resource_type) {
+            sql += ' AND r.resource_type = ?';
+            params.push(resource_type);
+        }
+
+        if (difficulty) {
+            sql += ' AND r.difficulty_level = ?';
+            params.push(difficulty);
+        }
+
+        if (category_id) {
+            sql += ' AND r.category_id = ?';
+            params.push(category_id);
+        }
+
+        sql += ' ORDER BY r.created_at DESC LIMIT ? OFFSET ?';
+        params.push(limit, offset);
+
+        return await this.db.all(sql, params);
+    }
+
+    async update(id, updates) {
+        const fields = Object.keys(updates).map(key => `${key} = ?`).join(', ');
+        const values = [...Object.values(updates), id];
+
+        await this.db.run(`UPDATE resources SET ${fields} WHERE id = ?`, values);
+        return this.findById(id);
+    }
+
+    async delete(id) {
+        return await this.db.run('UPDATE resources SET is_active = FALSE WHERE id = ?', [id]);
+    }
+}
+
+// User Achievement Model
+class UserAchievementModel {
+    constructor(db) {
+        this.db = db;
+    }
+
+    async create(achievementData) {
+        const { user_id, achievement_type, achievement_data, is_displayed } = achievementData;
+
+        const result = await this.db.run(`
+            INSERT INTO user_achievements (user_id, achievement_type, achievement_data, is_displayed)
+            VALUES (?, ?, ?, ?)
+        `, [user_id, achievement_type, JSON.stringify(achievement_data || {}), is_displayed !== false]);
+
+        return this.findById(result.id);
+    }
+
+    async findById(id) {
+        return await this.db.get('SELECT * FROM user_achievements WHERE id = ?', [id]);
+    }
+
+    async findByUser(userId) {
+        return await this.db.all(`
+            SELECT * FROM user_achievements
+            WHERE user_id = ?
+            ORDER BY earned_at DESC
+        `, [userId]);
+    }
+
+    async findByType(userId, achievementType) {
+        return await this.db.all(`
+            SELECT * FROM user_achievements
+            WHERE user_id = ? AND achievement_type = ?
+            ORDER BY earned_at DESC
+        `, [userId, achievementType]);
+    }
+
+    async getLeaderboard(achievementType = null, limit = 10) {
+        let sql = `
+            SELECT
+                u.username,
+                u.name,
+                COUNT(ua.id) as achievement_count,
+                MAX(ua.earned_at) as latest_achievement
+            FROM user_achievements ua
+            JOIN users u ON ua.user_id = u.id
+            WHERE u.is_active = TRUE
+        `;
+
+        const params = [];
+
+        if (achievementType) {
+            sql += ' AND ua.achievement_type = ?';
+            params.push(achievementType);
+        }
+
+        sql += `
+            GROUP BY u.id, u.username, u.name
+            ORDER BY achievement_count DESC, latest_achievement DESC
+            LIMIT ?
+        `;
+        params.push(limit);
+
+        return await this.db.all(sql, params);
+    }
+
+    async getUserStats(userId) {
+        return await this.db.get(`
+            SELECT
+                COUNT(*) as total_achievements,
+                COUNT(DISTINCT achievement_type) as unique_types,
+                COUNT(CASE WHEN earned_at > datetime('now', '-7 days') THEN 1 END) as recent_achievements,
+                MIN(earned_at) as first_achievement,
+                MAX(earned_at) as latest_achievement
+            FROM user_achievements
+            WHERE user_id = ?
+        `, [userId]);
+    }
+
+    async update(id, updates) {
+        const fields = Object.keys(updates).map(key => `${key} = ?`).join(', ');
+        const values = [...Object.values(updates), id];
+
+        await this.db.run(`UPDATE user_achievements SET ${fields} WHERE id = ?`, values);
+        return this.findById(id);
+    }
+}
+
+// Study Session Model
+class StudySessionModel {
+    constructor(db) {
+        this.db = db;
+    }
+
+    async create(sessionData) {
+        const { user_id, session_type, track_id, day_number, duration, questions_attempted, questions_correct, exercises_completed, focus_time, break_time, session_data, started_at, ended_at } = sessionData;
+
+        const result = await this.db.run(`
+            INSERT INTO user_study_sessions (user_id, session_type, track_id, day_number, duration, questions_attempted, questions_correct, exercises_completed, focus_time, break_time, session_data, started_at, ended_at)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        `, [user_id, session_type, track_id, day_number, duration, questions_attempted || 0, questions_correct || 0, exercises_completed || 0, focus_time || 0, break_time || 0, JSON.stringify(session_data || {}), started_at, ended_at]);
+
+        return this.findById(result.id);
+    }
+
+    async findById(id) {
+        return await this.db.get('SELECT * FROM user_study_sessions WHERE id = ?', [id]);
+    }
+
+    async findByUser(userId, options = {}) {
+        const { limit = 20, offset = 0, session_type, track_id } = options;
+
+        let sql = `
+            SELECT uss.*, t.name as track_name
+            FROM user_study_sessions uss
+            LEFT JOIN tracks t ON uss.track_id = t.id
+            WHERE uss.user_id = ?
+        `;
+
+        const params = [userId];
+
+        if (session_type) {
+            sql += ' AND uss.session_type = ?';
+            params.push(session_type);
+        }
+
+        if (track_id) {
+            sql += ' AND uss.track_id = ?';
+            params.push(track_id);
+        }
+
+        sql += ' ORDER BY uss.started_at DESC LIMIT ? OFFSET ?';
+        params.push(limit, offset);
+
+        return await this.db.all(sql, params);
+    }
+
+    async getUserStats(userId, timeframe = '30 days') {
+        return await this.db.get(`
+            SELECT
+                COUNT(*) as total_sessions,
+                SUM(duration) as total_study_time,
+                AVG(duration) as avg_session_duration,
+                SUM(questions_attempted) as total_questions_attempted,
+                SUM(questions_correct) as total_questions_correct,
+                SUM(exercises_completed) as total_exercises_completed,
+                SUM(focus_time) as total_focus_time,
+                COUNT(CASE WHEN started_at > datetime('now', '-7 days') THEN 1 END) as sessions_this_week,
+                COUNT(CASE WHEN started_at > datetime('now', '-1 day') THEN 1 END) as sessions_today
+            FROM user_study_sessions
+            WHERE user_id = ? AND started_at > datetime('now', '-${timeframe}')
+        `, [userId]);
+    }
+
+    async getGlobalStats() {
+        return await this.db.get(`
+            SELECT
+                COUNT(*) as total_sessions,
+                COUNT(DISTINCT user_id) as unique_users,
+                SUM(duration) as total_study_time,
+                AVG(duration) as avg_session_duration,
+                COUNT(CASE WHEN started_at > datetime('now', '-1 day') THEN 1 END) as sessions_today
+            FROM user_study_sessions
+        `);
+    }
+
+    async update(id, updates) {
+        const fields = Object.keys(updates).map(key => `${key} = ?`).join(', ');
+        const values = [...Object.values(updates), id];
+
+        await this.db.run(`UPDATE user_study_sessions SET ${fields} WHERE id = ?`, values);
+        return this.findById(id);
+    }
+
+    async endSession(id, endData) {
+        const { duration, questions_attempted, questions_correct, exercises_completed, focus_time, break_time, session_data } = endData;
+
+        await this.db.run(`
+            UPDATE user_study_sessions SET
+                duration = ?,
+                questions_attempted = ?,
+                questions_correct = ?,
+                exercises_completed = ?,
+                focus_time = ?,
+                break_time = ?,
+                session_data = ?,
+                ended_at = CURRENT_TIMESTAMP
+            WHERE id = ?
+        `, [duration, questions_attempted || 0, questions_correct || 0, exercises_completed || 0, focus_time || 0, break_time || 0, JSON.stringify(session_data || {}), id]);
+
+        return this.findById(id);
     }
 }
 
@@ -689,10 +1146,15 @@ class DatabaseManager {
         this.categories = new CategoryModel(this.db);
         this.tracks = new TrackModel(this.db);
         this.questions = new QuestionModel(this.db);
+        this.questionProgress = new QuestionProgressModel(this.db);
         this.userProgress = new UserProgressModel(this.db);
         this.sessions = new SessionModel(this.db);
         this.passwordResets = new PasswordResetModel(this.db);
         this.emailVerifications = new EmailVerificationModel(this.db);
+        this.practiceExercises = new PracticeExerciseModel(this.db);
+        this.resources = new ResourceModel(this.db);
+        this.userAchievements = new UserAchievementModel(this.db);
+        this.studySessions = new StudySessionModel(this.db);
     }
 
     async connect() {
@@ -723,9 +1185,14 @@ module.exports = {
     CategoryModel,
     TrackModel,
     QuestionModel,
+    QuestionProgressModel,
     UserProgressModel,
     SessionModel,
     PasswordResetModel,
     EmailVerificationModel,
+    PracticeExerciseModel,
+    ResourceModel,
+    UserAchievementModel,
+    StudySessionModel,
     db: dbManager
 };

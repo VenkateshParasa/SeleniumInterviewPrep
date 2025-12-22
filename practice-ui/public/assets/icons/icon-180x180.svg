@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="180" height="180" viewBox="0 0 180 180" xmlns="http://www.w3.org/2000/svg">
+    <!-- Background -->
+    <rect width="180" height="180" fill="#2563eb" rx="18"/>
+    
+    <!-- Target/Bullseye Icon -->
+    <circle cx="90" cy="90" r="62.99999999999999" fill="none" stroke="white" stroke-width="9"/>
+    <circle cx="90" cy="90" r="45" fill="none" stroke="white" stroke-width="9"/>
+    <circle cx="90" cy="90" r="27" fill="white"/>
+    
+    <!-- Text for larger sizes -->
+    <text x="90" y="153" font-family="Arial, sans-serif" font-size="21.599999999999998" font-weight="bold" fill="white" text-anchor="middle">PREP</text>
+</svg>
